@@ -82,8 +82,9 @@ export async function scrapePage(url, issues = []) {
 
     await page.goto(url, {
       waitUntil: "networkidle2",
-      timeout: 50000
+      timeout: 120000
     });
+    await page.waitForTimeout(3000); // wait 3 sec for content
 
     // 🔴 Highlight issues BEFORE screenshot
   if (issues.length > 0) {
