@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AI Landing Page Analyzer</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', Arial, sans-serif; background: #0f0f1a; color: #fff; min-height: 100vh; padding: 40px 20px; }
+    .container { max-width: 960px; margin: 0 auto; }
+
+    h1 {
+      text-align: center; font-size: 2.2rem; margin-bottom: 8px;
+      background: linear-gradient(135deg, #a78bfa, #60a5fa);
+      -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent; color: transparent;
+    }
+    p.subtitle { text-align: center; color: #888; margin-bottom: 32px; }
+
+    .input-area { display: flex; gap: 10px; margin-bottom: 32px; }
+    input { flex: 1; padding: 14px 18px; border-radius: 12px; border: 2px solid #2d2d44; background: #1a1a2e; color: white; font-size: 15px; outline: none; transition: border 0.2s; }
+    input:focus { border-color: #7c3aed; }
+    button#analyzeBtn { padding: 14px 28px; background: linear-gradient(135deg, #7c3aed, #4f46e5); color: white; border: none; border-radius: 12px; cursor: pointer; font-size: 15px; font-weight: bold; }
+    button#analyzeBtn:disabled { background: #333; cursor: not-allowed; }
+
+    .loading { text-align: center; padding: 50px; display: none; }
+    .spinner { font-size: 2.5rem; animation: spin 1s linear infinite; display: inline-block; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading p { color: #a78bfa; margin-top: 12px; font-size: 1.1rem; }
+    .loading small { color: #555; }
+
+    .error { background: #2d1b1b; border: 1px solid #dc2626; border-radius: 12px; padding: 16px; color: #f87171; display: none; margin-bottom: 20px; }
+
+    /* Score */
+    .score-card { background: linear-gradient(135deg, #1e1b4b, #1a1a2e); border: 1px solid #4f46e5; border-radius: 16px; padding: 28px; text-align: center; margin-bottom: 24px; display: none; }
+    .score-number { font-size: 5rem; font-weight: bold; background: linear-gradient(135deg, #a78bfa, #60a5fa); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent; }
+    .score-label { color: #888; font-size: 1rem; margin-top: 4px; }
+    .score-url { color: #60a5fa; font-size: 0.9rem; margin-top: 8px; word-break: break-all; }
+    .score-reason { color: #aaa; font-size: 0.95rem; margin-top: 12px; line-height: 1.6; max-width: 600px; margin-left: auto; margin-right: auto; }
+
+    /* First Impression */
+    .impression-card { background: #1a1a2e; border: 1px solid #7c3aed; border-radius: 14px; padding: 24px; margin-bottom: 20px; display: none; }
+    .impression-card h3 { color: #a78bfa; margin-bottom: 10px; font-size: 1rem; }
+    .impression-card p { color: #ccc; line-height: 1.7; font-size: 0.95rem; }
+
+    /* Cards */
+    .cards-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+    @media(max-width: 650px) { .cards-grid { grid-template-columns: 1fr; } .input-area { flex-direction: column; } }
+
+    .card { background: #1a1a2e; border-radius: 14px; padding: 22px; border: 1px solid #2d2d44; }
+    .card.full-width { grid-column: 1 / -1; }
+    .card-title { font-size: 1rem; font-weight: bold; margin-bottom: 14px; }
+
+    /* Issue items with detail */
+    .issue-item { padding: 12px 0; border-bottom: 1px solid #2d2d44; }
+    .issue-item:last-child { border-bottom: none; }
+    .issue-title { font-size: 0.9rem; font-weight: bold; margin-bottom: 4px; display: flex; gap: 8px; align-items: flex-start; }
+    .issue-title::before { content: "•"; flex-shrink: 0; }
+    .issue-detail { font-size: 0.85rem; color: #999; line-height: 1.6; padding-left: 16px; }
+
+    .card.red { border-color: #dc2626; }
+    .card.red .card-title { color: #f87171; }
+    .card.red .issue-title { color: #fca5a5; }
+    .card.red .issue-title::before { color: #f87171; }
+
+    .card.green { border-color: #16a34a; }
+    .card.green .card-title { color: #4ade80; }
+    .card.green .issue-title { color: #86efac; }
+    .card.green .issue-title::before { color: #4ade80; }
+
+    .card.yellow { border-color: #ca8a04; }
+    .card.yellow .card-title { color: #facc15; }
+    .card.yellow .issue-title { color: #fde68a; }
+    .card.yellow .issue-title::before { color: #facc15; }
+
+    .card.blue { border-color: #2563eb; }
+    .card.blue .card-title { color: #60a5fa; }
+    .card.blue .issue-title { color: #93c5fd; }
+    .card.blue .issue-title::before { color: #60a5fa; }
+
+    .card.purple { border-color: #7c3aed; }
+    .card.purple .card-title { color: #a78bfa; }
+
+    .card.orange { border-color: #ea580c; }
+    .card.orange .card-title { color: #fb923c; }
+    .card.orange .issue-title { color: #fdba74; }
+    .card.orange .issue-title::before { color: #fb923c; }
+
+    .card.pink { border-color: #db2777; }
+    .card.pink .card-title { color: #f472b6; }
+    .card.pink .issue-title { color: #fbcfe8; }
+    .card.pink .issue-title::before { color: #f472b6; }
+
+    /* Hero */
+    .hero-box { background: #0f172a; border-radius: 10px; padding: 20px; margin-top: 10px; }
+    .hero-headline { font-size: 1.3rem; font-weight: bold; color: #a78bfa; margin-bottom: 8px; }
+    .hero-sub { color: #94a3b8; font-size: 0.95rem; margin-bottom: 12px; line-height: 1.5; }
+    .hero-cta { display: inline-block; background: #7c3aed; color: white; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; font-weight: bold; margin-bottom: 8px; }
+    .hero-trust { color: #64748b; font-size: 0.8rem; margin-top: 8px; }
+
+    /* Quick wins numbered */
+    .wins-list { counter-reset: wins; list-style: none; padding: 0; }
+    .wins-list .issue-item { counter-increment: wins; }
+    .wins-list .issue-title::before { content: counter(wins); background: #1e3a5f; color: #60a5fa; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: bold; flex-shrink: 0; }
+
+    .results-wrapper { display: none; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>🔍 AI Page Analyzer</h1>
+  <p class="subtitle">Enter any URL → Get a full professional UX, Copy & Conversion audit instantly</p>
+
+  <div class="input-area">
+    <input id="urlInput" type="url" placeholder="https://example.com" />
+    <button id="analyzeBtn">Analyze 🚀</button>
+  </div>
+
+  <div class="error" id="error"></div>
+
+  <div class="loading" id="loading">
+    <div class="spinner">⚙️</div>
+    <p>Running full audit — scraping & analyzing...</p>
+    <small>Takes 20–40 seconds for detailed analysis</small>
+  </div>
+<!-- Screenshot with highlights -->
+<div id="screenshotBox" style="display:none; position:relative; margin-bottom:20px;">
+  <h3>📸 Page Screenshot</h3>
+
+  <img id="screenshotImg"
+       style="width:100%; border-radius:12px; display:block;" />
+
+  <!-- overlay -->
+  <div id="overlay"
+       style="position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none;">
+  </div>
+</div>
+  <div class="results-wrapper" id="resultsWrapper">
+
+    <!-- Score -->
+    <div class="score-card" id="scoreCard">
+      <div class="score-number" id="scoreNumber">?/10</div>
+      <div class="score-label">Conversion Score</div>
+      <div class="score-url" id="scoreUrl"></div>
+      <div class="score-reason" id="scoreReason"></div>
+    </div>
+
+    <!-- First Impression -->
+    <div class="impression-card" id="impressionCard">
+      <h3>🧠 First Impression Analysis</h3>
+      <p id="impressionText"></p>
+    </div>
+
+    <div class="cards-grid">
+
+      <div class="card red">
+        <div class="card-title">❌ UX Issues</div>
+        <div id="listUX"></div>
+      </div>
+
+      <div class="card yellow">
+        <div class="card-title">✍️ Copy Problems</div>
+        <div id="listCopy"></div>
+      </div>
+
+      <div class="card red">
+        <div class="card-title">🔘 CTA Issues</div>
+        <div id="listCTA"></div>
+      </div>
+
+      <div class="card orange">
+        <div class="card-title">📱 Mobile & Accessibility</div>
+        <div id="listMobile"></div>
+      </div>
+
+      <div class="card pink full-width">
+        <div class="card-title">🔒 Trust & Credibility Issues</div>
+        <div id="listTrust"></div>
+      </div>
+
+      <div class="card green">
+        <div class="card-title">✅ Fix — UX</div>
+        <div id="listFixUX"></div>
+      </div>
+
+      <div class="card green">
+        <div class="card-title">✅ Fix — Copy</div>
+        <div id="listFixCopy"></div>
+      </div>
+
+      <div class="card green full-width">
+        <div class="card-title">✅ Fix — CTAs</div>
+        <div id="listFixCTA"></div>
+      </div>
+
+      <div class="card purple full-width">
+        <div class="card-title">🚀 Improved Hero Section</div>
+        <div class="hero-box">
+          <div class="hero-headline" id="heroHeadline"></div>
+          <div class="hero-sub" id="heroSub"></div>
+          <div class="hero-cta" id="heroCTA"></div>
+          <div class="hero-trust" id="heroTrust"></div>
+        </div>
+      </div>
+
+      <div class="card blue">
+        <div class="card-title">📈 Conversion Tips</div>
+        <div id="listTips"></div>
+      </div>
+
+      <div class="card blue">
+        <div class="card-title">💡 Quick Wins</div>
+        <ul class="wins-list" id="listWins"></ul>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  const urlInput = document.getElementById("urlInput");
+  const analyzeBtn = document.getElementById("analyzeBtn");
+  const loading = document.getElementById("loading");
+  const errorDiv = document.getElementById("error");
+  const resultsWrapper = document.getElementById("resultsWrapper");
+  const scoreCard = document.getElementById("scoreCard");
+  const impressionCard = document.getElementById("impressionCard");
+
+  const BASE_URL = window.location.port === "3000" ? "" : "http://localhost:3000";
+
+  function extractSection(text, heading) {
+    const escaped = heading.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const regex = new RegExp(`##\\s*${escaped}[\\s\\S]*?(?=##|$)`, 'i');
+    const match = text.match(regex);
+    return match ? match[0].replace(/##[^\n]+\n/, '').trim() : '';
+  }
+
+  // ✅ Parse items WITH title and detail separated by colon
+  function parseDetailedList(text) {
+    const lines = text.split('\n').filter(l => l.match(/^\d+\./));
+    return lines.map(line => {
+      const clean = line.replace(/^\d+\.\s*/, '').replace(/\*\*/g, '').trim();
+      const colonIdx = clean.indexOf(':');
+      if (colonIdx > 0 && colonIdx < 60) {
+        return {
+          title: clean.substring(0, colonIdx).trim(),
+          detail: clean.substring(colonIdx + 1).trim()
+        };
+      }
+      return { title: clean, detail: '' };
+    }).filter(i => i.title);
+  }
+
+  // ✅ Render detailed items with title + explanation
+  function fillDetailedList(containerId, items, isWins = false) {
+    const container = document.getElementById(containerId);
+    if (!items.length) {
+      container.innerHTML = '<div class="issue-item"><div class="issue-title">No issues found</div></div>';
+      return;
+    }
+    container.innerHTML = items.map(item => `
+      <div class="issue-item">
+        <div class="issue-title">${item.title}</div>
+        ${item.detail ? `<div class="issue-detail">${item.detail}</div>` : ''}
+      </div>
+    `).join('');
+  }
+
+  function parseScore(text) {
+    const patterns = [
+      /Conversion Score[:\s]*(\d+)\s*\/\s*10/i,
+      /Conversion Score[:\s]*(\d+)/i,
+      /📊[^\d]*(\d+)\s*\/\s*10/i,
+      /Score[:\s]*(\d+)\s*\/\s*10/i,
+      /(\d+)\s*\/\s*10/,
+    ];
+    for (const p of patterns) {
+      const m = text.match(p);
+      if (m) return m[1] + '/10';
+    }
+    return '?/10';
+  }
+
+  function parseScoreReason(text) {
+    const section = extractSection(text, '📊 Conversion Score');
+    const lines = section.split('\n').filter(l => l.trim() && !l.match(/^\d+\/10|Score/i));
+    return lines.slice(0, 2).join(' ').replace(/\*\*/g, '').trim();
+  }
+
+  function parseHero(text) {
+    const section = extractSection(text, '🚀 Improved Hero Section');
+    const headline = (section.match(/Headline[:\s]*["""']?(.+?)["""']?(\n|$)/i) || [])[1] || '';
+    const sub = (section.match(/Sub(?:headline)?[:\s]*["""']?(.+?)["""']?(\n|$)/i) || [])[1] || '';
+    const cta = (section.match(/CTA[^:\n]*[:\s]*["""']?(.+?)["""']?(\n|$)/i) || [])[1] || '';
+    const trust = (section.match(/Supporting[^:\n]*[:\s]*["""']?(.+?)["""']?(\n|$)/i) || [])[1] || '';
+    return {
+      headline: headline.trim(),
+      sub: sub.trim(),
+      cta: cta.trim(),
+      trust: trust.trim()
+    };
+  }
+
+  analyzeBtn.addEventListener("click", async () => {
+    const url = urlInput.value.trim();
+    if (!url) return alert("Please enter a URL!");
+
+    errorDiv.style.display = "none";
+    resultsWrapper.style.display = "none";
+    scoreCard.style.display = "none";
+    impressionCard.style.display = "none";
+    loading.style.display = "block";
+    analyzeBtn.disabled = true;
+    analyzeBtn.textContent = "Analyzing...";
+
+    try {
+      const res = await fetch(`${BASE_URL}/analyze`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url })
+      });
+
+      const rawText = await res.text();
+      let data;
+      try {
+        data = JSON.parse(rawText);
+      } catch {
+        throw new Error("Server returned invalid response. Check terminal.");
+      }
+
+      if (!res.ok) throw new Error(data.error || "Something went wrong");
+      if (!data.analysis) throw new Error("No analysis returned from AI");
+
+      const analysis = data.analysis;
+      // 📸 Show screenshot
+if (data.screenshot) {
+  const img = document.getElementById("screenshotImg");
+  const box = document.getElementById("screenshotBox");
+
+  img.src = "data:image/png;base64," + data.screenshot;
+  box.style.display = "block";
+}
+
+      // Score
+      document.getElementById("scoreNumber").textContent = parseScore(analysis);
+      document.getElementById("scoreUrl").textContent = url;
+      document.getElementById("scoreReason").textContent = parseScoreReason(analysis);
+      scoreCard.style.display = "block";
+
+      // First Impression
+      const impression = extractSection(analysis, '🧠 First Impression Analysis');
+      if (impression) {
+        document.getElementById("impressionText").textContent = impression.replace(/\*\*/g, '');
+        impressionCard.style.display = "block";
+      }
+
+      // All sections
+      fillDetailedList("listUX",       parseDetailedList(extractSection(analysis, "❌ UX Issues")));
+      fillDetailedList("listCopy",     parseDetailedList(extractSection(analysis, "✍️ Copywriting Problems")));
+      fillDetailedList("listCTA",      parseDetailedList(extractSection(analysis, "🔘 CTA Issues")));
+      fillDetailedList("listMobile",   parseDetailedList(extractSection(analysis, "📱 Mobile & Accessibility Issues")));
+      fillDetailedList("listTrust",    parseDetailedList(extractSection(analysis, "🔒 Trust & Credibility Issues")));
+      fillDetailedList("listFixUX",    parseDetailedList(extractSection(analysis, "✅ How To Fix — UX")));
+      fillDetailedList("listFixCopy",  parseDetailedList(extractSection(analysis, "✅ How To Fix — Copy")));
+      fillDetailedList("listFixCTA",   parseDetailedList(extractSection(analysis, "✅ How To Fix — CTAs")));
+      fillDetailedList("listTips",     parseDetailedList(extractSection(analysis, "📈 Conversion Optimization Tips")));
+      fillDetailedList("listWins",     parseDetailedList(extractSection(analysis, "💡 Quick Wins")));
+
+      // Hero
+      const hero = parseHero(analysis);
+      document.getElementById("heroHeadline").textContent = hero.headline || "Your improved headline";
+      document.getElementById("heroSub").textContent = hero.sub || "";
+      document.getElementById("heroCTA").textContent = hero.cta || "Get Started";
+      document.getElementById("heroTrust").textContent = hero.trust || "";
+
+      resultsWrapper.style.display = "block";
+      window.scrollTo({ top: 400, behavior: 'smooth' });
+
+    } catch (err) {
+      console.error("Error:", err);
+      errorDiv.textContent = "❌ Error: " + err.message;
+      errorDiv.style.display = "block";
+    } finally {
+      loading.style.display = "none";
+      analyzeBtn.disabled = false;
+      analyzeBtn.textContent = "Analyze 🚀";
+    }
+  });
+
+  urlInput.addEventListener("keypress", e => {
+    if (e.key === "Enter") analyzeBtn.click();
+  });
+</script>
+</body>
+</html>
