@@ -63,8 +63,8 @@
 //     await browser.close();
 //   }
 // }
-import puppeteer from "puppeteer";
-
+import puppeteer from "puppeteer-core";
+import chromium from "@sparticuz/chromium";
 export async function scrapePage(url, issues = []) {
   const browser = await puppeteer.launch({
     headless: "new",
