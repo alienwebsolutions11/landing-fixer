@@ -50,7 +50,6 @@
     .card.full-width { grid-column: 1 / -1; }
     .card-title { font-size: 1rem; font-weight: bold; margin-bottom: 14px; }
 
-    /* Issue items with detail */
     .issue-item { padding: 12px 0; border-bottom: 1px solid #2d2d44; }
     .issue-item:last-child { border-bottom: none; }
     .issue-title { font-size: 0.9rem; font-weight: bold; margin-bottom: 4px; display: flex; gap: 8px; align-items: flex-start; }
@@ -102,6 +101,94 @@
     .wins-list .issue-item { counter-increment: wins; }
     .wins-list .issue-title::before { content: counter(wins); background: #1e3a5f; color: #60a5fa; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: bold; flex-shrink: 0; }
 
+    /* ── Visual Proof Section ─────────────────────────────────── */
+    #visualProof { display: none; margin-bottom: 32px; }
+    #visualProof h2 {
+      font-size: 1.3rem; margin-bottom: 18px;
+      background: linear-gradient(135deg, #f87171, #fb923c);
+      -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent; color: transparent;
+    }
+    #mobileProof { display: none; margin-bottom: 32px; }
+    #mobileProof h2 {
+      font-size: 1.3rem; margin-bottom: 18px;
+      background: linear-gradient(135deg, #fb923c, #fbbf24);
+      -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent; color: transparent;
+    }
+    .proof-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 16px;
+    }
+    /* Base card — UX/default: red */
+    .proof-card {
+      background: #1a1a2e;
+      border: 2px solid #ef4444;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .proof-card-header {
+      padding: 10px 14px;
+      background: rgba(239,68,68,0.12);
+      border-bottom: 1px solid #ef4444;
+    }
+    .proof-card-type {
+      color: #ef4444;
+      font-weight: bold;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    /* Mobile: orange */
+    .proof-card.mobile { border-color: #f97316; }
+    .proof-card.mobile .proof-card-header { background: rgba(249,115,22,0.12); border-bottom-color: #f97316; }
+    .proof-card.mobile .proof-card-type { color: #f97316; }
+    /* Copy: purple */
+    .proof-card.copy { border-color: #a78bfa; }
+    .proof-card.copy .proof-card-header { background: rgba(167,139,250,0.12); border-bottom-color: #a78bfa; }
+    .proof-card.copy .proof-card-type { color: #a78bfa; }
+    /* CTA: blue */
+    .proof-card.cta { border-color: #60a5fa; }
+    .proof-card.cta .proof-card-header { background: rgba(96,165,250,0.12); border-bottom-color: #60a5fa; }
+    .proof-card.cta .proof-card-type { color: #60a5fa; }
+    /* Trust: yellow */
+    .proof-card.trust { border-color: #eab308; }
+    .proof-card.trust .proof-card-header { background: rgba(234,179,8,0.12); border-bottom-color: #eab308; }
+    .proof-card.trust .proof-card-type { color: #eab308; }
+
+    .proof-card-viewport {
+      color: #888;
+      font-size: 0.7rem;
+      margin-top: 2px;
+    }
+    .proof-card img {
+      width: 100%;
+      display: block;
+    }
+    .proof-card-body {
+      padding: 10px 14px;
+    }
+    .proof-card-problem {
+      font-size: 0.82rem;
+      color: #ccc;
+      line-height: 1.55;
+    }
+    .proof-card-target {
+      margin-top: 6px;
+      font-size: 0.75rem;
+      color: #888;
+      font-style: italic;
+    }
+    .proof-empty {
+      color: #555;
+      font-size: 0.9rem;
+      padding: 20px;
+      text-align: center;
+      border: 1px dashed #333;
+      border-radius: 10px;
+    }
+
     .results-wrapper { display: none; }
   </style>
 </head>
@@ -119,21 +206,26 @@
 
   <div class="loading" id="loading">
     <div class="spinner">⚙️</div>
-    <p>Running full audit — scraping & analyzing...</p>
-    <small>Takes 20–40 seconds for detailed analysis</small>
+    <p>Running full audit — scraping, analyzing & capturing proofs...</p>
+    <small>Takes 30–60 seconds (3 steps: scrape → AI → screenshot proofs)</small>
   </div>
-<!-- Screenshot with highlights -->
-<div id="screenshotBox" style="display:none; position:relative; margin-bottom:20px;">
-  <h3>📸 Page Screenshot</h3>
 
-  <img id="screenshotImg"
-       style="width:100%; border-radius:12px; display:block;" />
-
-  <!-- overlay -->
-  <div id="overlay"
-       style="position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none;">
+  <!-- ══════════════════════════════════════════════════
+       📸  VISUAL PROOF SECTION  (shown after analysis)
+  ═══════════════════════════════════════════════════ -->
+  <div id="visualProof">
+    <h2>📸 Visual Issue Proofs</h2>
+    <div class="proof-grid" id="proofGrid"></div>
   </div>
-</div>
+
+  <!-- ══════════════════════════════════════════════════
+       📱  MOBILE PROOF SECTION
+  ═══════════════════════════════════════════════════ -->
+  <div id="mobileProof">
+    <h2>📱 Mobile & Accessibility Proofs</h2>
+    <div class="proof-grid" id="mobileProofGrid"></div>
+  </div>
+
   <div class="results-wrapper" id="resultsWrapper">
 
     <!-- Score -->
@@ -217,16 +309,21 @@
 </div>
 
 <script>
-  const urlInput = document.getElementById("urlInput");
-  const analyzeBtn = document.getElementById("analyzeBtn");
-  const loading = document.getElementById("loading");
-  const errorDiv = document.getElementById("error");
+  const urlInput      = document.getElementById("urlInput");
+  const analyzeBtn    = document.getElementById("analyzeBtn");
+  const loading       = document.getElementById("loading");
+  const errorDiv      = document.getElementById("error");
   const resultsWrapper = document.getElementById("resultsWrapper");
-  const scoreCard = document.getElementById("scoreCard");
+  const scoreCard     = document.getElementById("scoreCard");
   const impressionCard = document.getElementById("impressionCard");
+  const visualProof   = document.getElementById("visualProof");
+  const proofGrid     = document.getElementById("proofGrid");
+  const mobileProof   = document.getElementById("mobileProof");
+  const mobileProofGrid = document.getElementById("mobileProofGrid");
 
- const BASE_URL = "";
+  const BASE_URL = window.location.port === "3000" ? "" : "http://localhost:3000";
 
+  // ── Helpers ──────────────────────────────────────────────────
   function extractSection(text, heading) {
     const escaped = heading.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     const regex = new RegExp(`##\\s*${escaped}[\\s\\S]*?(?=##|$)`, 'i');
@@ -234,24 +331,19 @@
     return match ? match[0].replace(/##[^\n]+\n/, '').trim() : '';
   }
 
-  // ✅ Parse items WITH title and detail separated by colon
   function parseDetailedList(text) {
     const lines = text.split('\n').filter(l => l.match(/^\d+\./));
     return lines.map(line => {
       const clean = line.replace(/^\d+\.\s*/, '').replace(/\*\*/g, '').trim();
       const colonIdx = clean.indexOf(':');
       if (colonIdx > 0 && colonIdx < 60) {
-        return {
-          title: clean.substring(0, colonIdx).trim(),
-          detail: clean.substring(colonIdx + 1).trim()
-        };
+        return { title: clean.substring(0, colonIdx).trim(), detail: clean.substring(colonIdx + 1).trim() };
       }
       return { title: clean, detail: '' };
     }).filter(i => i.title);
   }
 
-  // ✅ Render detailed items with title + explanation
-  function fillDetailedList(containerId, items, isWins = false) {
+  function fillDetailedList(containerId, items) {
     const container = document.getElementById(containerId);
     if (!items.length) {
       container.innerHTML = '<div class="issue-item"><div class="issue-title">No issues found</div></div>';
@@ -271,7 +363,7 @@
       /Conversion Score[:\s]*(\d+)/i,
       /📊[^\d]*(\d+)\s*\/\s*10/i,
       /Score[:\s]*(\d+)\s*\/\s*10/i,
-      /(\d+)\s*\/\s*10/,
+      /(\d+)\s*\/\s*10/
     ];
     for (const p of patterns) {
       const m = text.match(p);
@@ -289,31 +381,111 @@
   function parseHero(text) {
     const section = extractSection(text, '🚀 Improved Hero Section');
     const headline = (section.match(/Headline[:\s]*["""']?(.+?)["""']?(\n|$)/i) || [])[1] || '';
-    const sub = (section.match(/Sub(?:headline)?[:\s]*["""']?(.+?)["""']?(\n|$)/i) || [])[1] || '';
-    const cta = (section.match(/CTA[^:\n]*[:\s]*["""']?(.+?)["""']?(\n|$)/i) || [])[1] || '';
-    const trust = (section.match(/Supporting[^:\n]*[:\s]*["""']?(.+?)["""']?(\n|$)/i) || [])[1] || '';
-    return {
-      headline: headline.trim(),
-      sub: sub.trim(),
-      cta: cta.trim(),
-      trust: trust.trim()
-    };
+    const sub      = (section.match(/Sub(?:headline)?[:\s]*["""']?(.+?)["""']?(\n|$)/i) || [])[1] || '';
+    const cta      = (section.match(/CTA[^:\n]*[:\s]*["""']?(.+?)["""']?(\n|$)/i) || [])[1] || '';
+    const trust    = (section.match(/Supporting[^:\n]*[:\s]*["""']?(.+?)["""']?(\n|$)/i) || [])[1] || '';
+    return { headline: headline.trim(), sub: sub.trim(), cta: cta.trim(), trust: trust.trim() };
   }
 
+  // ── Render Visual Proof Cards ─────────────────────────────────
+  function getIssueCategory(type) {
+    const t = (type || '').toLowerCase();
+    if (t.includes('mobile'))  return 'mobile';
+    if (t.includes('copy'))    return 'copy';
+    if (t.includes('cta'))     return 'cta';
+    if (t.includes('trust'))   return 'trust';
+    return 'ux'; // default: UX Issue → red
+  }
+
+  const categoryMeta = {
+    ux:     { icon: '🔴', label: 'UX Issues',    cssClass: '' },
+    copy:   { icon: '✍️', label: 'Copy Problems', cssClass: 'copy' },
+    cta:    { icon: '🔘', label: 'CTA Issues',    cssClass: 'cta' },
+    mobile: { icon: '📱', label: 'Mobile Issues', cssClass: 'mobile' },
+    trust:  { icon: '🔒', label: 'Trust Issues',  cssClass: 'trust' },
+  };
+
+  function renderProofCards(issueScreenshots) {
+    proofGrid.innerHTML = '';
+    mobileProofGrid.innerHTML = '';
+
+    if (!issueScreenshots || issueScreenshots.length === 0) {
+      proofGrid.innerHTML = '<div class="proof-empty">⚠️ No visual proofs captured. The page may have blocked screenshots or no text matched.</div>';
+      visualProof.style.display = 'block';
+      return;
+    }
+
+    const mobileIssues  = issueScreenshots.filter(i => getIssueCategory(i.type) === 'mobile');
+    const regularIssues = issueScreenshots.filter(i => getIssueCategory(i.type) !== 'mobile');
+
+    // ── Regular issues (UX/Copy/CTA/Trust) ──
+    if (regularIssues.length > 0) {
+      regularIssues.forEach(issue => {
+        if (!issue.screenshot) return;
+        proofGrid.appendChild(buildProofCard(issue));
+      });
+      visualProof.style.display = 'block';
+    } else {
+      proofGrid.innerHTML = '<div class="proof-empty">No UX/CTA/Copy/Trust proofs captured.</div>';
+      visualProof.style.display = 'block';
+    }
+
+    // ── Mobile issues (orange cards) ──
+    if (mobileIssues.length > 0) {
+      mobileIssues.forEach(issue => {
+        if (!issue.screenshot) return;
+        mobileProofGrid.appendChild(buildProofCard(issue));
+      });
+      mobileProof.style.display = 'block';
+    }
+
+    console.log(`✅ Rendered ${regularIssues.length} issue cards + ${mobileIssues.length} mobile cards.`);
+  }
+
+  function buildProofCard(issue) {
+    const cat  = getIssueCategory(issue.type);
+    const meta = categoryMeta[cat];
+    const card = document.createElement('div');
+    card.className = 'proof-card' + (meta.cssClass ? ' ' + meta.cssClass : '');
+    const isMobile = cat === 'mobile';
+    card.innerHTML = `
+      <div class="proof-card-header">
+        <div class="proof-card-type">${meta.icon} ${escapeHtml(issue.type)}</div>
+        ${isMobile ? '<div class="proof-card-viewport">Captured at 390px (iPhone) viewport</div>' : ''}
+      </div>
+      <img src="data:image/png;base64,${issue.screenshot}" alt="Issue proof: ${escapeHtml(issue.type)}" loading="lazy" />
+      <div class="proof-card-body">
+        <div class="proof-card-problem">${escapeHtml(issue.problem)}</div>
+        ${issue.targetText ? `<div class="proof-card-target">Matched: "${escapeHtml(issue.targetText.slice(0, 80))}"</div>` : ''}
+      </div>
+    `;
+    return card;
+  }
+
+  function escapeHtml(str) {
+    return (str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  // ── Main click handler ────────────────────────────────────────
   analyzeBtn.addEventListener("click", async () => {
     const url = urlInput.value.trim();
     if (!url) return alert("Please enter a URL!");
 
-    errorDiv.style.display = "none";
+    // Reset UI
+    errorDiv.style.display       = "none";
     resultsWrapper.style.display = "none";
-    scoreCard.style.display = "none";
+    visualProof.style.display    = "none";
+    mobileProof.style.display    = "none";
+    scoreCard.style.display      = "none";
     impressionCard.style.display = "none";
-    loading.style.display = "block";
-    analyzeBtn.disabled = true;
-    analyzeBtn.textContent = "Analyzing...";
+    proofGrid.innerHTML          = "";
+    mobileProofGrid.innerHTML    = "";
+    loading.style.display        = "block";
+    analyzeBtn.disabled          = true;
+    analyzeBtn.textContent       = "Analyzing...";
 
     try {
-const res = await fetch("/analyze", {
+      const res = await fetch(`${BASE_URL}/analyze`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ url })
@@ -321,67 +493,59 @@ const res = await fetch("/analyze", {
 
       const rawText = await res.text();
       let data;
-      try {
-        data = JSON.parse(rawText);
-      } catch {
-        throw new Error("Server returned invalid response. Check terminal.");
-      }
+      try { data = JSON.parse(rawText); }
+      catch { throw new Error("Server returned invalid response. Check terminal."); }
 
       if (!res.ok) throw new Error(data.error || "Something went wrong");
       if (!data.analysis) throw new Error("No analysis returned from AI");
 
       const analysis = data.analysis;
-      // 📸 Show screenshot
-if (data.screenshot) {
-  const img = document.getElementById("screenshotImg");
-  const box = document.getElementById("screenshotBox");
 
-  img.src = "data:image/png;base64," + data.screenshot;
-  box.style.display = "block";
-}
+      // ── 1. Render visual proof cards (cropped issue screenshots) ──
+      renderProofCards(data.issueScreenshots);
 
-      // Score
+      // ── 2. Score ──
       document.getElementById("scoreNumber").textContent = parseScore(analysis);
-      document.getElementById("scoreUrl").textContent = url;
+      document.getElementById("scoreUrl").textContent    = url;
       document.getElementById("scoreReason").textContent = parseScoreReason(analysis);
       scoreCard.style.display = "block";
 
-      // First Impression
+      // ── 3. First Impression ──
       const impression = extractSection(analysis, '🧠 First Impression Analysis');
       if (impression) {
         document.getElementById("impressionText").textContent = impression.replace(/\*\*/g, '');
         impressionCard.style.display = "block";
       }
 
-      // All sections
-      fillDetailedList("listUX",       parseDetailedList(extractSection(analysis, "❌ UX Issues")));
-      fillDetailedList("listCopy",     parseDetailedList(extractSection(analysis, "✍️ Copywriting Problems")));
-      fillDetailedList("listCTA",      parseDetailedList(extractSection(analysis, "🔘 CTA Issues")));
-      fillDetailedList("listMobile",   parseDetailedList(extractSection(analysis, "📱 Mobile & Accessibility Issues")));
-      fillDetailedList("listTrust",    parseDetailedList(extractSection(analysis, "🔒 Trust & Credibility Issues")));
-      fillDetailedList("listFixUX",    parseDetailedList(extractSection(analysis, "✅ How To Fix — UX")));
-      fillDetailedList("listFixCopy",  parseDetailedList(extractSection(analysis, "✅ How To Fix — Copy")));
-      fillDetailedList("listFixCTA",   parseDetailedList(extractSection(analysis, "✅ How To Fix — CTAs")));
-      fillDetailedList("listTips",     parseDetailedList(extractSection(analysis, "📈 Conversion Optimization Tips")));
-      fillDetailedList("listWins",     parseDetailedList(extractSection(analysis, "💡 Quick Wins")));
+      // ── 4. All issue / fix lists ──
+      fillDetailedList("listUX",      parseDetailedList(extractSection(analysis, "❌ UX Issues")));
+      fillDetailedList("listCopy",    parseDetailedList(extractSection(analysis, "✍️ Copywriting Problems")));
+      fillDetailedList("listCTA",     parseDetailedList(extractSection(analysis, "🔘 CTA Issues")));
+      fillDetailedList("listMobile",  parseDetailedList(extractSection(analysis, "📱 Mobile & Accessibility Issues")));
+      fillDetailedList("listTrust",   parseDetailedList(extractSection(analysis, "🔒 Trust & Credibility Issues")));
+      fillDetailedList("listFixUX",   parseDetailedList(extractSection(analysis, "✅ How To Fix — UX")));
+      fillDetailedList("listFixCopy", parseDetailedList(extractSection(analysis, "✅ How To Fix — Copy")));
+      fillDetailedList("listFixCTA",  parseDetailedList(extractSection(analysis, "✅ How To Fix — CTAs")));
+      fillDetailedList("listTips",    parseDetailedList(extractSection(analysis, "📈 Conversion Optimization Tips")));
+      fillDetailedList("listWins",    parseDetailedList(extractSection(analysis, "💡 Quick Wins")));
 
-      // Hero
+      // ── 5. Hero section ──
       const hero = parseHero(analysis);
       document.getElementById("heroHeadline").textContent = hero.headline || "Your improved headline";
-      document.getElementById("heroSub").textContent = hero.sub || "";
-      document.getElementById("heroCTA").textContent = hero.cta || "Get Started";
-      document.getElementById("heroTrust").textContent = hero.trust || "";
+      document.getElementById("heroSub").textContent      = hero.sub || "";
+      document.getElementById("heroCTA").textContent      = hero.cta || "Get Started";
+      document.getElementById("heroTrust").textContent    = hero.trust || "";
 
       resultsWrapper.style.display = "block";
-      window.scrollTo({ top: 400, behavior: 'smooth' });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
 
     } catch (err) {
       console.error("Error:", err);
-      errorDiv.textContent = "❌ Error: " + err.message;
+      errorDiv.textContent   = "❌ Error: " + err.message;
       errorDiv.style.display = "block";
     } finally {
-      loading.style.display = "none";
-      analyzeBtn.disabled = false;
+      loading.style.display  = "none";
+      analyzeBtn.disabled    = false;
       analyzeBtn.textContent = "Analyze 🚀";
     }
   });
