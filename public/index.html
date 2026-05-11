@@ -244,6 +244,14 @@
 .proof-card img:hover {
   transform: scale(1.02);
 }
+.proof-card {
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.proof-card:hover {
+  transform: translateY(-3px);
+}
   </style>
 </head>
 <body>
@@ -617,14 +625,19 @@ const imageModal = document.getElementById("imageModal");
 const modalImage = document.getElementById("modalImage");
 const closeModal = document.querySelector(".close-modal");
 
-// Open modal on image click
+// Open modal when clicking ANYWHERE on proof card
 document.addEventListener("click", (e) => {
-  if (e.target.matches(".proof-card img")) {
-    imageModal.style.display = "flex";
-    modalImage.src = e.target.src;
+  const card = e.target.closest(".proof-card");
+
+  if (card) {
+    const img = card.querySelector("img");
+
+    if (img) {
+      imageModal.style.display = "flex";
+      modalImage.src = img.src;
+    }
   }
 });
-
 // Close button
 closeModal.addEventListener("click", () => {
   imageModal.style.display = "none";
