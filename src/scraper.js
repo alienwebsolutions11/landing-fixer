@@ -1037,10 +1037,19 @@ import puppeteer from "puppeteer-core";
 import chromium from "@sparticuz/chromium";
 
 export async function scrapePage(url, issues = []) {
- const browser = await puppeteer.launch({
-  args: [...chromium.args, "--no-sandbox"],
+const browser = await puppeteer.launch({
+  args: [
+    ...chromium.args,
+    "--disable-dev-shm-usage",
+    "--disable-gpu",
+    "--disable-setuid-sandbox",
+    "--no-sandbox",
+    "--single-process",
+    "--no-zygote",
+  ],
   executablePath: await chromium.executablePath(),
   headless: true,
+  timeout: 0,
 });
   try {
     const page = await browser.newPage();
@@ -1054,7 +1063,7 @@ export async function scrapePage(url, issues = []) {
 
     await page.goto(url, {
       waitUntil: "networkidle2",
-      timeout: 120000
+      timeout: 450000
     });
 
     // ─────────────────────────────────────────────
