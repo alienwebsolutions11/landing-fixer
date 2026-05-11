@@ -1053,7 +1053,22 @@ const browser = await puppeteer.launch({
 });
   try {
     const page = await browser.newPage();
+await page.setRequestInterception(true);
 
+page.on("request", (req) => {
+  const type = req.resourceType();
+
+  if (
+    type === "image" ||
+    type === "font" ||
+    type === "media" ||
+    type === "stylesheet"
+  ) {
+    req.abort();
+  } else {
+    req.continue();
+  }
+});
     // Set a desktop viewport for consistent screenshots
     await page.setViewport({ width: 1280, height: 800 });
 
@@ -1062,7 +1077,7 @@ const browser = await puppeteer.launch({
     );
 
     await page.goto(url, {
-      waitUntil: "networkidle2",
+   waitUntil: "domcontentloaded",
       timeout: 450000
     });
 
