@@ -1033,15 +1033,15 @@
 //   }
 // }
 
-
-import puppeteer from "puppeteer";
+import puppeteer from "puppeteer-core";
+import chromium from "@sparticuz/chromium";
 
 export async function scrapePage(url, issues = []) {
-  const browser = await puppeteer.launch({
-    headless: "new",
-    args: ["--no-sandbox", "--disable-setuid-sandbox"]
-  });
-
+ const browser = await puppeteer.launch({
+  args: [...chromium.args, "--no-sandbox"],
+  executablePath: await chromium.executablePath(),
+  headless: true,
+});
   try {
     const page = await browser.newPage();
 

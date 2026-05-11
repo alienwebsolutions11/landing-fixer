@@ -20,6 +20,6 @@
     "nodemon": "^3.1.14",
     "openai": "^6.35.0",
     "puppeteer": "^24.42.0",
-    "puppeteer-core": "^24.42.0"
+    "puppeteer-core": "^24.43.0"
   }
 }
