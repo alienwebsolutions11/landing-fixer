@@ -127,7 +127,9 @@ app.use((req, res, next) => {
 });
 
 app.get("/public/index.html", (req, res) => res.redirect("/"));
-
+app.get("/health", (req, res) => {
+  res.status(200).send("OK");
+});
 app.post("/analyze", async (req, res) => {
   const { url } = req.body;
 
