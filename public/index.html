@@ -244,13 +244,15 @@
 .proof-card img:hover {
   transform: scale(1.02);
 }
-.proof-card {
-  cursor: pointer;
-  transition: transform 0.2s ease;
+#modalCardContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.proof-card:hover {
-  transform: translateY(-3px);
+#modalCardContainer .proof-card {
+  transform: none !important;
+  box-shadow: 0 0 40px rgba(0,0,0,0.7);
 }
   </style>
 </head>
@@ -370,9 +372,11 @@
   </div>
 </div>
 <!-- IMAGE MODAL -->
+<!-- FULL CARD MODAL -->
 <div id="imageModal" class="image-modal">
   <span class="close-modal">&times;</span>
-  <img id="modalImage" class="modal-content">
+
+  <div id="modalCardContainer"></div>
 </div>
 <script>
   const urlInput      = document.getElementById("urlInput");
@@ -619,38 +623,50 @@
   urlInput.addEventListener("keypress", e => {
     if (e.key === "Enter") analyzeBtn.click();
   });
-  // ───── IMAGE POPUP VIEWER ─────
-
-const imageModal = document.getElementById("imageModal");
-const modalImage = document.getElementById("modalImage");
+  const imageModal = document.getElementById("imageModal");
+const modalCardContainer = document.getElementById("modalCardContainer");
 const closeModal = document.querySelector(".close-modal");
 
-// Open modal when clicking ANYWHERE on proof card
+// Open FULL CARD
 document.addEventListener("click", (e) => {
   const card = e.target.closest(".proof-card");
 
   if (card) {
-    const img = card.querySelector("img");
+    imageModal.style.display = "flex";
 
+    // clone full card
+    modalCardContainer.innerHTML = "";
+    const clonedCard = card.cloneNode(true);
+
+    clonedCard.style.width = "900px";
+    clonedCard.style.maxWidth = "95vw";
+    clonedCard.style.transform = "scale(1)";
+    clonedCard.style.cursor = "default";
+
+    // Bigger image
+    const img = clonedCard.querySelector("img");
     if (img) {
-      imageModal.style.display = "flex";
-      modalImage.src = img.src;
+      img.style.maxHeight = "75vh";
+      img.style.objectFit = "contain";
     }
+
+    modalCardContainer.appendChild(clonedCard);
   }
 });
+
 // Close button
 closeModal.addEventListener("click", () => {
   imageModal.style.display = "none";
 });
 
-// Close on background click
+// Close background
 imageModal.addEventListener("click", (e) => {
   if (e.target === imageModal) {
     imageModal.style.display = "none";
   }
 });
 
-// ESC key close
+// ESC close
 document.addEventListener("keydown", (e) => {
   if (e.key === "Escape") {
     imageModal.style.display = "none";
