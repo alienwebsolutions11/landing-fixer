@@ -190,6 +190,60 @@
     }
 
     .results-wrapper { display: none; }
+
+    /* ───────── IMAGE MODAL ───────── */
+
+.image-modal {
+  display: none;
+  position: fixed;
+  z-index: 99999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.92);
+  justify-content: center;
+  align-items: center;
+  padding: 30px;
+}
+
+.image-modal img {
+  max-width: 95%;
+  max-height: 95%;
+  border-radius: 14px;
+  box-shadow: 0 0 40px rgba(0,0,0,0.7);
+  animation: zoomIn 0.25s ease;
+}
+
+@keyframes zoomIn {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.close-modal {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  font-size: 42px;
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.proof-card img {
+  cursor: zoom-in;
+  transition: transform 0.2s ease;
+}
+
+.proof-card img:hover {
+  transform: scale(1.02);
+}
   </style>
 </head>
 <body>
@@ -307,7 +361,11 @@
     </div>
   </div>
 </div>
-
+<!-- IMAGE MODAL -->
+<div id="imageModal" class="image-modal">
+  <span class="close-modal">&times;</span>
+  <img id="modalImage" class="modal-content">
+</div>
 <script>
   const urlInput      = document.getElementById("urlInput");
   const analyzeBtn    = document.getElementById("analyzeBtn");
@@ -553,6 +611,39 @@
   urlInput.addEventListener("keypress", e => {
     if (e.key === "Enter") analyzeBtn.click();
   });
+  // ───── IMAGE POPUP VIEWER ─────
+
+const imageModal = document.getElementById("imageModal");
+const modalImage = document.getElementById("modalImage");
+const closeModal = document.querySelector(".close-modal");
+
+// Open modal on image click
+document.addEventListener("click", (e) => {
+  if (e.target.matches(".proof-card img")) {
+    imageModal.style.display = "flex";
+    modalImage.src = e.target.src;
+  }
+});
+
+// Close button
+closeModal.addEventListener("click", () => {
+  imageModal.style.display = "none";
+});
+
+// Close on background click
+imageModal.addEventListener("click", (e) => {
+  if (e.target === imageModal) {
+    imageModal.style.display = "none";
+  }
+});
+
+// ESC key close
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") {
+    imageModal.style.display = "none";
+  }
+});
 </script>
+
 </body>
 </html>
