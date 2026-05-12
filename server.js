@@ -144,22 +144,26 @@ app.post("/analyze", async (req, res) => {
   try {
     console.log(`\n🚀 Analyzing: ${url}`);
 
-    // Step 1: Scrape
+    // ── Step 1: Initial scrape (content only, no highlights) ──────────────
     console.log("Step 1: Scraping page content...");
     const scrapedContent = await scrapePage(url);
 
-    // Step 2: AI analysis
+    // ── Step 2: AI analysis ────────────────────────────────────────────────
     console.log("Step 2: Running AI analysis...");
     const analysis = await analyzePage(scrapedContent);
 
-    // Step 3: Return — no second scrape needed, audit cards are built from issues JSON
-    console.log(`✅ Done! ${(analysis.issues || []).length} issues found.`);
+    // ── Step 3: Second scrape — highlight each issue & capture crop shots ──
+    console.log(`Step 3: Capturing ${(analysis.issues || []).length} issue screenshots...`);
+    const highlightedScrape = await scrapePage(url, analysis.issues || []);
+
+    console.log(`✅ Done! Sending response with ${highlightedScrape.issueScreenshots.length} proof screenshots.`);
 
     res.json({
       success: true,
       url,
-      analysis: analysis.report,
-      issues:   analysis.issues,
+      analysis: analysis.report,            // markdown report text
+      issues: analysis.issues,              // structured issue list
+      issueScreenshots: highlightedScrape.issueScreenshots  // ✅ cropped proof images
     });
 
   } catch (error) {
