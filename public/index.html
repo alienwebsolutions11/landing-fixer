@@ -101,135 +101,115 @@
     .wins-list .issue-item { counter-increment: wins; }
     .wins-list .issue-title::before { content: counter(wins); background: #1e3a5f; color: #60a5fa; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: bold; flex-shrink: 0; }
 
-    /* ── Visual Proof Section ─────────────────────────────────── */
-    #visualProof { display: none; margin-bottom: 32px; }
+    /* ── Issue Audit Cards Section ───────────────────────────── */
+    #visualProof { display: none; margin-bottom: 40px; }
     #visualProof h2 {
-      font-size: 1.3rem; margin-bottom: 18px;
+      font-size: 1.4rem; font-weight: 700; margin-bottom: 6px;
       background: linear-gradient(135deg, #f87171, #fb923c);
       -webkit-background-clip: text; background-clip: text;
       -webkit-text-fill-color: transparent; color: transparent;
     }
-    #mobileProof { display: none; margin-bottom: 32px; }
+    #visualProof .section-sub {
+      color: #666; font-size: 0.85rem; margin-bottom: 22px;
+    }
+    #mobileProof { display: none; margin-bottom: 40px; }
     #mobileProof h2 {
-      font-size: 1.3rem; margin-bottom: 18px;
+      font-size: 1.4rem; font-weight: 700; margin-bottom: 6px;
       background: linear-gradient(135deg, #fb923c, #fbbf24);
       -webkit-background-clip: text; background-clip: text;
       -webkit-text-fill-color: transparent; color: transparent;
     }
+    #mobileProof .section-sub {
+      color: #666; font-size: 0.85rem; margin-bottom: 22px;
+    }
 
-    /* ── Single-column layout so screenshots are full-width & readable ── */
+    /* Grid: 2 columns on desktop, 1 on mobile */
     .proof-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
     }
+    @media(max-width: 700px) { .proof-grid { grid-template-columns: 1fr; } }
 
-    /* Base proof card — no header, screenshot has annotation baked in */
-    .proof-card {
+    /* ── Audit card ── */
+    .audit-card {
       background: #13131f;
-      border: 2px solid #ef4444;
-      border-radius: 12px;
+      border-radius: 14px;
       overflow: hidden;
-      cursor: zoom-in;
-      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      border: 1px solid #22223a;
+      transition: transform 0.15s, box-shadow 0.15s;
     }
-    .proof-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    .audit-card:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,0,0,0.4); }
+
+    .audit-card-top {
+      padding: 16px 18px 14px;
+      border-left: 4px solid #ef4444;
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .audit-card.copy  .audit-card-top { border-left-color: #a78bfa; }
+    .audit-card.cta   .audit-card-top { border-left-color: #60a5fa; }
+    .audit-card.trust .audit-card-top { border-left-color: #eab308; }
+    .audit-card.mobile .audit-card-top { border-left-color: #f97316; }
+
+    .audit-type-row { display: flex; align-items: center; gap: 8px; }
+    .audit-type-pill {
+      font-size: 0.68rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.07em; padding: 3px 9px; border-radius: 999px;
+      background: rgba(239,68,68,0.15); color: #ef4444; white-space: nowrap;
+    }
+    .audit-card.copy  .audit-type-pill { background: rgba(167,139,250,0.15); color: #a78bfa; }
+    .audit-card.cta   .audit-type-pill { background: rgba(96,165,250,0.15);  color: #60a5fa; }
+    .audit-card.trust .audit-type-pill { background: rgba(234,179,8,0.15);   color: #eab308; }
+    .audit-card.mobile .audit-type-pill { background: rgba(249,115,22,0.15); color: #f97316; }
+
+    .audit-issue-title {
+      font-size: 0.95rem; font-weight: 700; color: #f1f5f9; line-height: 1.4;
+    }
+    .audit-problem {
+      font-size: 0.82rem; color: #94a3b8; line-height: 1.6;
     }
 
-    /* Color variants */
-    .proof-card.copy   { border-color: #a78bfa; }
-    .proof-card.cta    { border-color: #60a5fa; }
-    .proof-card.trust  { border-color: #eab308; }
-    .proof-card.mobile { border-color: #f97316; }
-
-    /* Screenshot fills the full card width */
-    .proof-card img {
-      width: 100%;
-      display: block;
+    /* Quoted bad copy / target text */
+    .audit-quote-box {
+      margin: 0 18px 14px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid #2a2a40;
+      border-radius: 8px;
+      padding: 11px 14px;
     }
+    .audit-quote-label {
+      font-size: 0.68rem; color: #555; text-transform: uppercase;
+      letter-spacing: 0.06em; margin-bottom: 5px; font-weight: 600;
+    }
+    .audit-quote-text {
+      font-size: 0.88rem; color: #c4b5fd; font-style: italic; line-height: 1.5;
+    }
+    .audit-card.cta   .audit-quote-text { color: #93c5fd; }
+    .audit-card.trust .audit-quote-text { color: #fde68a; }
+    .audit-card.mobile .audit-quote-text { color: #fdba74; }
 
-    /* Mobile cards are narrower and centered */
-    .proof-card.mobile {
-      max-width: 420px;
-      margin: 0 auto;
+    /* Fix suggestion */
+    .audit-fix-box {
+      margin: 0 18px 16px;
+      background: rgba(74,222,128,0.06);
+      border: 1px solid rgba(74,222,128,0.18);
+      border-radius: 8px;
+      padding: 11px 14px;
+    }
+    .audit-fix-label {
+      font-size: 0.68rem; color: #4ade80; text-transform: uppercase;
+      letter-spacing: 0.06em; margin-bottom: 5px; font-weight: 600;
+    }
+    .audit-fix-text {
+      font-size: 0.82rem; color: #86efac; line-height: 1.55;
     }
 
     .proof-empty {
-      color: #555;
-      font-size: 0.9rem;
-      padding: 20px;
-      text-align: center;
-      border: 1px dashed #333;
-      border-radius: 10px;
+      color: #555; font-size: 0.9rem; padding: 20px;
+      text-align: center; border: 1px dashed #333; border-radius: 10px;
     }
 
     .results-wrapper { display: none; }
-
-    /* ───────── IMAGE MODAL ───────── */
-
-.image-modal {
-  display: none;
-  position: fixed;
-  z-index: 99999;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.92);
-  justify-content: center;
-  align-items: center;
-  padding: 30px;
-}
-
-.image-modal img {
-  max-width: 95%;
-  max-height: 95%;
-  border-radius: 14px;
-  box-shadow: 0 0 40px rgba(0,0,0,0.7);
-  animation: zoomIn 0.25s ease;
-}
-
-@keyframes zoomIn {
-  from {
-    transform: scale(0.8);
-    opacity: 0;
-  }
-  to {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-
-.close-modal {
-  position: absolute;
-  top: 20px;
-  right: 30px;
-  font-size: 42px;
-  color: white;
-  cursor: pointer;
-  font-weight: bold;
-}
-
-.proof-card img {
-  cursor: zoom-in;
-  transition: transform 0.2s ease;
-}
-
-.proof-card img:hover {
-  transform: scale(1.02);
-}
-#modalCardContainer {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-#modalCardContainer .proof-card {
-  transform: none !important;
-  box-shadow: 0 0 40px rgba(0,0,0,0.7);
-}
   </style>
 </head>
 <body>
@@ -254,15 +234,14 @@
        📸  VISUAL PROOF SECTION  (shown after analysis)
   ═══════════════════════════════════════════════════ -->
   <div id="visualProof">
-    <h2>📸 Visual Issue Proofs</h2>
+    <h2>🔍 Issue Audit Cards</h2>
+    <p class="section-sub">Each card shows the specific problem found on the page, the exact text causing it, and a suggested fix.</p>
     <div class="proof-grid" id="proofGrid"></div>
   </div>
 
-  <!-- ══════════════════════════════════════════════════
-       📱  MOBILE PROOF SECTION
-  ═══════════════════════════════════════════════════ -->
   <div id="mobileProof">
-    <h2>📱 Mobile & Accessibility Proofs</h2>
+    <h2>📱 Mobile & Accessibility Issues</h2>
+    <p class="section-sub">Issues specific to mobile UX, touch targets, and accessibility.</p>
     <div class="proof-grid" id="mobileProofGrid"></div>
   </div>
 
@@ -347,13 +326,6 @@
     </div>
   </div>
 </div>
-<!-- IMAGE MODAL -->
-<!-- FULL CARD MODAL -->
-<div id="imageModal" class="image-modal">
-  <span class="close-modal">&times;</span>
-
-  <div id="modalCardContainer"></div>
-</div>
 <script>
   const urlInput      = document.getElementById("urlInput");
   const analyzeBtn    = document.getElementById("analyzeBtn");
@@ -433,79 +405,106 @@
     return { headline: headline.trim(), sub: sub.trim(), cta: cta.trim(), trust: trust.trim() };
   }
 
-  // ── Render Visual Proof Cards ─────────────────────────────────
+  // ── Issue Audit Cards ─────────────────────────────────────────
   function getIssueCategory(type) {
     const t = (type || '').toLowerCase();
     if (t.includes('mobile'))  return 'mobile';
     if (t.includes('copy'))    return 'copy';
     if (t.includes('cta'))     return 'cta';
     if (t.includes('trust'))   return 'trust';
-    return 'ux'; // default: UX Issue → red
+    return 'ux';
   }
 
-  const categoryMeta = {
-    ux:     { icon: '🔴', label: 'UX Issues',    cssClass: '' },
-    copy:   { icon: '✍️', label: 'Copy Problems', cssClass: 'copy' },
-    cta:    { icon: '🔘', label: 'CTA Issues',    cssClass: 'cta' },
-    mobile: { icon: '📱', label: 'Mobile Issues', cssClass: 'mobile' },
-    trust:  { icon: '🔒', label: 'Trust Issues',  cssClass: 'trust' },
+  // Maps issue type → fix section heading in the AI report
+  const FIX_SECTION = {
+    ux:     '✅ How To Fix — UX',
+    copy:   '✅ How To Fix — Copy',
+    cta:    '✅ How To Fix — CTAs',
+    mobile: '✅ How To Fix — UX',
+    trust:  '✅ How To Fix — UX',
   };
 
-  function renderProofCards(issueScreenshots) {
+  // Extract a fix line from the report that contains a keyword from the issue title
+  function findFix(reportText, issueTitle, cat) {
+    if (!reportText || !issueTitle) return '';
+    const section = extractSection(reportText, FIX_SECTION[cat] || '✅ How To Fix — UX');
+    if (!section) return '';
+    const lines = section.split('\n').filter(l => l.match(/^\d+\./));
+    // Try to find a line whose content overlaps with issue keywords
+    const keywords = issueTitle.toLowerCase().split(/\s+/).filter(w => w.length > 3);
+    for (const line of lines) {
+      const lower = line.toLowerCase();
+      if (keywords.some(k => lower.includes(k))) {
+        return line.replace(/^\d+\.\s*/, '').replace(/\*\*/g, '').replace(/BEFORE.*?→.*?AFTER:/i, '').trim();
+      }
+    }
+    // Fallback: return first fix line
+    return lines[0] ? lines[0].replace(/^\d+\.\s*/, '').replace(/\*\*/g, '').trim() : '';
+  }
+
+  function renderProofCards(issues, reportText) {
     proofGrid.innerHTML = '';
     mobileProofGrid.innerHTML = '';
 
-    if (!issueScreenshots || issueScreenshots.length === 0) {
-      proofGrid.innerHTML = '<div class="proof-empty">⚠️ No visual proofs captured. The page may have blocked screenshots or no text matched.</div>';
+    if (!issues || issues.length === 0) {
+      proofGrid.innerHTML = '<div class="proof-empty">No issues data returned from AI.</div>';
       visualProof.style.display = 'block';
       return;
     }
 
-    const mobileIssues  = issueScreenshots.filter(i => getIssueCategory(i.type) === 'mobile');
-    const regularIssues = issueScreenshots.filter(i => getIssueCategory(i.type) !== 'mobile');
+    const mobileIssues  = issues.filter(i => getIssueCategory(i.type) === 'mobile');
+    const regularIssues = issues.filter(i => getIssueCategory(i.type) !== 'mobile');
 
-    // ── Regular issues (UX/Copy/CTA/Trust) ──
     if (regularIssues.length > 0) {
-      regularIssues.forEach(issue => {
-        if (!issue.screenshot) return;
-        proofGrid.appendChild(buildProofCard(issue));
-      });
-      visualProof.style.display = 'block';
-    } else {
-      proofGrid.innerHTML = '<div class="proof-empty">No UX/CTA/Copy/Trust proofs captured.</div>';
+      regularIssues.forEach(issue => proofGrid.appendChild(buildAuditCard(issue, reportText)));
       visualProof.style.display = 'block';
     }
 
-    // ── Mobile issues (orange cards) ──
     if (mobileIssues.length > 0) {
-      mobileIssues.forEach(issue => {
-        if (!issue.screenshot) return;
-        mobileProofGrid.appendChild(buildProofCard(issue));
-      });
+      mobileIssues.forEach(issue => mobileProofGrid.appendChild(buildAuditCard(issue, reportText)));
       mobileProof.style.display = 'block';
     }
-
-    console.log(`✅ Rendered ${regularIssues.length} issue cards + ${mobileIssues.length} mobile cards.`);
   }
 
-  function buildProofCard(issue) {
-    const cat  = getIssueCategory(issue.type);
-    const meta = categoryMeta[cat];
+  function buildAuditCard(issue, reportText) {
+    const cat = getIssueCategory(issue.type);
     const card = document.createElement('div');
-    card.className = 'proof-card' + (meta.cssClass ? ' ' + meta.cssClass : '');
+    card.className = `audit-card ${cat === 'ux' ? '' : cat}`.trim();
 
-    // The annotation (type pill + problem text) is already baked into the
-    // screenshot image by the scraper, so the card is just the image.
+    const typeLabel = (issue.type || 'UX Issue').toUpperCase();
+    const title = capitalizeFirst(issue.problem || '');
+    const quote = issue.targetText || '';
+    const fix   = findFix(reportText || '', issue.problem || '', cat);
+
+    const quoteSection = quote ? `
+      <div class="audit-quote-box">
+        <div class="audit-quote-label">📍 Found on page</div>
+        <div class="audit-quote-text">"${escapeHtml(quote)}"</div>
+      </div>` : '';
+
+    const fixSection = fix ? `
+      <div class="audit-fix-box">
+        <div class="audit-fix-label">✅ Suggested fix</div>
+        <div class="audit-fix-text">${escapeHtml(fix)}</div>
+      </div>` : '';
+
     card.innerHTML = `
-      <img
-        src="data:image/png;base64,${issue.screenshot}"
-        alt="${escapeHtml(issue.type)}: ${escapeHtml(issue.problem)}"
-        loading="lazy"
-      />
+      <div class="audit-card-top">
+        <div class="audit-type-row">
+          <span class="audit-type-pill">${escapeHtml(typeLabel)}</span>
+        </div>
+        <div class="audit-issue-title">${escapeHtml(title)}</div>
+      </div>
+      ${quoteSection}
+      ${fixSection}
     `;
     return card;
   }
 
+  function capitalizeFirst(str) {
+    if (!str) return '';
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  }
 
 
   function escapeHtml(str) {
@@ -547,8 +546,8 @@
 
       const analysis = data.analysis;
 
-      // ── 1. Render visual proof cards (cropped issue screenshots) ──
-      renderProofCards(data.issueScreenshots);
+      // ── 1. Render issue audit cards from structured issues JSON ──
+      renderProofCards(data.issues, analysis);
 
       // ── 2. Score ──
       document.getElementById("scoreNumber").textContent = parseScore(analysis);
@@ -599,56 +598,6 @@
   urlInput.addEventListener("keypress", e => {
     if (e.key === "Enter") analyzeBtn.click();
   });
-  const imageModal = document.getElementById("imageModal");
-const modalCardContainer = document.getElementById("modalCardContainer");
-const closeModal = document.querySelector(".close-modal");
-
-// Open FULL CARD
-document.addEventListener("click", (e) => {
-  const card = e.target.closest(".proof-card");
-
-  if (card) {
-    imageModal.style.display = "flex";
-
-    // clone full card
-    modalCardContainer.innerHTML = "";
-    const clonedCard = card.cloneNode(true);
-
-    clonedCard.style.width = "900px";
-    clonedCard.style.maxWidth = "95vw";
-    clonedCard.style.transform = "scale(1)";
-    clonedCard.style.cursor = "default";
-
-    // Bigger image
-    const img = clonedCard.querySelector("img");
-    if (img) {
-      img.style.maxHeight = "75vh";
-      img.style.objectFit = "contain";
-    }
-
-    modalCardContainer.appendChild(clonedCard);
-  }
-});
-
-// Close button
-closeModal.addEventListener("click", () => {
-  imageModal.style.display = "none";
-});
-
-// Close background
-imageModal.addEventListener("click", (e) => {
-  if (e.target === imageModal) {
-    imageModal.style.display = "none";
-  }
-});
-
-// ESC close
-document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape") {
-    imageModal.style.display = "none";
-  }
-});
 </script>
-
 </body>
 </html>
