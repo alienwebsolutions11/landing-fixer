@@ -557,8 +557,15 @@ export async function scrapePage(url, issues = []) {
       function inOverlay(el) {
         let n = el;
         while (n && n !== document.body) {
-          const id  = (n.id  || "").toLowerCase();
-          const cls = (typeof n.className === "string" ? n.className : "").toLowerCase();
+          // const id  = (n.id  || "").toLowerCase();
+          // const cls = (typeof n.className === "string" ? n.className : "").toLowerCase();
+          const id = String(n.id || "").toLowerCase();
+
+const cls = String(
+  typeof n.className === "string"
+    ? n.className
+    : n.className?.baseVal || ""
+).toLowerCase();
           if (
             id.includes("cookie") || cls.includes("cookie") ||
             id.includes("consent") || cls.includes("consent") ||
