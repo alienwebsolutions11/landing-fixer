@@ -1,121 +1,393 @@
+
+// import Groq from "groq-sdk";
+// import dotenv from "dotenv";
+// dotenv.config();
+
+// const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+
+// const COOKIE_RE = /cookie|consent|gdpr|privacy policy|accept all|reject all|necessary cookies|functional cookies|no cookies/i;
+// const isCookieText = (t) => COOKIE_RE.test(t || "");
+// const cleanArr = (arr) => (arr || []).filter((t) => !isCookieText(t));
+
+// export async function analyzePage(scrapedContent) {
+//   try {
+//     const lim = (arr, n) => (Array.isArray(arr) ? arr.slice(0, n) : []);
+//     const cap = (t, max) => (!t ? "" : t.length > max ? t.slice(0, max) + "…" : t);
+
+//     // Strip all cookie text before AI sees it
+//     const c = {
+//       ...scrapedContent,
+//       h1:         cleanArr(scrapedContent.h1),
+//       h2:         cleanArr(scrapedContent.h2),
+//       h3:         cleanArr(scrapedContent.h3),
+//       paragraphs: cleanArr(scrapedContent.paragraphs),
+//       buttons:    cleanArr(scrapedContent.buttons),
+//       navLinks:   cleanArr(scrapedContent.navLinks),
+//     };
+
+//     console.log("🧹 Cookie-free data →", {
+//       h1: c.h1, h2: c.h2.slice(0,3), buttons: c.buttons, navLinks: c.navLinks,
+//     });
+
+//     const pageData = `
+// TITLE: ${cap(c.title, 80)}
+// META: ${cap(c.metaDescription, 150)}
+// H1: ${lim(c.h1, 3).join(" | ")}
+// H2: ${lim(c.h2, 5).join(" | ")}
+// H3: ${lim(c.h3, 4).join(" | ")}
+// PARAGRAPHS:
+// ${lim(c.paragraphs, 10).map(p => cap(p, 250)).join("\n")}
+// CTAs: ${lim(c.buttons, 6).join(" | ")}
+// NAV:  ${lim(c.navLinks, 6).join(" | ")}
+// IMAGES: ${lim(c.images, 4).join(" | ")}
+// `.trim();
+
+//     const prompt = `
+// You are a senior UX & conversion rate expert writing a premium paid audit report.
+
+// PAGE DATA (all cookie/GDPR banners already removed — focus ONLY on the real page):
+// ${pageData}
+
+// Write a full detailed audit using this EXACT format:
+
+// ## 📊 Conversion Score: X/10
+// 2–3 sentences referencing specific page content.
+
+// ## 🧠 First Impression Analysis
+// 3–4 sentences about clarity, trust, value proposition, and user reaction on landing.
+
+// ## ❌ UX Issues
+// 1. [Title]: explanation (why it hurts + user impact)
+// 2. [Title]: explanation
+// 3. [Title]: explanation
+// 4. [Title]: explanation
+// 5. [Title]: explanation
+
+// ## ✍️ Copywriting Problems
+// 1. [Title]: quote the actual bad copy from the page + explain why it fails
+// 2. [Title]: same
+// 3. [Title]: same
+// 4. [Title]: same
+// 5. [Title]: same
+
+// ## 🔘 CTA Issues
+// 1. [Title]: current CTA text + problem + missing emotional trigger
+// 2. [Title]: same
+// 3. [Title]: same
+
+// ## 📱 Mobile & Accessibility Issues
+// 1. [Issue]: explanation
+// 2. [Issue]: explanation
+// 3. [Issue]: explanation
+
+// ## 🔒 Trust & Credibility Issues
+// 1. [Issue]: explanation
+// 2. [Issue]: explanation
+// 3. [Issue]: explanation
+
+// ## ✅ How To Fix — UX
+// 1. [Fix]: concrete step-by-step + real example
+// 2. [Fix]: same
+// 3. [Fix]: same
+// 4. [Fix]: same
+// 5. [Fix]: same
+
+// ## ✅ How To Fix — Copy
+// 1. BEFORE: "exact current copy" → AFTER: "improved version" — reason it converts better
+// 2. same
+// 3. same
+// 4. same
+// 5. same
+
+// ## ✅ How To Fix — CTAs
+// 1. BEFORE: "current CTA" → AFTER: "improved CTA" + placement tip
+// 2. same
+// 3. same
+
+// ## 🚀 Improved Hero Section
+// Headline:
+// Subheadline:
+// CTA:
+// Supporting:
+
+// ## 📈 Conversion Optimization Tips
+// 1. Tip
+// 2. Tip
+// 3. Tip
+// 4. Tip
+// 5. Tip
+
+// ## 💡 Quick Wins
+// 1. Action → expected impact
+// 2. Action → expected impact
+// 3. Action → expected impact
+
+// ## 🔍 ISSUES_JSON
+// ISSUES_START
+// [
+//   {
+//     "type": "UX Issue",
+//     "title": "3–5 word title",
+//     "problem": "1–2 sentences: what the UX problem is and how it hurts conversions",
+//     "targetText": "exact 3–8 word phrase from the page (H1/H2/nav/button/paragraph)",
+//     "fix": "one concrete actionable fix",
+//     "context": "where on the page (e.g. Hero section, Navigation bar, Footer)"
+//   },
+//   { "type": "UX Issue", "title": "...", "problem": "...", "targetText": "...", "fix": "...", "context": "..." },
+//   { "type": "UX Issue", "title": "...", "problem": "...", "targetText": "...", "fix": "...", "context": "..." },
+//   { "type": "UX Issue", "title": "...", "problem": "...", "targetText": "...", "fix": "...", "context": "..." },
+//   { "type": "UX Issue", "title": "...", "problem": "...", "targetText": "...", "fix": "...", "context": "..." },
+//   {
+//     "type": "Copy Problem",
+//     "title": "3–5 word title",
+//     "problem": "1–2 sentences explaining why this copy underperforms",
+//     "targetText": "exact bad copy phrase from the page (3–8 words)",
+//     "before": "the exact weak copy from the page",
+//     "after": "your improved version",
+//     "fix": "one sentence: why the new version converts better"
+//   },
+//   { "type": "Copy Problem", "title": "...", "problem": "...", "targetText": "...", "before": "...", "after": "...", "fix": "..." },
+//   { "type": "Copy Problem", "title": "...", "problem": "...", "targetText": "...", "before": "...", "after": "...", "fix": "..." },
+//   { "type": "Copy Problem", "title": "...", "problem": "...", "targetText": "...", "before": "...", "after": "...", "fix": "..." },
+//   { "type": "Copy Problem", "title": "...", "problem": "...", "targetText": "...", "before": "...", "after": "...", "fix": "..." },
+//   {
+//     "type": "CTA Issue",
+//     "title": "3–5 word title",
+//     "problem": "1–2 sentences: why this CTA fails to convert",
+//     "targetText": "exact CTA button/link text from the page",
+//     "before": "current CTA text",
+//     "after": "improved CTA text",
+//     "fix": "placement or wording tip"
+//   },
+//   { "type": "CTA Issue", "title": "...", "problem": "...", "targetText": "...", "before": "...", "after": "...", "fix": "..." },
+//   { "type": "CTA Issue", "title": "...", "problem": "...", "targetText": "...", "before": "...", "after": "...", "fix": "..." },
+//   {
+//     "type": "Mobile Issue",
+//     "title": "3–5 word title",
+//     "problem": "1–2 sentences: mobile/accessibility problem and impact",
+//     "targetText": "exact visible text near this issue on the page",
+//     "fix": "actionable mobile/a11y fix"
+//   },
+//   { "type": "Mobile Issue", "title": "...", "problem": "...", "targetText": "...", "fix": "..." },
+//   { "type": "Mobile Issue", "title": "...", "problem": "...", "targetText": "...", "fix": "..." },
+//   {
+//     "type": "Trust Issue",
+//     "title": "3–5 word title",
+//     "problem": "1–2 sentences: trust/credibility problem and how it reduces conversions",
+//     "targetText": "exact visible text near this trust issue",
+//     "fix": "actionable trust-building fix"
+//   },
+//   { "type": "Trust Issue", "title": "...", "problem": "...", "targetText": "...", "fix": "..." },
+//   { "type": "Trust Issue", "title": "...", "problem": "...", "targetText": "...", "fix": "..." }
+// ]
+// ISSUES_END
+
+// RULES — non-negotiable:
+// 1. ALL 19 entries required: 5 UX, 5 Copy, 3 CTA, 3 Mobile, 3 Trust
+// 2. targetText = word-for-word from the page. Only use H1, H2, H3, nav links, button labels, or short paragraph fragments.
+// 3. NEVER use cookie, consent, GDPR, or popup text anywhere
+// 4. NEVER repeat the same targetText across entries
+// 5. before/after required for Copy Problem and CTA Issue
+// 6. context required for UX Issue
+// 7. targetText max 8 words
+// `;
+
+//     const resp = await groq.chat.completions.create({
+//       model: "llama-3.3-70b-versatile",
+//       messages: [
+//         {
+//           role: "system",
+//           content: `You are a world-class landing page conversion expert giving a premium paid audit.
+// Analyse ONLY the actual page: hero section, headlines, body copy, navigation, CTAs, layout, trust signals.
+// NEVER mention cookies, consent banners, GDPR overlays, popups — they are irrelevant noise.
+// Every point must reference real content from the page data provided.
+// Always output the complete ISSUES_JSON block with all 19 entries at the end.
+// targetText must be real text from the page — never invented.`,
+//         },
+//         { role: "user", content: prompt },
+//       ],
+//       max_tokens: 4500,
+//       temperature: 0.65,
+//     });
+
+//     const raw = resp.choices[0].message.content;
+//     console.log("📝 AI response:", raw.length, "chars");
+
+//     // Extract report (everything before ISSUES_JSON)
+//     const jsonIdx = raw.indexOf("## 🔍 ISSUES_JSON");
+//     const report  = jsonIdx !== -1 ? raw.substring(0, jsonIdx).trim() : raw;
+
+//     // Parse issues — try 3 strategies
+//     let issues = [];
+
+//     // Strategy 1: ISSUES_START / ISSUES_END
+//     const s1 = raw.indexOf("ISSUES_START");
+//     const e1 = raw.indexOf("ISSUES_END");
+//     if (s1 !== -1 && e1 > s1) {
+//       try {
+//         const parsed = JSON.parse(raw.substring(s1 + "ISSUES_START".length, e1).trim());
+//         issues = Array.isArray(parsed) ? parsed : (parsed.issues || []);
+//         console.log(`✅ Parsed ${issues.length} issues (S1)`);
+//       } catch (e) { console.log("⚠️ S1 failed:", e.message); }
+//     }
+
+//     // Strategy 2: last JSON array
+//     if (!issues.length) {
+//       try {
+//         const aS = raw.lastIndexOf("["), aE = raw.lastIndexOf("]");
+//         if (aS !== -1 && aE > aS) {
+//           const parsed = JSON.parse(raw.substring(aS, aE + 1));
+//           if (Array.isArray(parsed) && parsed[0]?.type) {
+//             issues = parsed;
+//             console.log(`✅ Parsed ${issues.length} issues (S2)`);
+//           }
+//         }
+//       } catch (e) { console.log("⚠️ S2 failed"); }
+//     }
+
+//     // Strategy 3: fallback from scraped content
+//     if (!issues.length) {
+//       console.log("⚠️ Using fallback issues");
+//       issues = buildFallback(c);
+//     }
+
+//     // Sanitize — strip cookie text, ensure fields, deduplicate targetText
+//     const seen = new Set();
+//     issues = issues
+//       .filter(i => i?.targetText && !isCookieText(i.targetText) && !isCookieText(i.problem))
+//       .map(i => ({
+//         type:       (i.type       || "UX Issue").trim(),
+//         title:      (i.title      || i.problem  || "").trim().slice(0, 80),
+//         problem:    (i.problem    || "").trim(),
+//         targetText: (i.targetText || "").trim().slice(0, 120),
+//         fix:        (i.fix        || "").trim(),
+//         context:    (i.context    || "").trim(),
+//         before:     (i.before     || "").trim(),
+//         after:      (i.after      || "").trim(),
+//       }))
+//       .filter(i => {
+//         if (seen.has(i.targetText)) return false;
+//         seen.add(i.targetText);
+//         return true;
+//       })
+//       .slice(0, 20);
+
+//     console.log(`🎯 Final issues (${issues.length}):`, issues.map(i => `"${i.targetText}"`));
+//     return { report, issues };
+
+//   } catch (err) {
+//     console.error("Groq Error:", err.message);
+//     throw err;
+//   }
+// }
+
+// function buildFallback(c) {
+//   const texts = [
+//     ...(c.h1 || []), ...(c.h2 || []), ...(c.buttons || []), ...(c.navLinks || []),
+//   ].filter(t => t?.trim().length > 3 && !isCookieText(t)).slice(0, 8);
+
+//   return [
+//     { type: "UX Issue",     title: "No clear visual hierarchy", problem: "Page lacks clear hierarchy to guide users.", targetText: texts[0] || c.title, fix: "Add clear H1 and visual sections", context: "Hero section" },
+//     { type: "Copy Problem", title: "Vague headline",            problem: "Headline doesn't state unique value.",       targetText: texts[1] || texts[0], before: texts[1] || "", after: "Add benefit-driven headline", fix: "Lead with outcome not description" },
+//     { type: "CTA Issue",    title: "Weak call to action",       problem: "CTA lacks urgency.",                         targetText: texts[2] || "Book Now", before: texts[2] || "", after: "Reserve Your Spot Today", fix: "Add urgency and benefit to CTA" },
+//     { type: "Trust Issue",  title: "No social proof",           problem: "No testimonials visible.",                   targetText: texts[3] || texts[0], fix: "Add 3 guest reviews near CTA" },
+//     { type: "Mobile Issue", title: "Small touch targets",       problem: "Buttons may be too small on mobile.",        targetText: texts[4] || texts[0], fix: "Ensure buttons are min 44px tall" },
+//   ].filter(i => i.targetText);
+// }
+
+
 import Groq from "groq-sdk";
 import dotenv from "dotenv";
 dotenv.config();
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
-// ── Patterns that indicate cookie/popup/consent text ──────────────────────
-const COOKIE_PATTERNS = [
-  /\bcookies?\b/i,
-  /\bconsent\b/i,
-  /\bgdpr\b/i,
-  /\bprivacy policy\b/i,
-  /\bwe use cookies\b/i,
-  /\bnecessary cookies\b/i,
-  /\bfunctional cookies\b/i,
-  /\banalytics cookies\b/i,
-  /\bperformance cookies\b/i,
-  /\bcookie policy\b/i,
-  /\baccept all\b/i,
-  /\breject all\b/i,
-  /\bcustomize\b/i,
-  /\bno cookies to display\b/i,
-];
-
-function isCookieText(text) {
-  if (!text) return false;
-  return COOKIE_PATTERNS.some(p => p.test(text));
-}
-
-function cleanArray(arr) {
-  return (arr || []).filter(t => !isCookieText(t));
-}
+const COOKIE_RE = /cookie|consent|gdpr|privacy policy|accept all|reject all|necessary cookies|functional cookies|no cookies/i;
+const isCookieText = (t) => COOKIE_RE.test(t || "");
+const cleanArr = (arr) => (arr || []).filter((t) => !isCookieText(t));
 
 export async function analyzePage(scrapedContent) {
   try {
-    function limitArray(arr, n) {
-      return Array.isArray(arr) ? arr.slice(0, n) : [];
-    }
-    function limitText(text, max = 300) {
-      if (!text) return "";
-      return text.length > max ? text.slice(0, max) + "..." : text;
-    }
+    const lim = (arr, n) => (Array.isArray(arr) ? arr.slice(0, n) : []);
+    const cap = (t, max) => (!t ? "" : t.length > max ? t.slice(0, max) + "…" : t);
 
-    // ── Strip all cookie/consent/popup text before feeding to AI ──────────
-    const cleanContent = {
+    // Strip all cookie text before AI sees it
+    const c = {
       ...scrapedContent,
-      h1:         cleanArray(scrapedContent.h1),
-      h2:         cleanArray(scrapedContent.h2),
-      h3:         cleanArray(scrapedContent.h3),
-      paragraphs: cleanArray(scrapedContent.paragraphs),
-      buttons:    cleanArray(scrapedContent.buttons),
-      navLinks:   cleanArray(scrapedContent.navLinks),
+      h1:         cleanArr(scrapedContent.h1),
+      h2:         cleanArr(scrapedContent.h2),
+      h3:         cleanArr(scrapedContent.h3),
+      paragraphs: cleanArr(scrapedContent.paragraphs),
+      buttons:    cleanArr(scrapedContent.buttons),
+      navLinks:   cleanArr(scrapedContent.navLinks),
     };
 
-    console.log("🧹 Cleaned content (cookie text removed):", {
-      h1: cleanContent.h1,
-      h2: cleanContent.h2,
-      buttons: cleanContent.buttons,
-      navLinks: cleanContent.navLinks,
+    console.log("🧹 Cookie-free data →", {
+      h1: c.h1, h2: c.h2.slice(0,3), buttons: c.buttons, navLinks: c.navLinks,
     });
 
     const pageData = `
-WEBSITE TITLE: ${limitText(cleanContent.title, 80)}
-META DESCRIPTION: ${limitText(cleanContent.metaDescription, 150)}
-
-H1: ${limitArray(cleanContent.h1, 2).join(" | ")}
-H2: ${limitArray(cleanContent.h2, 3).join(" | ")}
-H3: ${limitArray(cleanContent.h3, 3).join(" | ")}
-
+TITLE: ${cap(c.title, 80)}
+META: ${cap(c.metaDescription, 150)}
+H1: ${lim(c.h1, 3).join(" | ")}
+H2: ${lim(c.h2, 5).join(" | ")}
+H3: ${lim(c.h3, 4).join(" | ")}
 PARAGRAPHS:
-${limitArray(cleanContent.paragraphs, 15).map(p => limitText(p, 300)).join("\n")}
-
-CTAs:
-${limitArray(cleanContent.buttons, 4).map(b => limitText(b, 80)).join(" | ")}
-
-NAV:
-${limitArray(cleanContent.navLinks, 4).join(" | ")}
-
-IMAGES:
-${limitArray(cleanContent.images, 3).join(" | ")}
+${lim(c.paragraphs, 10).map(p => cap(p, 250)).join("\n")}
+CTAs: ${lim(c.buttons, 6).join(" | ")}
+NAV:  ${lim(c.navLinks, 6).join(" | ")}
+IMAGES: ${lim(c.images, 4).join(" | ")}
 `.trim();
 
     const prompt = `
-You are a senior UX & conversion expert.
+You are a senior UX & conversion rate expert writing a premium paid audit report.
 
-Analyze the landing page below and give a detailed audit.
-Be specific, reference real content, and avoid generic advice.
-
-IMPORTANT: The page content below has been pre-filtered to remove cookie banners and popups.
-Analyze ONLY what is shown — the real website content. Do NOT invent or mention cookies.
-
-Page Content:
+PAGE DATA (all cookie/GDPR banners already removed — focus ONLY on the real page):
 ${pageData}
 
-Use EXACT format:
+STRICTLY BANNED issue topics — DO NOT raise these under any category:
+- White space / spacing / padding / margins
+- Visual hierarchy or layout density  
+- Cluttered design or information overload
+- Color contrast, font size, or typography
+- Any purely visual/CSS issue that requires rendering the page to see
+
+ALLOWED UX issues — only raise issues verifiable from the page text:
+- Missing or weak CTA
+- No social proof, reviews, or testimonials
+- Vague or generic headline (no clear benefit)
+- Missing contact info or address
+- No FAQ or objection handling section
+- Unclear or missing navigation labels
+- No urgency or scarcity signals
+- Missing pricing or package info
+- No clear next step defined for user
+- Absence of benefit-driven subheadlines
+
+Write a full detailed audit using this EXACT format:
 
 ## 📊 Conversion Score: X/10
-2–3 sentence explanation.
+2–3 sentences referencing specific page content.
 
 ## 🧠 First Impression Analysis
-3–4 sentences about clarity, value, and user reaction.
+3–4 sentences about clarity, trust, value proposition, and user reaction on landing.
 
 ## ❌ UX Issues
-1. [Title]: explanation (why + impact)
+1. [Title]: explanation (why it hurts + user impact) — must reference actual page text
 2. [Title]: explanation
 3. [Title]: explanation
 4. [Title]: explanation
 5. [Title]: explanation
 
 ## ✍️ Copywriting Problems
-1. [Title]: include actual bad copy + why it fails
-2. [Title]: include actual bad copy + why it fails
-3. [Title]: include actual bad copy + why it fails
-4. [Title]: include actual bad copy + why it fails
-5. [Title]: include actual bad copy + why it fails
+1. [Title]: quote the actual bad copy from the page + explain why it fails
+2. [Title]: same
+3. [Title]: same
+4. [Title]: same
+5. [Title]: same
 
 ## 🔘 CTA Issues
-1. [Title]: current CTA + problem + missing emotion
+1. [Title]: current CTA text + problem + missing emotional trigger
 2. [Title]: same
 3. [Title]: same
 
@@ -130,23 +402,23 @@ Use EXACT format:
 3. [Issue]: explanation
 
 ## ✅ How To Fix — UX
-1. [Fix]: step-by-step + example
-2. [Fix]: step-by-step + example
-3. [Fix]: step-by-step + example
-4. [Fix]: step-by-step + example
-5. [Fix]: step-by-step + example
+1. [Fix]: concrete step-by-step + real example
+2. [Fix]: same
+3. [Fix]: same
+4. [Fix]: same
+5. [Fix]: same
 
 ## ✅ How To Fix — Copy
-1. BEFORE → AFTER + why better
-2. BEFORE → AFTER + why better
-3. BEFORE → AFTER + why better
-4. BEFORE → AFTER + why better
-5. BEFORE → AFTER + why better
+1. BEFORE: "exact current copy" → AFTER: "improved version" — reason it converts better
+2. same
+3. same
+4. same
+5. same
 
 ## ✅ How To Fix — CTAs
-1. Current → Improved + placement
-2. Current → Improved + placement
-3. Current → Improved + placement
+1. BEFORE: "current CTA" → AFTER: "improved CTA" + placement tip
+2. same
+3. same
 
 ## 🚀 Improved Hero Section
 Headline:
@@ -162,298 +434,180 @@ Supporting:
 5. Tip
 
 ## 💡 Quick Wins
-1. Action + expected impact
-2. Action + expected impact
-3. Action + expected impact
+1. Action → expected impact
+2. Action → expected impact
+3. Action → expected impact
 
 ## 🔍 ISSUES_JSON
 ISSUES_START
 [
   {
     "type": "UX Issue",
-    "problem": "short explanation of UX issue 1",
-    "targetText": "exact visible text from page"
+    "title": "3–5 word title",
+    "problem": "1–2 sentences: what the UX problem is and how it hurts conversions",
+    "targetText": "exact 3–8 word phrase from the page (H1/H2/nav/button/paragraph)",
+    "fix": "one concrete actionable fix",
+    "context": "where on the page (e.g. Hero section, Navigation bar, Footer)"
   },
-  {
-    "type": "UX Issue",
-    "problem": "short explanation of UX issue 2",
-    "targetText": "exact visible text from page"
-  },
-  {
-    "type": "UX Issue",
-    "problem": "short explanation of UX issue 3",
-    "targetText": "exact visible text from page"
-  },
-  {
-    "type": "UX Issue",
-    "problem": "short explanation of UX issue 4",
-    "targetText": "exact visible text from page"
-  },
-  {
-    "type": "UX Issue",
-    "problem": "short explanation of UX issue 5",
-    "targetText": "exact visible text from page"
-  },
+  { "type": "UX Issue", "title": "...", "problem": "...", "targetText": "...", "fix": "...", "context": "..." },
+  { "type": "UX Issue", "title": "...", "problem": "...", "targetText": "...", "fix": "...", "context": "..." },
+  { "type": "UX Issue", "title": "...", "problem": "...", "targetText": "...", "fix": "...", "context": "..." },
+  { "type": "UX Issue", "title": "...", "problem": "...", "targetText": "...", "fix": "...", "context": "..." },
   {
     "type": "Copy Problem",
-    "problem": "short explanation of copy issue 1",
-    "targetText": "exact visible text from page"
+    "title": "3–5 word title",
+    "problem": "1–2 sentences explaining why this copy underperforms",
+    "targetText": "exact bad copy phrase from the page (3–8 words)",
+    "before": "the exact weak copy from the page",
+    "after": "your improved version",
+    "fix": "one sentence: why the new version converts better"
   },
-  {
-    "type": "Copy Problem",
-    "problem": "short explanation of copy issue 2",
-    "targetText": "exact visible text from page"
-  },
-  {
-    "type": "Copy Problem",
-    "problem": "short explanation of copy issue 3",
-    "targetText": "exact visible text from page"
-  },
-  {
-    "type": "Copy Problem",
-    "problem": "short explanation of copy issue 4",
-    "targetText": "exact visible text from page"
-  },
-  {
-    "type": "Copy Problem",
-    "problem": "short explanation of copy issue 5",
-    "targetText": "exact visible text from page"
-  },
+  { "type": "Copy Problem", "title": "...", "problem": "...", "targetText": "...", "before": "...", "after": "...", "fix": "..." },
+  { "type": "Copy Problem", "title": "...", "problem": "...", "targetText": "...", "before": "...", "after": "...", "fix": "..." },
+  { "type": "Copy Problem", "title": "...", "problem": "...", "targetText": "...", "before": "...", "after": "...", "fix": "..." },
+  { "type": "Copy Problem", "title": "...", "problem": "...", "targetText": "...", "before": "...", "after": "...", "fix": "..." },
   {
     "type": "CTA Issue",
-    "problem": "short explanation of CTA issue 1",
-    "targetText": "exact visible text from page"
+    "title": "3–5 word title",
+    "problem": "1–2 sentences: why this CTA fails to convert",
+    "targetText": "exact CTA button/link text from the page",
+    "before": "current CTA text",
+    "after": "improved CTA text",
+    "fix": "placement or wording tip"
   },
-  {
-    "type": "CTA Issue",
-    "problem": "short explanation of CTA issue 2",
-    "targetText": "exact visible text from page"
-  },
-  {
-    "type": "CTA Issue",
-    "problem": "short explanation of CTA issue 3",
-    "targetText": "exact visible text from page"
-  },
+  { "type": "CTA Issue", "title": "...", "problem": "...", "targetText": "...", "before": "...", "after": "...", "fix": "..." },
+  { "type": "CTA Issue", "title": "...", "problem": "...", "targetText": "...", "before": "...", "after": "...", "fix": "..." },
   {
     "type": "Mobile Issue",
-    "problem": "short explanation of mobile/accessibility issue 1",
-    "targetText": "exact visible text from page near this issue"
+    "title": "3–5 word title",
+    "problem": "1–2 sentences: mobile/accessibility problem and impact",
+    "targetText": "exact visible text near this issue on the page",
+    "fix": "actionable mobile/a11y fix"
   },
-  {
-    "type": "Mobile Issue",
-    "problem": "short explanation of mobile/accessibility issue 2",
-    "targetText": "exact visible text from page near this issue"
-  },
-  {
-    "type": "Mobile Issue",
-    "problem": "short explanation of mobile/accessibility issue 3",
-    "targetText": "exact visible text from page near this issue"
-  },
+  { "type": "Mobile Issue", "title": "...", "problem": "...", "targetText": "...", "fix": "..." },
+  { "type": "Mobile Issue", "title": "...", "problem": "...", "targetText": "...", "fix": "..." },
   {
     "type": "Trust Issue",
-    "problem": "short explanation of trust/credibility issue 1",
-    "targetText": "exact visible text from page"
+    "title": "3–5 word title",
+    "problem": "1–2 sentences: trust/credibility problem and how it reduces conversions",
+    "targetText": "exact visible text near this trust issue",
+    "fix": "actionable trust-building fix"
   },
-  {
-    "type": "Trust Issue",
-    "problem": "short explanation of trust/credibility issue 2",
-    "targetText": "exact visible text from page"
-  },
-  {
-    "type": "Trust Issue",
-    "problem": "short explanation of trust/credibility issue 3",
-    "targetText": "exact visible text from page"
-  }
+  { "type": "Trust Issue", "title": "...", "problem": "...", "targetText": "...", "fix": "..." },
+  { "type": "Trust Issue", "title": "...", "problem": "...", "targetText": "...", "fix": "..." }
 ]
 ISSUES_END
 
-Rules for targetText:
-- Must be word-for-word text that actually appears on the page
-- No changes to casing, no fixing typos
-- Keep it short: 3-8 words max
-- Use text from H1, H2, buttons, nav links, or short paragraphs
-- Do NOT use made-up text
-- Every entry MUST have a unique targetText — no two issues should point to the same text
+RULES — non-negotiable:
+1. ALL 19 entries required: 5 UX, 5 Copy, 3 CTA, 3 Mobile, 3 Trust
+2. targetText = word-for-word from the page. Only use H1, H2, H3, nav links, button labels, or short paragraph fragments.
+3. NEVER use cookie, consent, GDPR, or popup text anywhere
+4. NEVER repeat the same targetText across entries
+5. before/after required for Copy Problem and CTA Issue
+6. context required for UX Issue
+7. targetText max 8 words
 `;
 
-    const response = await groq.chat.completions.create({
+    const resp = await groq.chat.completions.create({
       model: "llama-3.3-70b-versatile",
       messages: [
         {
           role: "system",
-          content: `You are a world-class landing page conversion expert. 
-Give extremely detailed, specific, actionable feedback.
-Always reference actual content from the page in your analysis.
-Never give generic advice — every point must be specific to THIS page.
-Write like a senior consultant giving a paid audit report.
-
-CRITICAL RULES — MUST FOLLOW:
-1. COMPLETELY IGNORE any cookie banners, consent popups, GDPR notices, or privacy overlays. These are NOT part of the page design. Do NOT mention cookies, consent, "Necessary", "Functional", "Analytics", or any cookie-related text anywhere in your analysis.
-2. Focus ONLY on the actual website content: hero section, headlines, body copy, navigation, CTAs, trust signals, and page structure.
-3. For targetText in ISSUES_JSON, ONLY use text from: the real page H1, H2, H3, nav links, hero copy, and actual CTA buttons. NEVER use cookie/consent popup text.
-4. Every targetText must be a real, specific element from the actual page — not from any popup, dialog, or overlay.
-5. IMPORTANT: Always end your response with the ISSUES_JSON section exactly as instructed.
-6. The ISSUES_JSON must contain ALL 19 entries — 5 UX Issues, 5 Copy Problems, 3 CTA Issues, 3 Mobile Issues, 3 Trust Issues.
-7. Every entry must have a unique targetText. Use different text elements for each issue — never repeat the same targetText.`
+          content: `You are a world-class landing page conversion expert giving a premium paid audit.
+Analyse ONLY the actual page: hero section, headlines, body copy, navigation, CTAs, trust signals.
+NEVER mention cookies, consent banners, GDPR overlays, or popups — they are irrelevant noise.
+NEVER raise issues about: white space, spacing, visual hierarchy, color contrast, font size, layout density, clutter, or any CSS/visual property. You cannot see the rendered page — only raise issues verifiable from the text content.
+Every point must reference real text from the page data provided.
+Always output the complete ISSUES_JSON block with all 19 entries at the end.
+targetText must be real text from the page — never invented.`,
         },
-        {
-          role: "user",
-          content: prompt
-        }
+        { role: "user", content: prompt },
       ],
-      max_tokens: 4000,
-      temperature: 0.7,
+      max_tokens: 4500,
+      temperature: 0.65,
     });
 
-    const raw = response.choices[0].message.content;
-    console.log("📝 Raw AI response length:", raw.length);
+    const raw = resp.choices[0].message.content;
+    console.log("📝 AI response:", raw.length, "chars");
 
-    // ── Extract report (everything before ISSUES_JSON section) ──
-    const issuesJsonIdx = raw.indexOf("## 🔍 ISSUES_JSON");
-    let report = issuesJsonIdx !== -1 ? raw.substring(0, issuesJsonIdx).trim() : raw;
+    // Extract report (everything before ISSUES_JSON)
+    const jsonIdx = raw.indexOf("## 🔍 ISSUES_JSON");
+    const report  = jsonIdx !== -1 ? raw.substring(0, jsonIdx).trim() : raw;
 
-    // ── Extract issues array with multiple fallback strategies ──
+    // Parse issues — try 3 strategies
     let issues = [];
 
-    // Strategy 1: ISSUES_START / ISSUES_END delimiters (most reliable)
-    const startMarker = "ISSUES_START";
-    const endMarker   = "ISSUES_END";
-    const startIdx = raw.indexOf(startMarker);
-    const endIdx   = raw.indexOf(endMarker);
-
-    if (startIdx !== -1 && endIdx !== -1 && endIdx > startIdx) {
-      const jsonCandidate = raw.substring(startIdx + startMarker.length, endIdx).trim();
+    // Strategy 1: ISSUES_START / ISSUES_END
+    const s1 = raw.indexOf("ISSUES_START");
+    const e1 = raw.indexOf("ISSUES_END");
+    if (s1 !== -1 && e1 > s1) {
       try {
-        const parsed = JSON.parse(jsonCandidate);
+        const parsed = JSON.parse(raw.substring(s1 + "ISSUES_START".length, e1).trim());
         issues = Array.isArray(parsed) ? parsed : (parsed.issues || []);
-        console.log(`✅ Strategy 1 success: ${issues.length} issues parsed`);
-      } catch (e) {
-        console.log("⚠️ Strategy 1 failed:", e.message);
-      }
+        console.log(`✅ Parsed ${issues.length} issues (S1)`);
+      } catch (e) { console.log("⚠️ S1 failed:", e.message); }
     }
 
-    // Strategy 2: Find JSON array [ ... ] anywhere in the text
-    if (issues.length === 0) {
+    // Strategy 2: last JSON array
+    if (!issues.length) {
       try {
-        const arrayStart = raw.lastIndexOf("[");
-        const arrayEnd   = raw.lastIndexOf("]");
-        if (arrayStart !== -1 && arrayEnd > arrayStart) {
-          const candidate = raw.substring(arrayStart, arrayEnd + 1);
-          const parsed = JSON.parse(candidate);
-          if (Array.isArray(parsed) && parsed.length > 0 && parsed[0].type) {
+        const aS = raw.lastIndexOf("["), aE = raw.lastIndexOf("]");
+        if (aS !== -1 && aE > aS) {
+          const parsed = JSON.parse(raw.substring(aS, aE + 1));
+          if (Array.isArray(parsed) && parsed[0]?.type) {
             issues = parsed;
-            console.log(`✅ Strategy 2 success: ${issues.length} issues parsed`);
+            console.log(`✅ Parsed ${issues.length} issues (S2)`);
           }
         }
-      } catch (e) {
-        console.log("⚠️ Strategy 2 failed:", e.message);
-      }
+      } catch (e) { console.log("⚠️ S2 failed"); }
     }
 
-    // Strategy 3: Find { "issues": [...] } object
-    if (issues.length === 0) {
-      try {
-        const objStart = raw.lastIndexOf("{");
-        const objEnd   = raw.lastIndexOf("}");
-        if (objStart !== -1 && objEnd > objStart) {
-          const candidate = raw.substring(objStart, objEnd + 1);
-          const parsed = JSON.parse(candidate);
-          if (parsed.issues && Array.isArray(parsed.issues)) {
-            issues = parsed.issues;
-            console.log(`✅ Strategy 3 success: ${issues.length} issues parsed`);
-          }
-        }
-      } catch (e) {
-        console.log("⚠️ Strategy 3 failed:", e.message);
-      }
+    // Strategy 3: fallback from scraped content
+    if (!issues.length) {
+      console.log("⚠️ Using fallback issues");
+      issues = buildFallback(c);
     }
 
-    // Strategy 4: Build issues from the parsed report text as fallback
-    if (issues.length === 0) {
-      console.log("⚠️ All JSON strategies failed — building issues from report text");
-      issues = buildIssuesFromReport(report, cleanContent);
-      console.log(`✅ Strategy 4 (fallback): built ${issues.length} issues from report`);
-    }
-
-    // Sanitize issues: ensure all fields exist and targetText is short
+    // Sanitize — strip cookie text, ensure fields, deduplicate targetText
+    const seen = new Set();
     issues = issues
-      .filter(i => i && i.targetText && i.targetText.trim().length > 2)
+      .filter(i => i?.targetText && !isCookieText(i.targetText) && !isCookieText(i.problem))
       .map(i => ({
-        type:       (i.type || "Issue").trim(),
-        problem:    (i.problem || "").trim(),
-        targetText: (i.targetText || "").trim().slice(0, 100)
+        type:       (i.type       || "UX Issue").trim(),
+        title:      (i.title      || i.problem  || "").trim().slice(0, 80),
+        problem:    (i.problem    || "").trim(),
+        targetText: (i.targetText || "").trim().slice(0, 120),
+        fix:        (i.fix        || "").trim(),
+        context:    (i.context    || "").trim(),
+        before:     (i.before     || "").trim(),
+        after:      (i.after      || "").trim(),
       }))
-      .slice(0, 20); // max 20 screenshots — covers all issue categories
+      .filter(i => {
+        if (seen.has(i.targetText)) return false;
+        seen.add(i.targetText);
+        return true;
+      })
+      .slice(0, 20);
 
-    console.log(`🎯 Final issues for highlighting (${issues.length}):`,
-      issues.map(i => `"${i.targetText}"`));
-
+    console.log(`🎯 Final issues (${issues.length}):`, issues.map(i => `"${i.targetText}"`));
     return { report, issues };
 
-  } catch (error) {
-    console.error("Groq Error:", error.message);
-    throw error;
+  } catch (err) {
+    console.error("Groq Error:", err.message);
+    throw err;
   }
 }
 
-// ── Fallback: extract targetText from the report itself ──────────
-function buildIssuesFromReport(report, scrapedContent) {
-  const issues = [];
+function buildFallback(c) {
+  const texts = [
+    ...(c.h1 || []), ...(c.h2 || []), ...(c.buttons || []), ...(c.navLinks || []),
+  ].filter(t => t?.trim().length > 3 && !isCookieText(t)).slice(0, 8);
 
-  // Pull real page text fragments to use as targetText
-  const pageTexts = [
-    ...(scrapedContent.h1 || []),
-    ...(scrapedContent.h2 || []),
-    ...(scrapedContent.buttons || []),
-    ...(scrapedContent.navLinks || []),
-  ].filter(t => t && t.trim().length > 3).slice(0, 10);
-
-  // Look for CTA issues section and grab button texts
-  const ctaSection = extractSection(report, "🔘 CTA Issues");
-  if (ctaSection && pageTexts.length > 0) {
-    issues.push({
-      type: "CTA Issue",
-      problem: "CTA lacks urgency and clarity",
-      targetText: pageTexts.find(t => t.length < 40) || pageTexts[0]
-    });
-  }
-
-  // Look for UX issues
-  const uxSection = extractSection(report, "❌ UX Issues");
-  if (uxSection && pageTexts.length > 1) {
-    issues.push({
-      type: "UX Issue",
-      problem: "Navigation or layout issue detected",
-      targetText: pageTexts[1] || pageTexts[0]
-    });
-  }
-
-  // Look for Mobile issues
-  const mobileSection = extractSection(report, "📱 Mobile & Accessibility Issues");
-  if (mobileSection && pageTexts.length > 2) {
-    issues.push({
-      type: "Mobile Issue",
-      problem: "Element may be too small or hard to tap on mobile",
-      targetText: pageTexts[2] || pageTexts[0]
-    });
-  }
-
-  // Headline issue
-  if (scrapedContent.h1 && scrapedContent.h1[0]) {
-    issues.push({
-      type: "Copy Problem",
-      problem: "Headline lacks emotional hook",
-      targetText: scrapedContent.h1[0].slice(0, 60)
-    });
-  }
-
-  return issues;
-}
-
-function extractSection(text, heading) {
-  if (!text) return "";
-  const escaped = heading.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  const regex = new RegExp(`##\\s*${escaped}[\\s\\S]*?(?=##|$)`, 'i');
-  const match = text.match(regex);
-  return match ? match[0] : '';
+  return [
+    { type: "UX Issue",     title: "No CTA above the fold",    problem: "No clear call-to-action visible in the hero section, users don't know what to do next.", targetText: texts[0] || c.title, fix: "Add a prominent CTA button in the hero with a benefit-driven label", context: "Hero section" },
+    { type: "Copy Problem", title: "Vague headline",            problem: "Headline doesn't state unique value.",       targetText: texts[1] || texts[0], before: texts[1] || "", after: "Add benefit-driven headline", fix: "Lead with outcome not description" },
+    { type: "CTA Issue",    title: "Weak call to action",       problem: "CTA lacks urgency.",                         targetText: texts[2] || "Book Now", before: texts[2] || "", after: "Reserve Your Spot Today", fix: "Add urgency and benefit to CTA" },
+    { type: "Trust Issue",  title: "No social proof",           problem: "No testimonials visible.",                   targetText: texts[3] || texts[0], fix: "Add 3 guest reviews near CTA" },
+    { type: "Mobile Issue", title: "Small touch targets",       problem: "Buttons may be too small on mobile.",        targetText: texts[4] || texts[0], fix: "Ensure buttons are min 44px tall" },
+  ].filter(i => i.targetText);
 }

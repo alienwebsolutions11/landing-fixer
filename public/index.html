@@ -116,46 +116,70 @@
       -webkit-background-clip: text; background-clip: text;
       -webkit-text-fill-color: transparent; color: transparent;
     }
-
-    /* ── Single-column layout so screenshots are full-width & readable ── */
     .proof-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 16px;
     }
-
-    /* Base proof card — no header, screenshot has annotation baked in */
+    /* Base card — UX/default: red */
     .proof-card {
-      background: #13131f;
+      background: #1a1a2e;
       border: 2px solid #ef4444;
       border-radius: 12px;
       overflow: hidden;
-      cursor: zoom-in;
-      transition: transform 0.15s ease, box-shadow 0.15s ease;
     }
-    .proof-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    .proof-card-header {
+      padding: 10px 14px;
+      background: rgba(239,68,68,0.12);
+      border-bottom: 1px solid #ef4444;
     }
-
-    /* Color variants */
-    .proof-card.copy   { border-color: #a78bfa; }
-    .proof-card.cta    { border-color: #60a5fa; }
-    .proof-card.trust  { border-color: #eab308; }
+    .proof-card-type {
+      color: #ef4444;
+      font-weight: bold;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    /* Mobile: orange */
     .proof-card.mobile { border-color: #f97316; }
+    .proof-card.mobile .proof-card-header { background: rgba(249,115,22,0.12); border-bottom-color: #f97316; }
+    .proof-card.mobile .proof-card-type { color: #f97316; }
+    /* Copy: purple */
+    .proof-card.copy { border-color: #a78bfa; }
+    .proof-card.copy .proof-card-header { background: rgba(167,139,250,0.12); border-bottom-color: #a78bfa; }
+    .proof-card.copy .proof-card-type { color: #a78bfa; }
+    /* CTA: blue */
+    .proof-card.cta { border-color: #60a5fa; }
+    .proof-card.cta .proof-card-header { background: rgba(96,165,250,0.12); border-bottom-color: #60a5fa; }
+    .proof-card.cta .proof-card-type { color: #60a5fa; }
+    /* Trust: yellow */
+    .proof-card.trust { border-color: #eab308; }
+    .proof-card.trust .proof-card-header { background: rgba(234,179,8,0.12); border-bottom-color: #eab308; }
+    .proof-card.trust .proof-card-type { color: #eab308; }
 
-    /* Screenshot fills the full card width */
+    .proof-card-viewport {
+      color: #888;
+      font-size: 0.7rem;
+      margin-top: 2px;
+    }
     .proof-card img {
       width: 100%;
       display: block;
     }
-
-    /* Mobile cards are narrower and centered */
-    .proof-card.mobile {
-      max-width: 420px;
-      margin: 0 auto;
+    .proof-card-body {
+      padding: 10px 14px;
     }
-
+    .proof-card-problem {
+      font-size: 0.82rem;
+      color: #ccc;
+      line-height: 1.55;
+    }
+    .proof-card-target {
+      margin-top: 6px;
+      font-size: 0.75rem;
+      color: #888;
+      font-style: italic;
+    }
     .proof-empty {
       color: #555;
       font-size: 0.9rem;
@@ -493,29 +517,41 @@
     const meta = categoryMeta[cat];
     const card = document.createElement('div');
     card.className = 'proof-card' + (meta.cssClass ? ' ' + meta.cssClass : '');
-
-    // The annotation (type pill + problem text) is already baked into the
-    // screenshot image by the scraper, so the card is just the image.
+    const isMobile = cat === 'mobile';
     card.innerHTML = `
-      <img
-        src="data:image/png;base64,${issue.screenshot}"
-        alt="${escapeHtml(issue.type)}: ${escapeHtml(issue.problem)}"
-        loading="lazy"
-      />
+      <div class="proof-card-header">
+        <div class="proof-card-type">${meta.icon} ${escapeHtml(issue.type)}</div>
+        ${isMobile ? '<div class="proof-card-viewport">Captured at 390px (iPhone) viewport</div>' : ''}
+      </div>
+      <img src="data:image/png;base64,${issue.screenshot}" alt="Issue proof: ${escapeHtml(issue.type)}" loading="lazy" />
+      <div class="proof-card-body">
+        <div class="proof-card-problem">${escapeHtml(issue.problem)}</div>
+        ${issue.targetText ? `<div class="proof-card-target">Matched: "${escapeHtml(issue.targetText.slice(0, 80))}"</div>` : ''}
+      </div>
     `;
     return card;
   }
-
-
 
   function escapeHtml(str) {
     return (str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
 
   // ── Main click handler ────────────────────────────────────────
-  analyzeBtn.addEventListener("click", async () => {
-    const url = urlInput.value.trim();
-    if (!url) return alert("Please enter a URL!");
+  // ── Main click handler ────────────────────────────────────────
+analyzeBtn.addEventListener("click", async () => {
+
+  let url = urlInput.value.trim();
+
+  if (!url) {
+    return alert("Please enter a URL!");
+  }
+
+  // AUTO ADD HTTPS
+  if (!url.startsWith("http://") && !url.startsWith("https://")) {
+    url = "https://" + url;
+  }
+
+  console.log("Final URL:", url);
 
     // Reset UI
     errorDiv.style.display       = "none";
