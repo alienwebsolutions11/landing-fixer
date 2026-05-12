@@ -6,13 +6,13 @@ import chromium from "@sparticuz/chromium";
 // Each issue of a given type scrolls to a progressively deeper section of the
 // page, so 5 UX issues each show a DIFFERENT part of the page.
 // ─────────────────────────────────────────────────────────────────────────────
-const SECTION_OFFSETS = {
-  "ux issue":     [0,    600,  1200, 1800, 2400],
-  "copy problem": [0,    600,  1200, 1800, 2400],
-  "cta issue":    [0,    400,  800],
-  "trust issue":  [800,  1400, 2000],
-  "mobile issue": [0,    500,  1000],
-};
+// const SECTION_OFFSETS = {
+//   "ux issue":     [0,    600,  1200, 1800, 2400],
+//   "copy problem": [0,    600,  1200, 1800, 2400],
+//   "cta issue":    [0,    400,  800],
+//   "trust issue":  [800,  1400, 2000],
+//   "mobile issue": [0,    500,  1000],
+// };
 
 const TYPE_COLORS = {
   "ux issue":     { border: "#ef4444", bg: "rgba(239,68,68,0.2)",   label: "#ef4444" },
@@ -247,48 +247,97 @@ async function dismissOverlays(page) {
 async function tryHighlightElement(page, targetText, colors) {
   if (!targetText?.trim()) return null;
 
-  const cleanTarget = targetText.toLowerCase().replace(/[^a-z0-9 ]/g, "").trim();
-  const targetWords = cleanTarget.split(" ").filter(w => w.length >= 3);
-  if (!cleanTarget) return null;
+  const handle = await page.evaluateHandle((targetText) => {
 
-  const elements = await page.$$("h1,h2,h3,h4,h5,h6,p,a,button,li,span,label");
-  let bestHandle = null, bestScore = 0;
+    const clean = (str) =>
+      str?.toLowerCase().replace(/\s+/g, " ").trim();
 
-  for (const el of elements) {
-    const visible = await page.evaluate(el => {
-      const s = window.getComputedStyle(el);
-      const r = el.getBoundingClientRect();
-      return s.display !== "none" && s.visibility !== "hidden" &&
-             parseFloat(s.opacity) > 0.1 && r.width > 0 && r.height > 0;
-    }, el);
-    if (!visible) continue;
+    const target = clean(targetText);
 
-    const rawText = await page.evaluate(el => (el.innerText || el.textContent || "").trim(), el);
-    if (!rawText || rawText.length > 200) continue;
+    const elements = Array.from(
+      document.querySelectorAll(`
+        h1,h2,h3,h4,h5,h6,
+        p,a,button,span,li,
+        div
+      `)
+    );
 
-    const cleanEl = rawText.toLowerCase().replace(/[^a-z0-9 ]/g, "").trim();
-    let score = 0;
-    if (cleanEl === cleanTarget) score = 1.0;
-    else if (cleanEl.includes(cleanTarget)) score = 0.9 - Math.min(cleanEl.length / 400, 0.25);
-    else if (targetWords.length >= 2 && targetWords.every(w => cleanEl.includes(w)))
-      score = 0.75 - Math.min(cleanEl.length / 400, 0.2);
+    let best = null;
+    let bestScore = 0;
 
-    if (score > bestScore) { bestScore = score; bestHandle = el; }
-  }
+    for (const el of elements) {
 
-  if (bestHandle && bestScore >= 0.65) {
-    await page.evaluate((el, border, bg) => {
-      el.style.outline = `3px solid ${border}`;
-      el.style.outlineOffset = "3px";
-      el.style.backgroundColor = bg;
-      el.style.borderRadius = "3px";
-      el.style.transition = "none";
-    }, bestHandle, colors.border, colors.bg);
-    return bestHandle;
-  }
-  return null;
+      const text = clean(el.innerText || el.textContent);
+
+      if (!text || text.length > 200) continue;
+
+      let score = 0;
+
+      // exact match
+      if (text === target) {
+        score = 100;
+      }
+
+      // contains full text
+      else if (text.includes(target)) {
+        score = 90;
+      }
+
+      // partial word matching
+      else {
+        const targetWords = target.split(" ");
+        const matched = targetWords.filter(w => text.includes(w)).length;
+
+        score = matched * 10;
+      }
+
+      // visibility check
+      const rect = el.getBoundingClientRect();
+
+      const visible =
+        rect.width > 0 &&
+        rect.height > 0 &&
+        rect.top < window.innerHeight * 2;
+
+      if (!visible) continue;
+
+      if (score > bestScore) {
+        best = el;
+        bestScore = score;
+      }
+    }
+
+    if (!best || bestScore < 20) return null;
+
+    return best;
+
+  }, targetText);
+
+  const element = handle.asElement();
+
+  if (!element) return null;
+
+  // scroll EXACTLY to element
+  await element.evaluate(el => {
+    el.scrollIntoView({
+      behavior: "instant",
+      block: "center"
+    });
+  });
+
+  await page.waitForTimeout(700);
+
+  // highlight
+  await element.evaluate((el, colors) => {
+    el.style.outline = `4px solid ${colors.border}`;
+    el.style.outlineOffset = "4px";
+    el.style.background = colors.bg;
+    el.style.position = "relative";
+    el.style.zIndex = "9999";
+  }, colors);
+
+  return element;
 }
-
 async function removeHighlight(page, el) {
   await page.evaluate(el => {
     el.style.outline = "";
