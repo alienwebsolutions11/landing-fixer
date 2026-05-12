@@ -315,22 +315,58 @@ export async function scrapePage(url, issues = []) {
     // 📊  SCRAPE PAGE CONTENT (always runs)
     // ─────────────────────────────────────────────
     const content = await page.evaluate(() => {
-      const getText = (selector) =>
+
+      // ── Helper: is this element inside a cookie/consent/overlay? ──
+      function isInsideOverlay(el) {
+        let node = el;
+        while (node && node !== document.body) {
+          const id  = (node.id  || "").toLowerCase();
+          const cls = (node.className && typeof node.className === "string"
+            ? node.className : "").toLowerCase();
+          const role = (node.getAttribute && node.getAttribute("role") || "").toLowerCase();
+          if (
+            id.includes("cookie")   || cls.includes("cookie")  ||
+            id.includes("consent")  || cls.includes("consent") ||
+            id.includes("gdpr")     || cls.includes("gdpr")    ||
+            id.includes("banner")   || cls.includes("banner")  ||
+            id.includes("popup")    || cls.includes("popup")   ||
+            id.includes("overlay")  || cls.includes("overlay") ||
+            id.includes("modal")    || cls.includes("modal")   ||
+            role === "dialog"
+          ) return true;
+          node = node.parentElement;
+        }
+        return false;
+      }
+
+      // ── Helper: is element actually visible on page? ──
+      function isVisible(el) {
+        const s = window.getComputedStyle(el);
+        const r = el.getBoundingClientRect();
+        return s.display !== "none" && s.visibility !== "hidden" &&
+               parseFloat(s.opacity) > 0.1 && r.width > 0 && r.height > 0;
+      }
+
+      const getText = (selector, skipOverlay = true) =>
         Array.from(document.querySelectorAll(selector))
-          .map((el) => (el.innerText || el.textContent || "").trim())
-          .filter(Boolean);
+          .filter(el => !skipOverlay || (!isInsideOverlay(el) && isVisible(el)))
+          .map(el => (el.innerText || el.textContent || "").trim())
+          .filter(t => t.length > 0);
 
       return {
         title:           document.title || "",
         metaDescription: document.querySelector('meta[name="description"]')?.content || "",
-        h1:        getText("h1").slice(0, 2),
-        h2:        getText("h2").slice(0, 3),
-        h3:        getText("h3").slice(0, 3),
-        paragraphs: getText("p").slice(0, 6),
-        buttons:   getText("button, a").slice(0, 6),
-        navLinks:  getText("nav a").slice(0, 5),
+        h1:        getText("h1").slice(0, 3),
+        h2:        getText("h2").slice(0, 5),
+        h3:        getText("h3").slice(0, 5),
+        paragraphs: getText("p").filter(t => t.length > 30).slice(0, 8),
+        buttons:   getText("button, [role='button'], a.btn, a[class*='button'], a[class*='cta']")
+                     .filter(t => t.length < 60)
+                     .slice(0, 8),
+        navLinks:  getText("nav a, header a").slice(0, 8),
         images:    Array.from(document.querySelectorAll("img"))
-          .map((img) => (img.alt || "").trim())
+          .filter(img => !isInsideOverlay(img))
+          .map(img => (img.alt || "").trim())
           .filter(Boolean)
           .slice(0, 10),
       };

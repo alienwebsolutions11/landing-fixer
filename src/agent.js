@@ -4,6 +4,33 @@ dotenv.config();
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
+// ── Patterns that indicate cookie/popup/consent text ──────────────────────
+const COOKIE_PATTERNS = [
+  /\bcookies?\b/i,
+  /\bconsent\b/i,
+  /\bgdpr\b/i,
+  /\bprivacy policy\b/i,
+  /\bwe use cookies\b/i,
+  /\bnecessary cookies\b/i,
+  /\bfunctional cookies\b/i,
+  /\banalytics cookies\b/i,
+  /\bperformance cookies\b/i,
+  /\bcookie policy\b/i,
+  /\baccept all\b/i,
+  /\breject all\b/i,
+  /\bcustomize\b/i,
+  /\bno cookies to display\b/i,
+];
+
+function isCookieText(text) {
+  if (!text) return false;
+  return COOKIE_PATTERNS.some(p => p.test(text));
+}
+
+function cleanArray(arr) {
+  return (arr || []).filter(t => !isCookieText(t));
+}
+
 export async function analyzePage(scrapedContent) {
   try {
     function limitArray(arr, n) {
@@ -14,25 +41,43 @@ export async function analyzePage(scrapedContent) {
       return text.length > max ? text.slice(0, max) + "..." : text;
     }
 
-    const pageData = `
-WEBSITE TITLE: ${limitText(scrapedContent.title, 80)}
-META DESCRIPTION: ${limitText(scrapedContent.metaDescription, 150)}
+    // ── Strip all cookie/consent/popup text before feeding to AI ──────────
+    const cleanContent = {
+      ...scrapedContent,
+      h1:         cleanArray(scrapedContent.h1),
+      h2:         cleanArray(scrapedContent.h2),
+      h3:         cleanArray(scrapedContent.h3),
+      paragraphs: cleanArray(scrapedContent.paragraphs),
+      buttons:    cleanArray(scrapedContent.buttons),
+      navLinks:   cleanArray(scrapedContent.navLinks),
+    };
 
-H1: ${limitArray(scrapedContent.h1, 2).join(" | ")}
-H2: ${limitArray(scrapedContent.h2, 3).join(" | ")}
-H3: ${limitArray(scrapedContent.h3, 3).join(" | ")}
+    console.log("🧹 Cleaned content (cookie text removed):", {
+      h1: cleanContent.h1,
+      h2: cleanContent.h2,
+      buttons: cleanContent.buttons,
+      navLinks: cleanContent.navLinks,
+    });
+
+    const pageData = `
+WEBSITE TITLE: ${limitText(cleanContent.title, 80)}
+META DESCRIPTION: ${limitText(cleanContent.metaDescription, 150)}
+
+H1: ${limitArray(cleanContent.h1, 2).join(" | ")}
+H2: ${limitArray(cleanContent.h2, 3).join(" | ")}
+H3: ${limitArray(cleanContent.h3, 3).join(" | ")}
 
 PARAGRAPHS:
-${limitArray(scrapedContent.paragraphs, 15).map(p => limitText(p, 300)).join("\n")}
+${limitArray(cleanContent.paragraphs, 15).map(p => limitText(p, 300)).join("\n")}
 
 CTAs:
-${limitArray(scrapedContent.buttons, 4).map(b => limitText(b, 80)).join(" | ")}
+${limitArray(cleanContent.buttons, 4).map(b => limitText(b, 80)).join(" | ")}
 
 NAV:
-${limitArray(scrapedContent.navLinks, 4).join(" | ")}
+${limitArray(cleanContent.navLinks, 4).join(" | ")}
 
 IMAGES:
-${limitArray(scrapedContent.images, 3).join(" | ")}
+${limitArray(cleanContent.images, 3).join(" | ")}
 `.trim();
 
     const prompt = `
@@ -40,6 +85,9 @@ You are a senior UX & conversion expert.
 
 Analyze the landing page below and give a detailed audit.
 Be specific, reference real content, and avoid generic advice.
+
+IMPORTANT: The page content below has been pre-filtered to remove cookie banners and popups.
+Analyze ONLY what is shown — the real website content. Do NOT invent or mention cookies.
 
 Page Content:
 ${pageData}
@@ -238,10 +286,15 @@ Give extremely detailed, specific, actionable feedback.
 Always reference actual content from the page in your analysis.
 Never give generic advice — every point must be specific to THIS page.
 Write like a senior consultant giving a paid audit report.
-IMPORTANT: Always end your response with the ISSUES_JSON section exactly as instructed.
-IMPORTANT: The ISSUES_JSON must contain ALL 19 entries — 5 UX Issues, 5 Copy Problems, 3 CTA Issues, 3 Mobile Issues, 3 Trust Issues.
-IMPORTANT: Every entry must have a unique targetText. Use different text elements for each issue — never repeat the same targetText.
-IMPORTANT: targetText must be real text from the page: H1, H2, H3, nav links, button labels, or short paragraph fragments (3-8 words max).`
+
+CRITICAL RULES — MUST FOLLOW:
+1. COMPLETELY IGNORE any cookie banners, consent popups, GDPR notices, or privacy overlays. These are NOT part of the page design. Do NOT mention cookies, consent, "Necessary", "Functional", "Analytics", or any cookie-related text anywhere in your analysis.
+2. Focus ONLY on the actual website content: hero section, headlines, body copy, navigation, CTAs, trust signals, and page structure.
+3. For targetText in ISSUES_JSON, ONLY use text from: the real page H1, H2, H3, nav links, hero copy, and actual CTA buttons. NEVER use cookie/consent popup text.
+4. Every targetText must be a real, specific element from the actual page — not from any popup, dialog, or overlay.
+5. IMPORTANT: Always end your response with the ISSUES_JSON section exactly as instructed.
+6. The ISSUES_JSON must contain ALL 19 entries — 5 UX Issues, 5 Copy Problems, 3 CTA Issues, 3 Mobile Issues, 3 Trust Issues.
+7. Every entry must have a unique targetText. Use different text elements for each issue — never repeat the same targetText.`
         },
         {
           role: "user",
@@ -318,7 +371,7 @@ IMPORTANT: targetText must be real text from the page: H1, H2, H3, nav links, bu
     // Strategy 4: Build issues from the parsed report text as fallback
     if (issues.length === 0) {
       console.log("⚠️ All JSON strategies failed — building issues from report text");
-      issues = buildIssuesFromReport(report, scrapedContent);
+      issues = buildIssuesFromReport(report, cleanContent);
       console.log(`✅ Strategy 4 (fallback): built ${issues.length} issues from report`);
     }
 
