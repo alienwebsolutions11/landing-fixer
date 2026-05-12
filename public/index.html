@@ -260,36 +260,20 @@
 <div class="container">
   <h1>🔍 AI Page Analyzer</h1>
   <p class="subtitle">Enter any URL → Get a full professional UX, Copy & Conversion audit instantly</p>
-
+  
   <div class="input-area">
     <input id="urlInput" type="url" placeholder="https://example.com" />
     <button id="analyzeBtn">Analyze 🚀</button>
   </div>
-
+  
   <div class="error" id="error"></div>
-
+  
   <div class="loading" id="loading">
     <div class="spinner">⚙️</div>
     <p>Running full audit — scraping, analyzing & capturing proofs...</p>
     <small>Takes 30–60 seconds (3 steps: scrape → AI → screenshot proofs)</small>
   </div>
-
-  <!-- ══════════════════════════════════════════════════
-       📸  VISUAL PROOF SECTION  (shown after analysis)
-  ═══════════════════════════════════════════════════ -->
-  <div id="visualProof">
-    <h2>📸 Visual Issue Proofs</h2>
-    <div class="proof-grid" id="proofGrid"></div>
-  </div>
-
-  <!-- ══════════════════════════════════════════════════
-       📱  MOBILE PROOF SECTION
-  ═══════════════════════════════════════════════════ -->
-  <div id="mobileProof">
-    <h2>📱 Mobile & Accessibility Proofs</h2>
-    <div class="proof-grid" id="mobileProofGrid"></div>
-  </div>
-
+  
   <div class="results-wrapper" id="resultsWrapper">
 
     <!-- Score -->
@@ -370,6 +354,22 @@
 
     </div>
   </div>
+  <!-- ══════════════════════════════════════════════════
+       📸  VISUAL PROOF SECTION  (shown after analysis)
+  ═══════════════════════════════════════════════════ -->
+  <div id="visualProof">
+    <h2>📸 Visual Issue Proofs</h2>
+    <div class="proof-grid" id="proofGrid"></div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════
+       📱  MOBILE PROOF SECTION
+  ═══════════════════════════════════════════════════ -->
+  <div id="mobileProof">
+    <h2>📱 Mobile & Accessibility Proofs</h2>
+    <div class="proof-grid" id="mobileProofGrid"></div>
+  </div>
+
 </div>
 <!-- IMAGE MODAL -->
 <!-- FULL CARD MODAL -->
