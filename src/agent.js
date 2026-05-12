@@ -48,6 +48,25 @@
 // PAGE DATA (all cookie/GDPR banners already removed — focus ONLY on the real page):
 // ${pageData}
 
+// STRICTLY BANNED issue topics — DO NOT raise these under any category:
+// - White space / spacing / padding / margins
+// - Visual hierarchy or layout density  
+// - Cluttered design or information overload
+// - Color contrast, font size, or typography
+// - Any purely visual/CSS issue that requires rendering the page to see
+
+// ALLOWED UX issues — only raise issues verifiable from the page text:
+// - Missing or weak CTA
+// - No social proof, reviews, or testimonials
+// - Vague or generic headline (no clear benefit)
+// - Missing contact info or address
+// - No FAQ or objection handling section
+// - Unclear or missing navigation labels
+// - No urgency or scarcity signals
+// - Missing pricing or package info
+// - No clear next step defined for user
+// - Absence of benefit-driven subheadlines
+
 // Write a full detailed audit using this EXACT format:
 
 // ## 📊 Conversion Score: X/10
@@ -57,7 +76,7 @@
 // 3–4 sentences about clarity, trust, value proposition, and user reaction on landing.
 
 // ## ❌ UX Issues
-// 1. [Title]: explanation (why it hurts + user impact)
+// 1. [Title]: explanation (why it hurts + user impact) — must reference actual page text
 // 2. [Title]: explanation
 // 3. [Title]: explanation
 // 4. [Title]: explanation
@@ -198,9 +217,10 @@
 //         {
 //           role: "system",
 //           content: `You are a world-class landing page conversion expert giving a premium paid audit.
-// Analyse ONLY the actual page: hero section, headlines, body copy, navigation, CTAs, layout, trust signals.
-// NEVER mention cookies, consent banners, GDPR overlays, popups — they are irrelevant noise.
-// Every point must reference real content from the page data provided.
+// Analyse ONLY the actual page: hero section, headlines, body copy, navigation, CTAs, trust signals.
+// NEVER mention cookies, consent banners, GDPR overlays, or popups — they are irrelevant noise.
+// NEVER raise issues about: white space, spacing, visual hierarchy, color contrast, font size, layout density, clutter, or any CSS/visual property. You cannot see the rendered page — only raise issues verifiable from the text content.
+// Every point must reference real text from the page data provided.
 // Always output the complete ISSUES_JSON block with all 19 entries at the end.
 // targetText must be real text from the page — never invented.`,
 //         },
@@ -287,14 +307,13 @@
 //   ].filter(t => t?.trim().length > 3 && !isCookieText(t)).slice(0, 8);
 
 //   return [
-//     { type: "UX Issue",     title: "No clear visual hierarchy", problem: "Page lacks clear hierarchy to guide users.", targetText: texts[0] || c.title, fix: "Add clear H1 and visual sections", context: "Hero section" },
+//     { type: "UX Issue",     title: "No CTA above the fold",    problem: "No clear call-to-action visible in the hero section, users don't know what to do next.", targetText: texts[0] || c.title, fix: "Add a prominent CTA button in the hero with a benefit-driven label", context: "Hero section" },
 //     { type: "Copy Problem", title: "Vague headline",            problem: "Headline doesn't state unique value.",       targetText: texts[1] || texts[0], before: texts[1] || "", after: "Add benefit-driven headline", fix: "Lead with outcome not description" },
 //     { type: "CTA Issue",    title: "Weak call to action",       problem: "CTA lacks urgency.",                         targetText: texts[2] || "Book Now", before: texts[2] || "", after: "Reserve Your Spot Today", fix: "Add urgency and benefit to CTA" },
 //     { type: "Trust Issue",  title: "No social proof",           problem: "No testimonials visible.",                   targetText: texts[3] || texts[0], fix: "Add 3 guest reviews near CTA" },
 //     { type: "Mobile Issue", title: "Small touch targets",       problem: "Buttons may be too small on mobile.",        targetText: texts[4] || texts[0], fix: "Ensure buttons are min 44px tall" },
 //   ].filter(i => i.targetText);
 // }
-
 
 import Groq from "groq-sdk";
 import dotenv from "dotenv";
@@ -510,6 +529,7 @@ RULES — non-negotiable:
 
     const resp = await groq.chat.completions.create({
       model: "llama-3.3-70b-versatile",
+      seed: 42,          // ← deterministic: same input = same output every time
       messages: [
         {
           role: "system",
@@ -524,7 +544,7 @@ targetText must be real text from the page — never invented.`,
         { role: "user", content: prompt },
       ],
       max_tokens: 4500,
-      temperature: 0.65,
+      temperature: 0.1,  // ← near-zero: eliminates random variation
     });
 
     const raw = resp.choices[0].message.content;
