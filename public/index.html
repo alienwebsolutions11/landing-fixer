@@ -180,55 +180,6 @@
       color: #888;
       font-style: italic;
     }
-    /* Fix section inside proof card */
-    .proof-card-fix {
-      margin-top: 10px;
-      padding: 10px 12px;
-      background: rgba(74,222,128,0.07);
-      border: 1px solid rgba(74,222,128,0.25);
-      border-radius: 8px;
-    }
-    .proof-card-fix-label {
-      font-size: 0.7rem;
-      font-weight: bold;
-      color: #4ade80;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      margin-bottom: 4px;
-    }
-    .proof-card-fix-text {
-      font-size: 0.82rem;
-      color: #a7f3d0;
-      line-height: 1.5;
-    }
-    .proof-card-before-after {
-      margin-top: 8px;
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-    }
-    .proof-card-before {
-      font-size: 0.8rem;
-      color: #f87171;
-      background: rgba(239,68,68,0.08);
-      border-left: 3px solid #ef4444;
-      padding: 5px 8px;
-      border-radius: 0 4px 4px 0;
-    }
-    .proof-card-after {
-      font-size: 0.8rem;
-      color: #4ade80;
-      background: rgba(74,222,128,0.08);
-      border-left: 3px solid #4ade80;
-      padding: 5px 8px;
-      border-radius: 0 4px 4px 0;
-    }
-    .proof-card-before span, .proof-card-after span {
-      font-weight: bold;
-      opacity: 0.7;
-      font-size: 0.7rem;
-      margin-right: 4px;
-    }
     .proof-empty {
       color: #555;
       font-size: 0.9rem;
@@ -568,23 +519,6 @@
     const card = document.createElement('div');
     card.className = 'proof-card' + (meta.cssClass ? ' ' + meta.cssClass : '');
     const isMobile = cat === 'mobile';
-
-    // Build before/after block for Copy & CTA issues
-    const hasBefore = issue.before && issue.before.trim();
-    const hasAfter  = issue.after  && issue.after.trim();
-    const beforeAfterHTML = (hasBefore || hasAfter) ? `
-      <div class="proof-card-before-after">
-        ${hasBefore ? `<div class="proof-card-before"><span>BEFORE</span>${escapeHtml(issue.before)}</div>` : ''}
-        ${hasAfter  ? `<div class="proof-card-after"><span>AFTER</span>${escapeHtml(issue.after)}</div>`   : ''}
-      </div>` : '';
-
-    // Build fix block
-    const fixHTML = issue.fix ? `
-      <div class="proof-card-fix">
-        <div class="proof-card-fix-label">✅ How to fix</div>
-        <div class="proof-card-fix-text">${escapeHtml(issue.fix)}</div>
-      </div>` : '';
-
     card.innerHTML = `
       <div class="proof-card-header">
         <div class="proof-card-type">${meta.icon} ${escapeHtml(issue.type)}</div>
@@ -594,8 +528,6 @@
       <div class="proof-card-body">
         <div class="proof-card-problem">${escapeHtml(issue.problem)}</div>
         ${issue.targetText ? `<div class="proof-card-target">Matched: "${escapeHtml(issue.targetText.slice(0, 80))}"</div>` : ''}
-        ${beforeAfterHTML}
-        ${fixHTML}
       </div>
     `;
     return card;
@@ -653,32 +585,12 @@ analyzeBtn.addEventListener("click", async () => {
       const analysis = data.analysis;
 
       // ── 1. Render visual proof cards (cropped issue screenshots) ──
-      // Merge screenshot data with structured issue data (fix/before/after)
-      const mergedIssues = (data.issueScreenshots || []).map((ss, i) => ({
-        ...ss,
-        ...(data.issues && data.issues[i] ? {
-          fix:    data.issues[i].fix,
-          before: data.issues[i].before,
-          after:  data.issues[i].after,
-          title:  data.issues[i].title,
-        } : {})
-      }));
-      renderProofCards(mergedIssues);
+      renderProofCards(data.issueScreenshots);
 
       // ── 2. Score ──
       document.getElementById("scoreNumber").textContent = parseScore(analysis);
       document.getElementById("scoreUrl").textContent    = url;
       document.getElementById("scoreReason").textContent = parseScoreReason(analysis);
-      // Show content-changed badge if page was re-analyzed due to changes
-      const existingBadge = document.getElementById("contentChangedBadge");
-      if (existingBadge) existingBadge.remove();
-      if (data.contentChanged) {
-        const badge = document.createElement("div");
-        badge.id = "contentChangedBadge";
-        badge.style.cssText = "text-align:center;margin-bottom:12px;";
-        badge.innerHTML = '<span style="background:#7c3aed22;border:1px solid #7c3aed;color:#a78bfa;border-radius:999px;padding:4px 14px;font-size:0.8rem;">🔄 Page changed — fresh analysis ran</span>';
-        scoreCard.parentNode.insertBefore(badge, scoreCard);
-      }
       scoreCard.style.display = "block";
 
       // ── 3. First Impression ──
