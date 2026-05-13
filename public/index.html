@@ -42,25 +42,12 @@
     .impression-card h3 { color: #a78bfa; margin-bottom: 10px; font-size: 1rem; }
     .impression-card p { color: #ccc; line-height: 1.7; font-size: 0.95rem; }
 
-    /* ── PAIR LAYOUT: each section = issue + fix side by side ── */
-    .section-pair {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-      margin-bottom: 16px;
-      align-items: start;
-    }
-    /* Full-width sections (Mobile, Trust, Hero, Tips, Wins) */
-    .section-full {
-      margin-bottom: 16px;
-    }
-
-    @media(max-width: 650px) {
-      .section-pair { grid-template-columns: 1fr; }
-      .input-area { flex-direction: column; }
-    }
+    /* Cards */
+    .cards-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+    @media(max-width: 650px) { .cards-grid { grid-template-columns: 1fr; } .input-area { flex-direction: column; } }
 
     .card { background: #1a1a2e; border-radius: 14px; padding: 22px; border: 1px solid #2d2d44; }
+    .card.full-width { grid-column: 1 / -1; }
     .card-title { font-size: 1rem; font-weight: bold; margin-bottom: 14px; }
 
     .issue-item { padding: 12px 0; border-bottom: 1px solid #2d2d44; }
@@ -114,7 +101,7 @@
     .wins-list .issue-item { counter-increment: wins; }
     .wins-list .issue-title::before { content: counter(wins); background: #1e3a5f; color: #60a5fa; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: bold; flex-shrink: 0; }
 
-    /* ── Visual Proof Section ── */
+    /* ── Visual Proof Section ─────────────────────────────────── */
     #visualProof { display: none; margin-bottom: 32px; }
     #visualProof h2 {
       font-size: 1.3rem; margin-bottom: 18px;
@@ -134,6 +121,7 @@
       grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
       gap: 16px;
     }
+    /* Base card — UX/default: red */
     .proof-card {
       background: #1a1a2e;
       border: 2px solid #ef4444;
@@ -152,47 +140,120 @@
       text-transform: uppercase;
       letter-spacing: 0.05em;
     }
+    /* Mobile: orange */
     .proof-card.mobile { border-color: #f97316; }
     .proof-card.mobile .proof-card-header { background: rgba(249,115,22,0.12); border-bottom-color: #f97316; }
     .proof-card.mobile .proof-card-type { color: #f97316; }
+    /* Copy: purple */
     .proof-card.copy { border-color: #a78bfa; }
     .proof-card.copy .proof-card-header { background: rgba(167,139,250,0.12); border-bottom-color: #a78bfa; }
     .proof-card.copy .proof-card-type { color: #a78bfa; }
+    /* CTA: blue */
     .proof-card.cta { border-color: #60a5fa; }
     .proof-card.cta .proof-card-header { background: rgba(96,165,250,0.12); border-bottom-color: #60a5fa; }
     .proof-card.cta .proof-card-type { color: #60a5fa; }
+    /* Trust: yellow */
     .proof-card.trust { border-color: #eab308; }
     .proof-card.trust .proof-card-header { background: rgba(234,179,8,0.12); border-bottom-color: #eab308; }
     .proof-card.trust .proof-card-type { color: #eab308; }
 
-    .proof-card-viewport { color: #888; font-size: 0.7rem; margin-top: 2px; }
-    .proof-card img { width: 100%; display: block; }
-    .proof-card-body { padding: 10px 14px; }
-    .proof-card-problem { font-size: 0.82rem; color: #ccc; line-height: 1.55; }
-    .proof-card-target { margin-top: 6px; font-size: 0.75rem; color: #888; font-style: italic; }
-    .proof-empty { color: #555; font-size: 0.9rem; padding: 20px; text-align: center; border: 1px dashed #333; border-radius: 10px; }
+    .proof-card-viewport {
+      color: #888;
+      font-size: 0.7rem;
+      margin-top: 2px;
+    }
+    .proof-card img {
+      width: 100%;
+      display: block;
+    }
+    .proof-card-body {
+      padding: 10px 14px;
+    }
+    .proof-card-problem {
+      font-size: 0.82rem;
+      color: #ccc;
+      line-height: 1.55;
+    }
+    .proof-card-target {
+      margin-top: 6px;
+      font-size: 0.75rem;
+      color: #888;
+      font-style: italic;
+    }
+    .proof-empty {
+      color: #555;
+      font-size: 0.9rem;
+      padding: 20px;
+      text-align: center;
+      border: 1px dashed #333;
+      border-radius: 10px;
+    }
 
     .results-wrapper { display: none; }
 
-    /* IMAGE MODAL */
-    .image-modal {
-      display: none;
-      position: fixed;
-      z-index: 99999;
-      left: 0; top: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.92);
-      justify-content: center;
-      align-items: center;
-      padding: 30px;
-    }
-    .image-modal img { max-width: 95%; max-height: 95%; border-radius: 14px; box-shadow: 0 0 40px rgba(0,0,0,0.7); animation: zoomIn 0.25s ease; }
-    @keyframes zoomIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-    .close-modal { position: absolute; top: 20px; right: 30px; font-size: 42px; color: white; cursor: pointer; font-weight: bold; }
-    .proof-card img { cursor: zoom-in; transition: transform 0.2s ease; }
-    .proof-card img:hover { transform: scale(1.02); }
-    #modalCardContainer { display: flex; justify-content: center; align-items: center; }
-    #modalCardContainer .proof-card { transform: none !important; box-shadow: 0 0 40px rgba(0,0,0,0.7); }
+    /* ───────── IMAGE MODAL ───────── */
+
+.image-modal {
+  display: none;
+  position: fixed;
+  z-index: 99999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.92);
+  justify-content: center;
+  align-items: center;
+  padding: 30px;
+}
+
+.image-modal img {
+  max-width: 95%;
+  max-height: 95%;
+  border-radius: 14px;
+  box-shadow: 0 0 40px rgba(0,0,0,0.7);
+  animation: zoomIn 0.25s ease;
+}
+
+@keyframes zoomIn {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.close-modal {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  font-size: 42px;
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.proof-card img {
+  cursor: zoom-in;
+  transition: transform 0.2s ease;
+}
+
+.proof-card img:hover {
+  transform: scale(1.02);
+}
+#modalCardContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#modalCardContainer .proof-card {
+  transform: none !important;
+  box-shadow: 0 0 40px rgba(0,0,0,0.7);
+}
   </style>
 </head>
 <body>
@@ -213,6 +274,10 @@
     <small>Takes 30–60 seconds (3 steps: scrape → AI → screenshot proofs)</small>
   </div>
 
+  <!-- ══════════════════════════════════════════════════
+       📸  VISUAL PROOF SECTION  (shown after analysis)
+  ═══════════════════════════════════════════════════ -->
+  
   <div class="results-wrapper" id="resultsWrapper">
 
     <!-- Score -->
@@ -229,61 +294,60 @@
       <p id="impressionText"></p>
     </div>
 
-    <!-- ── UX: Issue + Fix side by side ── -->
-    <div class="section-pair">
+    <div class="cards-grid">
+
       <div class="card red">
         <div class="card-title">❌ UX Issues</div>
         <div id="listUX"></div>
       </div>
-      <div class="card green">
+  <div class="card green">
         <div class="card-title">✅ Fix — UX</div>
         <div id="listFixUX"></div>
       </div>
-    </div>
 
-    <!-- ── Copy: Issue + Fix side by side ── -->
-    <div class="section-pair">
       <div class="card yellow">
         <div class="card-title">✍️ Copy Problems</div>
         <div id="listCopy"></div>
       </div>
-      <div class="card green">
+ <div class="card green">
         <div class="card-title">✅ Fix — Copy</div>
         <div id="listFixCopy"></div>
       </div>
-    </div>
 
-    <!-- ── CTA: Issue + Fix side by side ── -->
-    <div class="section-pair">
       <div class="card red">
         <div class="card-title">🔘 CTA Issues</div>
         <div id="listCTA"></div>
       </div>
-      <div class="card green">
+   <div class="card green full-width">
         <div class="card-title">✅ Fix — CTAs</div>
         <div id="listFixCTA"></div>
       </div>
-    </div>
-
-    <!-- ── Mobile (full width, no paired fix) ── -->
-    <div class="section-full">
       <div class="card orange">
         <div class="card-title">📱 Mobile & Accessibility</div>
         <div id="listMobile"></div>
       </div>
-    </div>
 
-    <!-- ── Trust (full width) ── -->
-    <div class="section-full">
-      <div class="card pink">
+      <div class="card pink full-width">
         <div class="card-title">🔒 Trust & Credibility Issues</div>
         <div id="listTrust"></div>
       </div>
-    </div>
 
-    <!-- ── Hero (full width) ── -->
-    <div class="section-full">
-      <div class="card purple">
+      <!-- <div class="card green">
+        <div class="card-title">✅ Fix — UX</div>
+        <div id="listFixUX"></div>
+      </div>
+
+      <div class="card green">
+        <div class="card-title">✅ Fix — Copy</div>
+        <div id="listFixCopy"></div>
+      </div>
+
+      <div class="card green full-width">
+        <div class="card-title">✅ Fix — CTAs</div>
+        <div id="listFixCTA"></div>
+      </div> -->
+
+      <div class="card purple full-width">
         <div class="card-title">🚀 Improved Hero Section</div>
         <div class="hero-box">
           <div class="hero-headline" id="heroHeadline"></div>
@@ -292,55 +356,56 @@
           <div class="hero-trust" id="heroTrust"></div>
         </div>
       </div>
-    </div>
 
-    <!-- ── Tips + Wins side by side ── -->
-    <div class="section-pair">
       <div class="card blue">
         <div class="card-title">📈 Conversion Tips</div>
         <div id="listTips"></div>
       </div>
+
       <div class="card blue">
         <div class="card-title">💡 Quick Wins</div>
         <ul class="wins-list" id="listWins"></ul>
       </div>
+
     </div>
-
   </div>
-
   <div id="visualProof">
     <h2>📸 Visual Issue Proofs</h2>
     <div class="proof-grid" id="proofGrid"></div>
   </div>
 
+  <!-- ══════════════════════════════════════════════════
+       📱  MOBILE PROOF SECTION
+  ═══════════════════════════════════════════════════ -->
   <div id="mobileProof">
     <h2>📱 Mobile & Accessibility Proofs</h2>
     <div class="proof-grid" id="mobileProofGrid"></div>
   </div>
 
 </div>
-
+<!-- IMAGE MODAL -->
 <!-- FULL CARD MODAL -->
 <div id="imageModal" class="image-modal">
   <span class="close-modal">&times;</span>
+
   <div id="modalCardContainer"></div>
 </div>
-
 <script>
-  const urlInput        = document.getElementById("urlInput");
-  const analyzeBtn      = document.getElementById("analyzeBtn");
-  const loading         = document.getElementById("loading");
-  const errorDiv        = document.getElementById("error");
-  const resultsWrapper  = document.getElementById("resultsWrapper");
-  const scoreCard       = document.getElementById("scoreCard");
-  const impressionCard  = document.getElementById("impressionCard");
-  const visualProof     = document.getElementById("visualProof");
-  const proofGrid       = document.getElementById("proofGrid");
-  const mobileProof     = document.getElementById("mobileProof");
+  const urlInput      = document.getElementById("urlInput");
+  const analyzeBtn    = document.getElementById("analyzeBtn");
+  const loading       = document.getElementById("loading");
+  const errorDiv      = document.getElementById("error");
+  const resultsWrapper = document.getElementById("resultsWrapper");
+  const scoreCard     = document.getElementById("scoreCard");
+  const impressionCard = document.getElementById("impressionCard");
+  const visualProof   = document.getElementById("visualProof");
+  const proofGrid     = document.getElementById("proofGrid");
+  const mobileProof   = document.getElementById("mobileProof");
   const mobileProofGrid = document.getElementById("mobileProofGrid");
 
-  const BASE_URL = "";
+  const BASE_URL ="";
 
+  // ── Helpers ──────────────────────────────────────────────────
   function extractSection(text, heading) {
     const escaped = heading.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     const regex = new RegExp(`##\\s*${escaped}[\\s\\S]*?(?=##|$)`, 'i');
@@ -404,13 +469,14 @@
     return { headline: headline.trim(), sub: sub.trim(), cta: cta.trim(), trust: trust.trim() };
   }
 
+  // ── Render Visual Proof Cards ─────────────────────────────────
   function getIssueCategory(type) {
     const t = (type || '').toLowerCase();
-    if (t.includes('mobile')) return 'mobile';
-    if (t.includes('copy'))   return 'copy';
-    if (t.includes('cta'))    return 'cta';
-    if (t.includes('trust'))  return 'trust';
-    return 'ux';
+    if (t.includes('mobile'))  return 'mobile';
+    if (t.includes('copy'))    return 'copy';
+    if (t.includes('cta'))     return 'cta';
+    if (t.includes('trust'))   return 'trust';
+    return 'ux'; // default: UX Issue → red
   }
 
   const categoryMeta = {
@@ -426,7 +492,7 @@
     mobileProofGrid.innerHTML = '';
 
     if (!issueScreenshots || issueScreenshots.length === 0) {
-      proofGrid.innerHTML = '<div class="proof-empty">⚠️ No visual proofs captured.</div>';
+      proofGrid.innerHTML = '<div class="proof-empty">⚠️ No visual proofs captured. The page may have blocked screenshots or no text matched.</div>';
       visualProof.style.display = 'block';
       return;
     }
@@ -434,18 +500,28 @@
     const mobileIssues  = issueScreenshots.filter(i => getIssueCategory(i.type) === 'mobile');
     const regularIssues = issueScreenshots.filter(i => getIssueCategory(i.type) !== 'mobile');
 
+    // ── Regular issues (UX/Copy/CTA/Trust) ──
     if (regularIssues.length > 0) {
-      regularIssues.forEach(issue => { if (issue.screenshot) proofGrid.appendChild(buildProofCard(issue)); });
+      regularIssues.forEach(issue => {
+        if (!issue.screenshot) return;
+        proofGrid.appendChild(buildProofCard(issue));
+      });
       visualProof.style.display = 'block';
     } else {
       proofGrid.innerHTML = '<div class="proof-empty">No UX/CTA/Copy/Trust proofs captured.</div>';
       visualProof.style.display = 'block';
     }
 
+    // ── Mobile issues (orange cards) ──
     if (mobileIssues.length > 0) {
-      mobileIssues.forEach(issue => { if (issue.screenshot) mobileProofGrid.appendChild(buildProofCard(issue)); });
+      mobileIssues.forEach(issue => {
+        if (!issue.screenshot) return;
+        mobileProofGrid.appendChild(buildProofCard(issue));
+      });
       mobileProof.style.display = 'block';
     }
+
+    console.log(`✅ Rendered ${regularIssues.length} issue cards + ${mobileIssues.length} mobile cards.`);
   }
 
   function buildProofCard(issue) {
@@ -472,22 +548,35 @@
     return (str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
 
-  analyzeBtn.addEventListener("click", async () => {
-    let url = urlInput.value.trim();
-    if (!url) return alert("Please enter a URL!");
-    if (!url.startsWith("http://") && !url.startsWith("https://")) url = "https://" + url;
+  // ── Main click handler ────────────────────────────────────────
+  // ── Main click handler ────────────────────────────────────────
+analyzeBtn.addEventListener("click", async () => {
 
-    errorDiv.style.display        = "none";
-    resultsWrapper.style.display  = "none";
-    visualProof.style.display     = "none";
-    mobileProof.style.display     = "none";
-    scoreCard.style.display       = "none";
-    impressionCard.style.display  = "none";
-    proofGrid.innerHTML           = "";
-    mobileProofGrid.innerHTML     = "";
-    loading.style.display         = "block";
-    analyzeBtn.disabled           = true;
-    analyzeBtn.textContent        = "Analyzing...";
+  let url = urlInput.value.trim();
+
+  if (!url) {
+    return alert("Please enter a URL!");
+  }
+
+  // AUTO ADD HTTPS
+  if (!url.startsWith("http://") && !url.startsWith("https://")) {
+    url = "https://" + url;
+  }
+
+  console.log("Final URL:", url);
+
+    // Reset UI
+    errorDiv.style.display       = "none";
+    resultsWrapper.style.display = "none";
+    visualProof.style.display    = "none";
+    mobileProof.style.display    = "none";
+    scoreCard.style.display      = "none";
+    impressionCard.style.display = "none";
+    proofGrid.innerHTML          = "";
+    mobileProofGrid.innerHTML    = "";
+    loading.style.display        = "block";
+    analyzeBtn.disabled          = true;
+    analyzeBtn.textContent       = "Analyzing...";
 
     try {
       const res = await fetch(`/analyze`, {
@@ -506,30 +595,35 @@
 
       const analysis = data.analysis;
 
+      // ── 1. Render visual proof cards (cropped issue screenshots) ──
       renderProofCards(data.issueScreenshots);
 
+      // ── 2. Score ──
       document.getElementById("scoreNumber").textContent = parseScore(analysis);
       document.getElementById("scoreUrl").textContent    = url;
       document.getElementById("scoreReason").textContent = parseScoreReason(analysis);
       scoreCard.style.display = "block";
 
+      // ── 3. First Impression ──
       const impression = extractSection(analysis, '🧠 First Impression Analysis');
       if (impression) {
         document.getElementById("impressionText").textContent = impression.replace(/\*\*/g, '');
         impressionCard.style.display = "block";
       }
 
+      // ── 4. All issue / fix lists ──
       fillDetailedList("listUX",      parseDetailedList(extractSection(analysis, "❌ UX Issues")));
       fillDetailedList("listFixUX",   parseDetailedList(extractSection(analysis, "✅ How To Fix — UX")));
       fillDetailedList("listCopy",    parseDetailedList(extractSection(analysis, "✍️ Copywriting Problems")));
-      fillDetailedList("listFixCopy", parseDetailedList(extractSection(analysis, "✅ How To Fix — Copy")));
       fillDetailedList("listCTA",     parseDetailedList(extractSection(analysis, "🔘 CTA Issues")));
-      fillDetailedList("listFixCTA",  parseDetailedList(extractSection(analysis, "✅ How To Fix — CTAs")));
       fillDetailedList("listMobile",  parseDetailedList(extractSection(analysis, "📱 Mobile & Accessibility Issues")));
       fillDetailedList("listTrust",   parseDetailedList(extractSection(analysis, "🔒 Trust & Credibility Issues")));
+      fillDetailedList("listFixCopy", parseDetailedList(extractSection(analysis, "✅ How To Fix — Copy")));
+      fillDetailedList("listFixCTA",  parseDetailedList(extractSection(analysis, "✅ How To Fix — CTAs")));
       fillDetailedList("listTips",    parseDetailedList(extractSection(analysis, "📈 Conversion Optimization Tips")));
       fillDetailedList("listWins",    parseDetailedList(extractSection(analysis, "💡 Quick Wins")));
 
+      // ── 5. Hero section ──
       const hero = parseHero(analysis);
       document.getElementById("heroHeadline").textContent = hero.headline || "Your improved headline";
       document.getElementById("heroSub").textContent      = hero.sub || "";
@@ -550,30 +644,115 @@
     }
   });
 
-  urlInput.addEventListener("keypress", e => { if (e.key === "Enter") analyzeBtn.click(); });
-
-  const imageModal         = document.getElementById("imageModal");
-  const modalCardContainer = document.getElementById("modalCardContainer");
-  const closeModal         = document.querySelector(".close-modal");
-
-  document.addEventListener("click", (e) => {
-    const card = e.target.closest(".proof-card");
-    if (card) {
-      imageModal.style.display = "flex";
-      modalCardContainer.innerHTML = "";
-      const clonedCard = card.cloneNode(true);
-      clonedCard.style.width    = "900px";
-      clonedCard.style.maxWidth = "95vw";
-      clonedCard.style.cursor   = "default";
-      const img = clonedCard.querySelector("img");
-      if (img) { img.style.maxHeight = "75vh"; img.style.objectFit = "contain"; }
-      modalCardContainer.appendChild(clonedCard);
-    }
+  urlInput.addEventListener("keypress", e => {
+    if (e.key === "Enter") analyzeBtn.click();
   });
+  const imageModal = document.getElementById("imageModal");
+const modalCardContainer = document.getElementById("modalCardContainer");
+const closeModal = document.querySelector(".close-modal");
 
-  closeModal.addEventListener("click", () => { imageModal.style.display = "none"; });
-  imageModal.addEventListener("click", (e) => { if (e.target === imageModal) imageModal.style.display = "none"; });
-  document.addEventListener("keydown", (e) => { if (e.key === "Escape") imageModal.style.display = "none"; });
+// Open FULL CARD
+document.addEventListener("click", (e) => {
+  const card = e.target.closest(".proof-card");
+
+  if (card) {
+    imageModal.style.display = "flex";
+
+    // clone full card
+    modalCardContainer.innerHTML = "";
+    const clonedCard = card.cloneNode(true);
+
+    clonedCard.style.width = "900px";
+    clonedCard.style.maxWidth = "95vw";
+    clonedCard.style.transform = "scale(1)";
+    clonedCard.style.cursor = "default";
+
+    // Bigger image
+    const img = clonedCard.querySelector("img");
+    if (img) {
+      img.style.maxHeight = "75vh";
+      img.style.objectFit = "contain";
+    }
+
+    modalCardContainer.appendChild(clonedCard);
+  }
+});
+
+// Close button
+closeModal.addEventListener("click", () => {
+  imageModal.style.display = "none";
+});
+
+// Close background
+imageModal.addEventListener("click", (e) => {
+  if (e.target === imageModal) {
+    imageModal.style.display = "none";
+  }
+});
+
+// ESC close
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") {
+    imageModal.style.display = "none";
+  }
+});
+function fillCombinedList(containerId, issues, fixes) {
+
+  const container = document.getElementById(containerId);
+
+  if (!issues.length) {
+    container.innerHTML = `
+      <div class="issue-item">
+        <div class="issue-title">No issues found</div>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = issues.map((issue, index) => {
+
+    const fix = fixes[index] || { title: '', detail: '' };
+
+    return `
+      <div class="issue-item">
+
+        <div class="issue-title">
+          ❌ ${issue.title}
+        </div>
+
+        ${issue.detail
+          ? `<div class="issue-detail">${issue.detail}</div>`
+          : ''}
+
+        <div style="
+          margin-top:12px;
+          padding:12px;
+          background:#132a1c;
+          border:1px solid #16a34a;
+          border-radius:10px;
+        ">
+
+          <div style="
+            color:#4ade80;
+            font-weight:bold;
+            margin-bottom:6px;
+          ">
+            ✅ Solution
+          </div>
+
+          <div style="color:#d1fae5; font-size:0.9rem; line-height:1.6;">
+            ${fix.title}
+            ${fix.detail ? `<br><br>${fix.detail}` : ''}
+          </div>
+
+        </div>
+
+      </div>
+    `;
+
+  }).join('');
+}
 </script>
+
 </body>
 </html>
