@@ -613,11 +613,11 @@ analyzeBtn.addEventListener("click", async () => {
 
       // ── 4. All issue / fix lists ──
       fillDetailedList("listUX",      parseDetailedList(extractSection(analysis, "❌ UX Issues")));
+      fillDetailedList("listFixUX",   parseDetailedList(extractSection(analysis, "✅ How To Fix — UX")));
       fillDetailedList("listCopy",    parseDetailedList(extractSection(analysis, "✍️ Copywriting Problems")));
       fillDetailedList("listCTA",     parseDetailedList(extractSection(analysis, "🔘 CTA Issues")));
       fillDetailedList("listMobile",  parseDetailedList(extractSection(analysis, "📱 Mobile & Accessibility Issues")));
       fillDetailedList("listTrust",   parseDetailedList(extractSection(analysis, "🔒 Trust & Credibility Issues")));
-      fillDetailedList("listFixUX",   parseDetailedList(extractSection(analysis, "✅ How To Fix — UX")));
       fillDetailedList("listFixCopy", parseDetailedList(extractSection(analysis, "✅ How To Fix — Copy")));
       fillDetailedList("listFixCTA",  parseDetailedList(extractSection(analysis, "✅ How To Fix — CTAs")));
       fillDetailedList("listTips",    parseDetailedList(extractSection(analysis, "📈 Conversion Optimization Tips")));
