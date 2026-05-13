@@ -61,7 +61,8 @@
     .card.red .issue-title { color: #fca5a5; }
     .card.red .issue-title::before { color: #f87171; }
 
-    .card.green { border-color: #16a34a; }
+    .card.green { border-color: #16a34a;
+    full-width:none; }
     .card.green .card-title { color: #4ade80; }
     .card.green .issue-title { color: #86efac; }
     .card.green .issue-title::before { color: #4ade80; }
@@ -214,6 +215,9 @@
   box-shadow: 0 0 40px rgba(0,0,0,0.7);
   animation: zoomIn 0.25s ease;
 }
+.card.full-width {
+    /* grid-column: 1 / -1; */
+}
 
 @keyframes zoomIn {
   from {
@@ -318,7 +322,7 @@
         <div class="card-title">🔘 CTA Issues</div>
         <div id="listCTA"></div>
       </div>
-   <div class="card green full-width">
+   <div class="card green">
         <div class="card-title">✅ Fix — CTAs</div>
         <div id="listFixCTA"></div>
       </div>
