@@ -296,7 +296,7 @@
 
     <div class="cards-grid">
 
-      <!-- <div class="card red">
+      <div class="card red">
         <div class="card-title">❌ UX Issues</div>
         <div id="listUX"></div>
       </div>
@@ -321,21 +321,7 @@
    <div class="card green full-width">
         <div class="card-title">✅ Fix — CTAs</div>
         <div id="listFixCTA"></div>
-      </div> -->
-      <div class="card red">
-  <div class="card-title">❌ UX Issues & Fixes</div>
-  <div id="listUXCombined"></div>
-</div>
-
-<div class="card yellow">
-  <div class="card-title">✍️ Copy Issues & Fixes</div>
-  <div id="listCopyCombined"></div>
-</div>
-
-<div class="card blue full-width">
-  <div class="card-title">🔘 CTA Issues & Fixes</div>
-  <div id="listCTACombined"></div>
-</div>
+      </div>
       <div class="card orange">
         <div class="card-title">📱 Mobile & Accessibility</div>
         <div id="listMobile"></div>
@@ -630,10 +616,10 @@ analyzeBtn.addEventListener("click", async () => {
       fillDetailedList("listFixUX",   parseDetailedList(extractSection(analysis, "✅ How To Fix — UX")));
       fillDetailedList("listCopy",    parseDetailedList(extractSection(analysis, "✍️ Copywriting Problems")));
       fillDetailedList("listCTA",     parseDetailedList(extractSection(analysis, "🔘 CTA Issues")));
-      fillDetailedList("listFixCopy", parseDetailedList(extractSection(analysis, "✅ How To Fix — Copy")));
-      fillDetailedList("listFixCTA",  parseDetailedList(extractSection(analysis, "✅ How To Fix — CTAs")));
       fillDetailedList("listMobile",  parseDetailedList(extractSection(analysis, "📱 Mobile & Accessibility Issues")));
       fillDetailedList("listTrust",   parseDetailedList(extractSection(analysis, "🔒 Trust & Credibility Issues")));
+      fillDetailedList("listFixCopy", parseDetailedList(extractSection(analysis, "✅ How To Fix — Copy")));
+      fillDetailedList("listFixCTA",  parseDetailedList(extractSection(analysis, "✅ How To Fix — CTAs")));
       fillDetailedList("listTips",    parseDetailedList(extractSection(analysis, "📈 Conversion Optimization Tips")));
       fillDetailedList("listWins",    parseDetailedList(extractSection(analysis, "💡 Quick Wins")));
 
