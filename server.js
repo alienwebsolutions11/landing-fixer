@@ -3,8 +3,7 @@ import express from "express";
 import dotenv from "dotenv";
 import { scrapePage } from "./src/scraper.js";
 import { analyzePage } from "./src/agent.js";
-import lighthouse from "lighthouse";
-import chromeLauncher from "chrome-launcher";
+
 dotenv.config();
 
 const app = express();
@@ -46,7 +45,6 @@ app.post("/cache/clear", (req, res) => {
   console.log(`🗑️  Entire cache cleared (${count} entries)`);
   res.json({ success: true, cleared: count });
 });
-
 app.post("/analyze", async (req, res) => {
   const { url } = req.body;
 
