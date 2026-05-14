@@ -664,6 +664,8 @@ export async function analyzePage(scrapedContent) {
     });
 
     const pageData = `
+    LIGHTHOUSE:
+${JSON.stringify(c.lighthouse, null, 2)}
 TITLE: ${cap(c.title, 80)}
 META: ${cap(c.metaDescription, 150)}
 H1: ${lim(c.h1, 3).join(" | ")}
@@ -674,12 +676,33 @@ ${lim(c.paragraphs, 10).map(p => cap(p, 250)).join("\n")}
 CTAs: ${lim(c.buttons, 6).join(" | ")}
 NAV:  ${lim(c.navLinks, 6).join(" | ")}
 IMAGES: ${lim(c.images, 4).join(" | ")}
-`.trim();
+STATS:
+${JSON.stringify(c.stats, null, 2)}
 
+ACCESSIBILITY:
+${JSON.stringify(c.accessibility, null, 2)}
+
+SECTIONS:
+${JSON.stringify(c.sections, null, 2)}
+
+HERO:
+${JSON.stringify(c.hero, null, 2)}
+`.trim();
+const heuristics = {
+  hasFAQ: c.stats?.faq > 0,
+  hasTestimonials: c.stats?.testimonials > 0,
+  hasForms: c.stats?.forms > 0,
+  hasSocialLinks: c.stats?.socialLinks > 0,
+  hasVideos: c.stats?.videos > 0,
+};
     const prompt = `
+    Calculated Conversion Score:
+${calculatedScore}/100
 You are a senior UX & conversion rate expert writing a premium paid audit report.
 
 PAGE DATA (all cookie/GDPR banners already removed — focus ONLY on the real page):
+HEURISTICS:
+${JSON.stringify(heuristics, null, 2)}
 ${pageData}
 
 STRICTLY BANNED issue topics — DO NOT raise these under any category:
@@ -853,7 +876,24 @@ RULES — non-negotiable:
 6. context required for UX Issue
 7. targetText max 8 words
 `;
+let calculatedScore = 50;
 
+if (heuristics.hasFAQ)
+  calculatedScore += 10;
+
+if (heuristics.hasTestimonials)
+  calculatedScore += 15;
+
+if (heuristics.hasForms)
+  calculatedScore += 10;
+
+if (heuristics.hasSocialLinks)
+  calculatedScore += 5;
+
+if (!c.accessibility?.missingH1)
+  calculatedScore += 10;
+
+calculatedScore = Math.min(100, calculatedScore);
     const resp = await groq.chat.completions.create({
       model: "llama-3.3-70b-versatile",
       messages: [
