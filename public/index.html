@@ -340,6 +340,15 @@
       padding-bottom: 8px;
       border-bottom: 1px solid #1e1e2e;
     }
+    #techScores .score-number{
+  font-size: 3rem;
+  font-weight: 800;
+  margin-top: 10px;
+}
+
+#techScores .card{
+  text-align:center;
+}
   </style>
 </head>
 <body>
@@ -369,7 +378,25 @@
       <div class="score-url" id="scoreUrl"></div>
       <div class="score-reason" id="scoreReason"></div>
     </div>
+<!-- Lighthouse Scores -->
+<div class="cards-grid" id="techScores">
 
+  <div class="card blue">
+    <div class="card-title">⚡ Performance</div>
+    <div class="score-number" id="perfScore">0</div>
+  </div>
+
+  <div class="card orange">
+    <div class="card-title">♿ Accessibility</div>
+    <div class="score-number" id="accessScore">0</div>
+  </div>
+
+  <div class="card purple">
+    <div class="card-title">🔎 SEO</div>
+    <div class="score-number" id="seoScore">0</div>
+  </div>
+
+</div>
     <!-- First Impression -->
     <div class="impression-card" id="impressionCard">
       <h3>🧠 First Impression Analysis</h3>
@@ -971,7 +998,17 @@
       if (!data.analysis) throw new Error("No analysis returned from AI");
 
       const analysis = data.analysis;
+if(data?.lighthouse){
 
+  document.getElementById("perfScore").textContent =
+    data.lighthouse.performance || 0;
+
+  document.getElementById("accessScore").textContent =
+    data.lighthouse.accessibility || 0;
+
+  document.getElementById("seoScore").textContent =
+    data.lighthouse.seo || 0;
+}
       // 1. Visual proof cards
       renderProofCards(data.issueScreenshots);
 
