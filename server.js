@@ -46,34 +46,7 @@ app.post("/cache/clear", (req, res) => {
   console.log(`🗑️  Entire cache cleared (${count} entries)`);
   res.json({ success: true, cleared: count });
 });
-async function runLighthouse(url) {
-  const chrome = await chromeLauncher.launch({
-    chromeFlags: ["--headless"]
-  });
 
-  const result = await lighthouse(url, {
-    port: chrome.port
-  });
-
-  await chrome.kill();
-
-  return {
-    performance:
-      Math.round(
-        result.lhr.categories.performance.score * 100
-      ),
-
-    accessibility:
-      Math.round(
-        result.lhr.categories.accessibility.score * 100
-      ),
-
-    seo:
-      Math.round(
-        result.lhr.categories.seo.score * 100
-      ),
-  };
-}
 app.post("/analyze", async (req, res) => {
   const { url } = req.body;
 
@@ -107,11 +80,7 @@ app.post("/analyze", async (req, res) => {
     // ── Step 1: Initial scrape (content only, no highlights) ──────────────
     console.log("Step 1: Scraping page content...");
     const scrapedContent = await scrapePage(url);
-const lighthouseData =
-  await runLighthouse(url);
 
-scrapedContent.lighthouse =
-  lighthouseData;
     // ── Step 2: AI analysis ────────────────────────────────────────────────
     console.log("Step 2: Running AI analysis...");
     const analysis = await analyzePage(scrapedContent);
