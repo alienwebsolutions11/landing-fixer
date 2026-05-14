@@ -4,257 +4,305 @@
   <meta charset="UTF-8">
   <title>AI Landing Page Analyzer</title>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;700&family=Syne:wght@400;600;800&display=swap');
+
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Segoe UI', Arial, sans-serif; background: #0f0f1a; color: #fff; min-height: 100vh; padding: 40px 20px; }
-    .container { max-width: 960px; margin: 0 auto; }
+    body { font-family: 'Syne', Arial, sans-serif; background: #0a0a12; color: #e8e8f0; min-height: 100vh; padding: 40px 20px; }
+    .container { max-width: 980px; margin: 0 auto; }
 
     h1 {
-      text-align: center; font-size: 2.2rem; margin-bottom: 8px;
+      text-align: center; font-size: 2.4rem; font-weight: 800; margin-bottom: 8px;
       background: linear-gradient(135deg, #a78bfa, #60a5fa);
       -webkit-background-clip: text; background-clip: text;
       -webkit-text-fill-color: transparent; color: transparent;
     }
-    p.subtitle { text-align: center; color: #888; margin-bottom: 32px; }
+    p.subtitle { text-align: center; color: #666; margin-bottom: 32px; font-size: 0.95rem; }
 
     .input-area { display: flex; gap: 10px; margin-bottom: 32px; }
-    input { flex: 1; padding: 14px 18px; border-radius: 12px; border: 2px solid #2d2d44; background: #1a1a2e; color: white; font-size: 15px; outline: none; transition: border 0.2s; }
+    input { flex: 1; padding: 14px 18px; border-radius: 12px; border: 2px solid #2d2d44; background: #13131f; color: #e8e8f0; font-size: 15px; font-family: 'IBM Plex Mono', monospace; outline: none; transition: border 0.2s; }
     input:focus { border-color: #7c3aed; }
-    button#analyzeBtn { padding: 14px 28px; background: linear-gradient(135deg, #7c3aed, #4f46e5); color: white; border: none; border-radius: 12px; cursor: pointer; font-size: 15px; font-weight: bold; }
-    button#analyzeBtn:disabled { background: #333; cursor: not-allowed; }
+    button#analyzeBtn { padding: 14px 28px; background: linear-gradient(135deg, #7c3aed, #4f46e5); color: white; border: none; border-radius: 12px; cursor: pointer; font-size: 15px; font-weight: 700; font-family: 'Syne', sans-serif; letter-spacing: 0.02em; transition: opacity 0.2s; }
+    button#analyzeBtn:hover:not(:disabled) { opacity: 0.88; }
+    button#analyzeBtn:disabled { background: #2a2a3a; color: #555; cursor: not-allowed; }
 
     .loading { text-align: center; padding: 50px; display: none; }
     .spinner { font-size: 2.5rem; animation: spin 1s linear infinite; display: inline-block; }
     @keyframes spin { to { transform: rotate(360deg); } }
     .loading p { color: #a78bfa; margin-top: 12px; font-size: 1.1rem; }
-    .loading small { color: #555; }
+    .loading small { color: #444; }
 
-    .error { background: #2d1b1b; border: 1px solid #dc2626; border-radius: 12px; padding: 16px; color: #f87171; display: none; margin-bottom: 20px; }
+    .error { background: #1e0f0f; border: 1px solid #dc2626; border-radius: 12px; padding: 16px; color: #f87171; display: none; margin-bottom: 20px; font-size: 0.9rem; }
 
     /* Score */
-    .score-card { background: linear-gradient(135deg, #1e1b4b, #1a1a2e); border: 1px solid #4f46e5; border-radius: 16px; padding: 28px; text-align: center; margin-bottom: 24px; display: none; }
-    .score-number { font-size: 5rem; font-weight: bold; background: linear-gradient(135deg, #a78bfa, #60a5fa); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent; }
-    .score-label { color: #888; font-size: 1rem; margin-top: 4px; }
-    .score-url { color: #60a5fa; font-size: 0.9rem; margin-top: 8px; word-break: break-all; }
-    .score-reason { color: #aaa; font-size: 0.95rem; margin-top: 12px; line-height: 1.6; max-width: 600px; margin-left: auto; margin-right: auto; }
+    .score-card { background: linear-gradient(135deg, #141030, #0f0f1e); border: 1px solid #4f46e5; border-radius: 16px; padding: 28px; text-align: center; margin-bottom: 24px; display: none; }
+    .score-number { font-size: 5rem; font-weight: 800; background: linear-gradient(135deg, #a78bfa, #60a5fa); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent; }
+    .score-label { color: #666; font-size: 1rem; margin-top: 4px; }
+    .score-url { color: #60a5fa; font-size: 0.85rem; margin-top: 8px; word-break: break-all; font-family: 'IBM Plex Mono', monospace; }
+    .score-reason { color: #999; font-size: 0.92rem; margin-top: 12px; line-height: 1.7; max-width: 600px; margin-left: auto; margin-right: auto; }
 
     /* First Impression */
-    .impression-card { background: #1a1a2e; border: 1px solid #7c3aed; border-radius: 14px; padding: 24px; margin-bottom: 20px; display: none; }
+    .impression-card { background: #13131f; border: 1px solid #7c3aed; border-radius: 14px; padding: 24px; margin-bottom: 20px; display: none; }
     .impression-card h3 { color: #a78bfa; margin-bottom: 10px; font-size: 1rem; }
-    .impression-card p { color: #ccc; line-height: 1.7; font-size: 0.95rem; }
+    .impression-card p { color: #bbb; line-height: 1.75; font-size: 0.93rem; }
 
-    /* Cards */
+    /* Cards Grid */
     .cards-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
-    @media(max-width: 650px) { .cards-grid { grid-template-columns: 1fr; } .input-area { flex-direction: column; } }
+    @media(max-width: 660px) { .cards-grid { grid-template-columns: 1fr; } .input-area { flex-direction: column; } }
 
-    .card { background: #1a1a2e; border-radius: 14px; padding: 22px; border: 1px solid #2d2d44; }
+    .card { background: #13131f; border-radius: 14px; padding: 22px; border: 1px solid #2a2a3a; }
     .card.full-width { grid-column: 1 / -1; }
-    .card-title { font-size: 1rem; font-weight: bold; margin-bottom: 14px; }
+    .card-title { font-size: 1rem; font-weight: 700; margin-bottom: 16px; letter-spacing: 0.01em; }
 
-    .issue-item { padding: 12px 0; border-bottom: 1px solid #2d2d44; }
-    .issue-item:last-child { border-bottom: none; }
-    .issue-title { font-size: 0.9rem; font-weight: bold; margin-bottom: 4px; display: flex; gap: 8px; align-items: flex-start; }
-    .issue-title::before { content: "•"; flex-shrink: 0; }
-    .issue-detail { font-size: 0.85rem; color: #999; line-height: 1.6; padding-left: 16px; }
+    /* ── DROPDOWN ISSUE ITEMS ──────────────────────────────── */
+    .issue-accordion { border-radius: 10px; overflow: hidden; margin-bottom: 8px; border: 1px solid transparent; transition: border-color 0.2s; }
+    .issue-accordion:last-child { margin-bottom: 0; }
 
-    .card.red { border-color: #dc2626; }
+    /* Summary (always visible) */
+    .issue-summary {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 14px;
+      cursor: pointer;
+      user-select: none;
+      background: rgba(255,255,255,0.03);
+      border-radius: 10px;
+      list-style: none;
+      transition: background 0.18s;
+      font-size: 0.88rem;
+      font-weight: 600;
+    }
+    .issue-summary::-webkit-details-marker { display: none; }
+    .issue-summary:hover { background: rgba(255,255,255,0.06); }
+
+    .issue-summary .issue-badge {
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 20px;
+      white-space: nowrap;
+      flex-shrink: 0;
+      font-family: 'IBM Plex Mono', monospace;
+      letter-spacing: 0.04em;
+    }
+
+    .issue-summary .issue-chevron {
+      margin-left: auto;
+      flex-shrink: 0;
+      transition: transform 0.22s ease;
+      opacity: 0.5;
+      font-size: 0.8rem;
+    }
+    details[open] .issue-chevron { transform: rotate(90deg); }
+    details[open] .issue-summary { border-radius: 10px 10px 0 0; }
+    details[open] { border-color: inherit; }
+
+    /* Detail panel */
+    .issue-detail-panel {
+      padding: 14px 16px 16px;
+      background: rgba(0,0,0,0.25);
+      border-radius: 0 0 10px 10px;
+      animation: fadeSlide 0.18s ease;
+    }
+    @keyframes fadeSlide {
+      from { opacity: 0; transform: translateY(-4px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .issue-detail-text {
+      font-size: 0.83rem;
+      color: #999;
+      line-height: 1.65;
+      margin-bottom: 14px;
+    }
+
+    /* Solution box */
+    .solution-box {
+      background: #0c1e12;
+      border: 1px solid #1a4a28;
+      border-radius: 10px;
+      padding: 14px 16px;
+    }
+    .solution-label {
+      color: #4ade80;
+      font-weight: 700;
+      font-size: 0.82rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .solution-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .solution-step {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+    .step-num {
+      background: #1a4a28;
+      color: #4ade80;
+      font-weight: 700;
+      font-size: 0.7rem;
+      font-family: 'IBM Plex Mono', monospace;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .step-text {
+      font-size: 0.83rem;
+      color: #c6f6d5;
+      line-height: 1.6;
+    }
+
+    /* Before / After for copy & CTA */
+    .before-after {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    @media(max-width: 500px) { .before-after { grid-template-columns: 1fr; } }
+    .ba-box { border-radius: 8px; padding: 10px 12px; }
+    .ba-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 4px; font-family: 'IBM Plex Mono', monospace; }
+    .ba-box.before { background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.25); }
+    .ba-box.before .ba-label { color: #f87171; }
+    .ba-box.before .ba-text  { color: #fca5a5; font-size: 0.83rem; line-height: 1.5; }
+    .ba-box.after  { background: rgba(74,222,128,0.08); border: 1px solid rgba(74,222,128,0.25); }
+    .ba-box.after  .ba-label { color: #4ade80; }
+    .ba-box.after  .ba-text  { color: #c6f6d5; font-size: 0.83rem; line-height: 1.5; }
+
+    /* Resource link */
+    .resource-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 12px;
+      font-size: 0.76rem;
+      color: #60a5fa;
+      text-decoration: none;
+      font-family: 'IBM Plex Mono', monospace;
+      border: 1px solid rgba(96,165,250,0.25);
+      border-radius: 6px;
+      padding: 4px 10px;
+      transition: background 0.15s;
+    }
+    .resource-link:hover { background: rgba(96,165,250,0.1); }
+
+    /* Card colors */
+    .card.red  { border-color: #7f1d1d; }
     .card.red .card-title { color: #f87171; }
-    .card.red .issue-title { color: #fca5a5; }
-    .card.red .issue-title::before { color: #f87171; }
+    .card.red .issue-accordion { border-color: #7f1d1d; }
+    .card.red .issue-summary   { color: #fca5a5; }
+    .card.red .issue-badge     { background: rgba(239,68,68,0.15); color: #f87171; }
+    .card.red details[open]    { border-color: #dc2626; }
 
-    .card.green { border-color: #16a34a;
-     }
-    .card.green .card-title { color: #4ade80; }
-    .card.green .issue-title { color: #86efac; }
-    .card.green .issue-title::before { color: #4ade80; }
-
-    .card.yellow { border-color: #ca8a04; }
+    .card.yellow { border-color: #713f12; }
     .card.yellow .card-title { color: #facc15; }
-    .card.yellow .issue-title { color: #fde68a; }
-    .card.yellow .issue-title::before { color: #facc15; }
+    .card.yellow .issue-accordion { border-color: #713f12; }
+    .card.yellow .issue-summary   { color: #fde68a; }
+    .card.yellow .issue-badge     { background: rgba(250,204,21,0.12); color: #facc15; }
+    .card.yellow details[open]    { border-color: #ca8a04; }
 
-    .card.blue { border-color: #2563eb; }
+    .card.blue { border-color: #1e3a5f; }
     .card.blue .card-title { color: #60a5fa; }
-    .card.blue .issue-title { color: #93c5fd; }
-    .card.blue .issue-title::before { color: #60a5fa; }
+    .card.blue .issue-accordion { border-color: #1e3a5f; }
+    .card.blue .issue-summary   { color: #93c5fd; }
+    .card.blue .issue-badge     { background: rgba(96,165,250,0.12); color: #60a5fa; }
+    .card.blue details[open]    { border-color: #2563eb; }
 
-    .card.purple { border-color: #7c3aed; }
-    .card.purple .card-title { color: #a78bfa; }
-
-    .card.orange { border-color: #ea580c; }
+    .card.orange { border-color: #7c2d12; }
     .card.orange .card-title { color: #fb923c; }
-    .card.orange .issue-title { color: #fdba74; }
-    .card.orange .issue-title::before { color: #fb923c; }
+    .card.orange .issue-accordion { border-color: #7c2d12; }
+    .card.orange .issue-summary   { color: #fdba74; }
+    .card.orange .issue-badge     { background: rgba(249,115,22,0.12); color: #fb923c; }
+    .card.orange details[open]    { border-color: #ea580c; }
 
-    .card.pink { border-color: #db2777; }
+    .card.pink { border-color: #831843; }
     .card.pink .card-title { color: #f472b6; }
-    .card.pink .issue-title { color: #fbcfe8; }
-    .card.pink .issue-title::before { color: #f472b6; }
+    .card.pink .issue-accordion { border-color: #831843; }
+    .card.pink .issue-summary   { color: #fbcfe8; }
+    .card.pink .issue-badge     { background: rgba(244,114,182,0.12); color: #f472b6; }
+    .card.pink details[open]    { border-color: #db2777; }
 
-    /* Hero */
-    .hero-box { background: #0f172a; border-radius: 10px; padding: 20px; margin-top: 10px; }
-    .hero-headline { font-size: 1.3rem; font-weight: bold; color: #a78bfa; margin-bottom: 8px; }
-    .hero-sub { color: #94a3b8; font-size: 0.95rem; margin-bottom: 12px; line-height: 1.5; }
-    .hero-cta { display: inline-block; background: #7c3aed; color: white; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; font-weight: bold; margin-bottom: 8px; }
-    .hero-trust { color: #64748b; font-size: 0.8rem; margin-top: 8px; }
+    .card.purple { border-color: #4c1d95; }
+    .card.purple .card-title { color: #a78bfa; }
 
     /* Quick wins numbered */
     .wins-list { counter-reset: wins; list-style: none; padding: 0; }
-    .wins-list .issue-item { counter-increment: wins; }
-    .wins-list .issue-title::before { content: counter(wins); background: #1e3a5f; color: #60a5fa; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: bold; flex-shrink: 0; }
+    .wins-list .issue-accordion { counter-increment: wins; }
+    .wins-list .issue-badge::before { content: counter(wins); }
 
-    /* ── Visual Proof Section ─────────────────────────────────── */
+    /* Hero */
+    .hero-box { background: #0a0d1a; border-radius: 10px; padding: 20px; margin-top: 10px; }
+    .hero-headline { font-size: 1.3rem; font-weight: 800; color: #a78bfa; margin-bottom: 8px; }
+    .hero-sub { color: #8892b0; font-size: 0.93rem; margin-bottom: 12px; line-height: 1.55; }
+    .hero-cta { display: inline-block; background: #7c3aed; color: white; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; font-weight: 700; margin-bottom: 8px; }
+    .hero-trust { color: #4a5568; font-size: 0.8rem; margin-top: 8px; }
+
+    /* Visual Proof */
     #visualProof { display: none; margin-bottom: 32px; }
-    #visualProof h2 {
-      font-size: 1.3rem; margin-bottom: 18px;
-      background: linear-gradient(135deg, #f87171, #fb923c);
-      -webkit-background-clip: text; background-clip: text;
-      -webkit-text-fill-color: transparent; color: transparent;
-    }
+    #visualProof h2 { font-size: 1.3rem; margin-bottom: 18px; background: linear-gradient(135deg, #f87171, #fb923c); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent; }
     #mobileProof { display: none; margin-bottom: 32px; }
-    #mobileProof h2 {
-      font-size: 1.3rem; margin-bottom: 18px;
-      background: linear-gradient(135deg, #fb923c, #fbbf24);
-      -webkit-background-clip: text; background-clip: text;
-      -webkit-text-fill-color: transparent; color: transparent;
-    }
-    .proof-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap: 16px;
-    }
-    /* Base card — UX/default: red */
-    .proof-card {
-      background: #1a1a2e;
-      border: 2px solid #ef4444;
-      border-radius: 12px;
-      overflow: hidden;
-    }
-    .proof-card-header {
-      padding: 10px 14px;
-      background: rgba(239,68,68,0.12);
-      border-bottom: 1px solid #ef4444;
-    }
-    .proof-card-type {
-      color: #ef4444;
-      font-weight: bold;
-      font-size: 0.8rem;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-    /* Mobile: orange */
-    .proof-card.mobile { border-color: #f97316; }
-    .proof-card.mobile .proof-card-header { background: rgba(249,115,22,0.12); border-bottom-color: #f97316; }
-    .proof-card.mobile .proof-card-type { color: #f97316; }
-    /* Copy: purple */
-    .proof-card.copy { border-color: #a78bfa; }
-    .proof-card.copy .proof-card-header { background: rgba(167,139,250,0.12); border-bottom-color: #a78bfa; }
-    .proof-card.copy .proof-card-type { color: #a78bfa; }
-    /* CTA: blue */
-    .proof-card.cta { border-color: #60a5fa; }
-    .proof-card.cta .proof-card-header { background: rgba(96,165,250,0.12); border-bottom-color: #60a5fa; }
-    .proof-card.cta .proof-card-type { color: #60a5fa; }
-    /* Trust: yellow */
-    .proof-card.trust { border-color: #eab308; }
-    .proof-card.trust .proof-card-header { background: rgba(234,179,8,0.12); border-bottom-color: #eab308; }
-    .proof-card.trust .proof-card-type { color: #eab308; }
+    #mobileProof h2 { font-size: 1.3rem; margin-bottom: 18px; background: linear-gradient(135deg, #fb923c, #fbbf24); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent; }
 
-    .proof-card-viewport {
-      color: #888;
-      font-size: 0.7rem;
-      margin-top: 2px;
-    }
-    .proof-card img {
-      width: 100%;
-      display: block;
-    }
-    .proof-card-body {
-      padding: 10px 14px;
-    }
-    .proof-card-problem {
-      font-size: 0.82rem;
-      color: #ccc;
-      line-height: 1.55;
-    }
-    .proof-card-target {
-      margin-top: 6px;
-      font-size: 0.75rem;
-      color: #888;
-      font-style: italic;
-    }
-    .proof-empty {
-      color: #555;
-      font-size: 0.9rem;
-      padding: 20px;
-      text-align: center;
-      border: 1px dashed #333;
-      border-radius: 10px;
-    }
+    .proof-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+
+    .proof-card { background: #13131f; border: 2px solid #ef4444; border-radius: 12px; overflow: hidden; cursor: zoom-in; transition: transform 0.18s; }
+    .proof-card:hover { transform: translateY(-2px); }
+    .proof-card-header { padding: 10px 14px; background: rgba(239,68,68,0.1); border-bottom: 1px solid #ef4444; }
+    .proof-card-type { color: #ef4444; font-weight: 700; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; }
+    .proof-card.mobile { border-color: #f97316; }
+    .proof-card.mobile .proof-card-header { background: rgba(249,115,22,0.1); border-bottom-color: #f97316; }
+    .proof-card.mobile .proof-card-type { color: #f97316; }
+    .proof-card.copy { border-color: #a78bfa; }
+    .proof-card.copy .proof-card-header { background: rgba(167,139,250,0.1); border-bottom-color: #a78bfa; }
+    .proof-card.copy .proof-card-type { color: #a78bfa; }
+    .proof-card.cta { border-color: #60a5fa; }
+    .proof-card.cta .proof-card-header { background: rgba(96,165,250,0.1); border-bottom-color: #60a5fa; }
+    .proof-card.cta .proof-card-type { color: #60a5fa; }
+    .proof-card.trust { border-color: #eab308; }
+    .proof-card.trust .proof-card-header { background: rgba(234,179,8,0.1); border-bottom-color: #eab308; }
+    .proof-card.trust .proof-card-type { color: #eab308; }
+    .proof-card-viewport { color: #555; font-size: 0.7rem; margin-top: 2px; }
+    .proof-card img { width: 100%; display: block; }
+    .proof-card-body { padding: 10px 14px; }
+    .proof-card-problem { font-size: 0.82rem; color: #bbb; line-height: 1.55; }
+    .proof-card-target { margin-top: 6px; font-size: 0.74rem; color: #555; font-style: italic; font-family: 'IBM Plex Mono', monospace; }
+    .proof-empty { color: #444; font-size: 0.9rem; padding: 20px; text-align: center; border: 1px dashed #2a2a3a; border-radius: 10px; }
 
     .results-wrapper { display: none; }
 
-    /* ───────── IMAGE MODAL ───────── */
+    /* Modal */
+    .image-modal { display: none; position: fixed; z-index: 99999; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.93); justify-content: center; align-items: center; padding: 30px; }
+    .close-modal { position: absolute; top: 20px; right: 30px; font-size: 42px; color: white; cursor: pointer; font-weight: bold; line-height: 1; }
+    #modalCardContainer { display: flex; justify-content: center; align-items: center; }
+    #modalCardContainer .proof-card { transform: none !important; box-shadow: 0 0 60px rgba(0,0,0,0.8); cursor: default; }
+    @keyframes zoomIn { from { transform: scale(0.85); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    #modalCardContainer .proof-card { animation: zoomIn 0.22s ease; }
 
-.image-modal {
-  display: none;
-  position: fixed;
-  z-index: 99999;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.92);
-  justify-content: center;
-  align-items: center;
-  padding: 30px;
-}
-
-.image-modal img {
-  max-width: 95%;
-  max-height: 95%;
-  border-radius: 14px;
-  box-shadow: 0 0 40px rgba(0,0,0,0.7);
-  animation: zoomIn 0.25s ease;
-}
-
-@keyframes zoomIn {
-  from {
-    transform: scale(0.8);
-    opacity: 0;
-  }
-  to {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-
-.close-modal {
-  position: absolute;
-  top: 20px;
-  right: 30px;
-  font-size: 42px;
-  color: white;
-  cursor: pointer;
-  font-weight: bold;
-}
-
-.proof-card img {
-  cursor: zoom-in;
-  transition: transform 0.2s ease;
-}
-
-.proof-card img:hover {
-  transform: scale(1.02);
-}
-#modalCardContainer {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-#modalCardContainer .proof-card {
-  transform: none !important;
-  box-shadow: 0 0 40px rgba(0,0,0,0.7);
-}
+    /* Section divider */
+    .section-title {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #444;
+      font-family: 'IBM Plex Mono', monospace;
+      margin: 28px 0 14px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #1e1e2e;
+    }
   </style>
 </head>
 <body>
@@ -275,10 +323,6 @@
     <small>Takes 30–60 seconds (3 steps: scrape → AI → screenshot proofs)</small>
   </div>
 
-  <!-- ══════════════════════════════════════════════════
-       📸  VISUAL PROOF SECTION  (shown after analysis)
-  ═══════════════════════════════════════════════════ -->
-  
   <div class="results-wrapper" id="resultsWrapper">
 
     <!-- Score -->
@@ -295,59 +339,41 @@
       <p id="impressionText"></p>
     </div>
 
+    <div class="section-title">Issues & Solutions</div>
+
     <div class="cards-grid">
 
-      <div class="card red">
+      <!-- UX Issues — dropdown with solutions -->
+      <div class="card red full-width">
         <div class="card-title">❌ UX Issues</div>
         <div id="listUX"></div>
       </div>
-  <div class="card green">
-        <div class="card-title">✅ Fix — UX</div>
-        <div id="listFixUX"></div>
-      </div>
 
-      <div class="card yellow">
+      <!-- Copy Problems — dropdown with solutions -->
+      <div class="card yellow full-width">
         <div class="card-title">✍️ Copy Problems</div>
         <div id="listCopy"></div>
       </div>
- <div class="card green">
-        <div class="card-title">✅ Fix — Copy</div>
-        <div id="listFixCopy"></div>
-      </div>
 
-      <div class="card red">
+      <!-- CTA Issues — dropdown with solutions -->
+      <div class="card blue">
         <div class="card-title">🔘 CTA Issues</div>
         <div id="listCTA"></div>
       </div>
-   <div class="card green">
-        <div class="card-title">✅ Fix — CTAs</div>
-        <div id="listFixCTA"></div>
+
+      <!-- Trust Issues — dropdown with solutions -->
+      <div class="card pink">
+        <div class="card-title">🔒 Trust & Credibility</div>
+        <div id="listTrust"></div>
       </div>
-      <div class="card orange">
+
+      <!-- Mobile Issues — dropdown with solutions -->
+      <div class="card orange full-width">
         <div class="card-title">📱 Mobile & Accessibility</div>
         <div id="listMobile"></div>
       </div>
 
-      <div class="card pink full-width">
-        <div class="card-title">🔒 Trust & Credibility Issues</div>
-        <div id="listTrust"></div>
-      </div>
-
-      <!-- <div class="card green">
-        <div class="card-title">✅ Fix — UX</div>
-        <div id="listFixUX"></div>
-      </div>
-
-      <div class="card green">
-        <div class="card-title">✅ Fix — Copy</div>
-        <div id="listFixCopy"></div>
-      </div>
-
-      <div class="card green full-width">
-        <div class="card-title">✅ Fix — CTAs</div>
-        <div id="listFixCTA"></div>
-      </div> -->
-
+      <!-- Hero -->
       <div class="card purple full-width">
         <div class="card-title">🚀 Improved Hero Section</div>
         <div class="hero-box">
@@ -358,6 +384,7 @@
         </div>
       </div>
 
+      <!-- Conversion Tips & Quick Wins -->
       <div class="card blue">
         <div class="card-title">📈 Conversion Tips</div>
         <div id="listTips"></div>
@@ -370,43 +397,218 @@
 
     </div>
   </div>
+
+  <!-- Visual Proof -->
   <div id="visualProof">
     <h2>📸 Visual Issue Proofs</h2>
     <div class="proof-grid" id="proofGrid"></div>
   </div>
 
-  <!-- ══════════════════════════════════════════════════
-       📱  MOBILE PROOF SECTION
-  ═══════════════════════════════════════════════════ -->
   <div id="mobileProof">
     <h2>📱 Mobile & Accessibility Proofs</h2>
     <div class="proof-grid" id="mobileProofGrid"></div>
   </div>
 
 </div>
-<!-- IMAGE MODAL -->
-<!-- FULL CARD MODAL -->
+
+<!-- Full Card Modal -->
 <div id="imageModal" class="image-modal">
   <span class="close-modal">&times;</span>
-
   <div id="modalCardContainer"></div>
 </div>
+
 <script>
-  const urlInput      = document.getElementById("urlInput");
-  const analyzeBtn    = document.getElementById("analyzeBtn");
-  const loading       = document.getElementById("loading");
-  const errorDiv      = document.getElementById("error");
+  const urlInput       = document.getElementById("urlInput");
+  const analyzeBtn     = document.getElementById("analyzeBtn");
+  const loading        = document.getElementById("loading");
+  const errorDiv       = document.getElementById("error");
   const resultsWrapper = document.getElementById("resultsWrapper");
-  const scoreCard     = document.getElementById("scoreCard");
+  const scoreCard      = document.getElementById("scoreCard");
   const impressionCard = document.getElementById("impressionCard");
-  const visualProof   = document.getElementById("visualProof");
-  const proofGrid     = document.getElementById("proofGrid");
-  const mobileProof   = document.getElementById("mobileProof");
+  const visualProof    = document.getElementById("visualProof");
+  const proofGrid      = document.getElementById("proofGrid");
+  const mobileProof    = document.getElementById("mobileProof");
   const mobileProofGrid = document.getElementById("mobileProofGrid");
 
-  const BASE_URL ="";
+  const BASE_URL = "";
 
-  // ── Helpers ──────────────────────────────────────────────────
+  // ── Resource links per issue type ──────────────────────────────
+  const RESOURCE_MAP = {
+    // UX
+    "No CTA":             { label: "CTA Best Practices — Nielsen Norman", url: "https://www.nngroup.com/articles/call-to-action-buttons/" },
+    "cta":                { label: "CTA Best Practices — Nielsen Norman", url: "https://www.nngroup.com/articles/call-to-action-buttons/" },
+    "Social Proof":       { label: "Using Social Proof — CXL Institute", url: "https://cxl.com/blog/is-social-proof-really-that-important/" },
+    "testimonial":        { label: "Using Social Proof — CXL Institute", url: "https://cxl.com/blog/is-social-proof-really-that-important/" },
+    "Headline":           { label: "Writing Better Headlines — Copyblogger", url: "https://copyblogger.com/magnetic-headlines/" },
+    "headline":           { label: "Writing Better Headlines — Copyblogger", url: "https://copyblogger.com/magnetic-headlines/" },
+    "contact":            { label: "Trust Signals Guide — Baymard", url: "https://baymard.com/blog/ecommerce-checkout-usability" },
+    "FAQ":                { label: "FAQ Page Best Practices — HubSpot", url: "https://blog.hubspot.com/service/faq-page" },
+    "navigation":         { label: "Navigation UX — Nielsen Norman", url: "https://www.nngroup.com/articles/navigation-ia-tests/" },
+    "Pricing":            { label: "Pricing Page Design — CXL", url: "https://cxl.com/blog/pricing-page/" },
+    "pricing":            { label: "Pricing Page Design — CXL", url: "https://cxl.com/blog/pricing-page/" },
+    "urgency":            { label: "Urgency & Scarcity — ConversionXL", url: "https://cxl.com/blog/urgency/" },
+    // Copy
+    "copy":               { label: "Copywriting Framework — Copyhackers", url: "https://copyhackers.com/2016/10/copywriting-formulas/" },
+    "Copy Problem":       { label: "Copywriting Framework — Copyhackers", url: "https://copyhackers.com/2016/10/copywriting-formulas/" },
+    "value proposition":  { label: "Value Proposition Guide — CXL", url: "https://cxl.com/blog/value-proposition-examples-how-to-create/" },
+    // CTA
+    "CTA Issue":          { label: "CTA Optimization — Unbounce", url: "https://unbounce.com/conversion-rate-optimization/call-to-action-examples/" },
+    "button":             { label: "CTA Optimization — Unbounce", url: "https://unbounce.com/conversion-rate-optimization/call-to-action-examples/" },
+    // Mobile
+    "Mobile":             { label: "Mobile UX Checklist — Google", url: "https://web.dev/mobile-ux/" },
+    "mobile":             { label: "Mobile UX Checklist — Google", url: "https://web.dev/mobile-ux/" },
+    "touch":              { label: "Touch Target Sizes — Material Design", url: "https://m2.material.io/design/usability/accessibility.html#layout-and-typography" },
+    "accessibility":      { label: "WCAG Quick Reference", url: "https://www.w3.org/WAI/WCAG21/quickref/" },
+    "a11y":               { label: "WCAG Quick Reference", url: "https://www.w3.org/WAI/WCAG21/quickref/" },
+    // Trust
+    "Trust":              { label: "Building Trust Online — Nielsen Norman", url: "https://www.nngroup.com/articles/trust-and-credibility-guidelines-for-web-design/" },
+    "trust":              { label: "Building Trust Online — Nielsen Norman", url: "https://www.nngroup.com/articles/trust-and-credibility-guidelines-for-web-design/" },
+    "credibility":        { label: "Web Credibility — Stanford", url: "https://credibility.stanford.edu/guidelines/index.html" },
+    "review":             { label: "Customer Review Strategy — BrightLocal", url: "https://www.brightlocal.com/research/local-consumer-review-survey/" },
+    "security":           { label: "Security Badges & Trust Seals — Baymard", url: "https://baymard.com/blog/site-seal-trust" },
+    "ssl":                { label: "HTTPS & Trust — Google", url: "https://web.dev/why-https-matters/" },
+  };
+
+  function getResourceLink(title, type) {
+    const combined = (title + " " + type).toLowerCase();
+    for (const [keyword, res] of Object.entries(RESOURCE_MAP)) {
+      if (combined.includes(keyword.toLowerCase())) {
+        return res;
+      }
+    }
+    // Fallback by type
+    if (type === "UX Issue")     return { label: "UX Best Practices — Nielsen Norman", url: "https://www.nngroup.com/articles/" };
+    if (type === "Copy Problem") return { label: "Copywriting Guide — Copyhackers", url: "https://copyhackers.com/copywriting-techniques/" };
+    if (type === "CTA Issue")    return { label: "CTA Guide — Unbounce", url: "https://unbounce.com/conversion-rate-optimization/call-to-action-examples/" };
+    if (type === "Mobile Issue") return { label: "Mobile UX — web.dev", url: "https://web.dev/mobile-ux/" };
+    if (type === "Trust Issue")  return { label: "Trust & Credibility — Nielsen Norman", url: "https://www.nngroup.com/articles/trust-and-credibility-guidelines-for-web-design/" };
+    return { label: "CRO Best Practices — CXL", url: "https://cxl.com/blog/conversion-rate-optimization/" };
+  }
+
+  // ── Split fix text into logical numbered steps ─────────────────
+  function splitIntoSteps(fixText) {
+    if (!fixText) return [];
+    // Split on numbered lists, semicolons, or "then"/"next"/"also"/"and" joining clauses
+    let steps = [];
+    // Try numbered: "1. ... 2. ..."
+    const numbered = fixText.split(/\d+\.\s+/).filter(s => s.trim().length > 5);
+    if (numbered.length > 1) return numbered.map(s => s.trim());
+    // Try semicolon split
+    const semi = fixText.split(/;\s*/).filter(s => s.trim().length > 5);
+    if (semi.length > 1) return semi.map(s => s.trim());
+    // Try sentence-level split on transition words
+    const sentences = fixText.split(/\.\s+(?=[A-Z])/).filter(s => s.trim().length > 8);
+    if (sentences.length > 1) return sentences.map(s => s.trim().replace(/\.$/, ''));
+    // Single step
+    return [fixText.trim()];
+  }
+
+  // ── Build a single dropdown issue card ────────────────────────
+  function buildIssueAccordion(issue, fix, index, cardClass) {
+    const resource = getResourceLink(issue.title || '', issue.type || '');
+    const steps    = splitIntoSteps(fix ? fix.detail || fix.title || '' : '');
+
+    // Before / After block (for Copy & CTA)
+    let beforeAfterHTML = '';
+    if (fix && fix.before && fix.after) {
+      beforeAfterHTML = `
+        <div class="before-after">
+          <div class="ba-box before">
+            <div class="ba-label">❌ Before</div>
+            <div class="ba-text">${escapeHtml(fix.before)}</div>
+          </div>
+          <div class="ba-box after">
+            <div class="ba-label">✅ After</div>
+            <div class="ba-text">${escapeHtml(fix.after)}</div>
+          </div>
+        </div>
+      `;
+    } else if (fix && fix.title && fix.title.includes('→')) {
+      const parts = fix.title.split('→');
+      beforeAfterHTML = `
+        <div class="before-after">
+          <div class="ba-box before">
+            <div class="ba-label">❌ Before</div>
+            <div class="ba-text">${escapeHtml(parts[0].replace(/BEFORE:/i,'').trim())}</div>
+          </div>
+          <div class="ba-box after">
+            <div class="ba-label">✅ After</div>
+            <div class="ba-text">${escapeHtml(parts[1].trim())}</div>
+          </div>
+        </div>
+      `;
+    }
+
+    const stepsHTML = steps.length
+      ? steps.map((s, i) => `
+          <div class="solution-step">
+            <span class="step-num">${i + 1}</span>
+            <span class="step-text">${escapeHtml(s)}</span>
+          </div>`).join('')
+      : '';
+
+    return `
+      <details class="issue-accordion">
+        <summary class="issue-summary">
+          <span class="issue-badge">#${index + 1}</span>
+          <span>${escapeHtml(issue.title || issue.detail || 'Issue')}</span>
+          <span class="issue-chevron">▶</span>
+        </summary>
+        <div class="issue-detail-panel">
+          ${issue.detail ? `<div class="issue-detail-text">${escapeHtml(issue.detail)}</div>` : ''}
+          ${beforeAfterHTML}
+          ${(stepsHTML || fix) ? `
+            <div class="solution-box">
+              <div class="solution-label">✅ How to fix it</div>
+              <div class="solution-steps">
+                ${stepsHTML || `<div class="solution-step"><span class="step-num">1</span><span class="step-text">${escapeHtml((fix && (fix.title || fix.detail)) || '')}</span></div>`}
+              </div>
+              <a class="resource-link" href="${resource.url}" target="_blank" rel="noopener">
+                📖 ${escapeHtml(resource.label)} ↗
+              </a>
+            </div>
+          ` : ''}
+        </div>
+      </details>
+    `;
+  }
+
+  // ── Fill a card with paired issues + fixes as dropdowns ───────
+  function fillCombinedDropdowns(containerId, issues, fixes) {
+    const container = document.getElementById(containerId);
+    if (!issues.length) {
+      container.innerHTML = `<div class="issue-accordion"><summary class="issue-summary" style="cursor:default;"><span style="color:#555">No issues found ✓</span></summary></div>`;
+      return;
+    }
+    container.innerHTML = issues.map((issue, i) => {
+      const fix = fixes[i] || null;
+      return buildIssueAccordion(issue, fix, i);
+    }).join('');
+  }
+
+  // ── Fill simple list (tips, quick wins) ───────────────────────
+  function fillDetailedList(containerId, items) {
+    const container = document.getElementById(containerId);
+    if (!items.length) {
+      container.innerHTML = `<details class="issue-accordion"><summary class="issue-summary" style="cursor:default;"><span style="color:#555">None found</span></summary></details>`;
+      return;
+    }
+    container.innerHTML = items.map((item, i) => `
+      <details class="issue-accordion">
+        <summary class="issue-summary">
+          <span class="issue-badge">#${i + 1}</span>
+          <span>${escapeHtml(item.title)}</span>
+          <span class="issue-chevron">▶</span>
+        </summary>
+        ${item.detail ? `
+        <div class="issue-detail-panel">
+          <div class="issue-detail-text">${escapeHtml(item.detail)}</div>
+        </div>` : ''}
+      </details>
+    `).join('');
+  }
+
+  // ── Helpers ───────────────────────────────────────────────────
   function extractSection(text, heading) {
     const escaped = heading.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     const regex = new RegExp(`##\\s*${escaped}[\\s\\S]*?(?=##|$)`, 'i');
@@ -426,18 +628,26 @@
     }).filter(i => i.title);
   }
 
-  function fillDetailedList(containerId, items) {
-    const container = document.getElementById(containerId);
-    if (!items.length) {
-      container.innerHTML = '<div class="issue-item"><div class="issue-title">No issues found</div></div>';
-      return;
-    }
-    container.innerHTML = items.map(item => `
-      <div class="issue-item">
-        <div class="issue-title">${item.title}</div>
-        ${item.detail ? `<div class="issue-detail">${item.detail}</div>` : ''}
-      </div>
-    `).join('');
+  // Parse copy/CTA fix lines that contain BEFORE/AFTER arrows
+  function parseFixList(text) {
+    const lines = text.split('\n').filter(l => l.match(/^\d+\./));
+    return lines.map(line => {
+      const clean = line.replace(/^\d+\.\s*/, '').replace(/\*\*/g, '').trim();
+      // Detect BEFORE: "..." → AFTER: "..."
+      const beforeMatch = clean.match(/BEFORE:\s*[""]?(.+?)[""]?\s*→\s*AFTER:\s*[""]?(.+?)[""]?(?:\s*[-—]|$)/i);
+      if (beforeMatch) {
+        return { before: beforeMatch[1].trim(), after: beforeMatch[2].trim(), detail: clean, title: clean };
+      }
+      const arrowMatch = clean.match(/^(.+?)\s*→\s*(.+)$/);
+      if (arrowMatch && arrowMatch[1].length < 80) {
+        return { before: arrowMatch[1].trim(), after: arrowMatch[2].trim(), detail: '', title: clean };
+      }
+      const colonIdx = clean.indexOf(':');
+      if (colonIdx > 0 && colonIdx < 60) {
+        return { title: clean.substring(0, colonIdx).trim(), detail: clean.substring(colonIdx + 1).trim() };
+      }
+      return { title: clean, detail: '' };
+    }).filter(i => i.title);
   }
 
   function parseScore(text) {
@@ -470,14 +680,18 @@
     return { headline: headline.trim(), sub: sub.trim(), cta: cta.trim(), trust: trust.trim() };
   }
 
-  // ── Render Visual Proof Cards ─────────────────────────────────
+  function escapeHtml(str) {
+    return (str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  // ── Visual Proof Cards ────────────────────────────────────────
   function getIssueCategory(type) {
     const t = (type || '').toLowerCase();
     if (t.includes('mobile'))  return 'mobile';
     if (t.includes('copy'))    return 'copy';
     if (t.includes('cta'))     return 'cta';
     if (t.includes('trust'))   return 'trust';
-    return 'ux'; // default: UX Issue → red
+    return 'ux';
   }
 
   const categoryMeta = {
@@ -501,28 +715,18 @@
     const mobileIssues  = issueScreenshots.filter(i => getIssueCategory(i.type) === 'mobile');
     const regularIssues = issueScreenshots.filter(i => getIssueCategory(i.type) !== 'mobile');
 
-    // ── Regular issues (UX/Copy/CTA/Trust) ──
     if (regularIssues.length > 0) {
-      regularIssues.forEach(issue => {
-        if (!issue.screenshot) return;
-        proofGrid.appendChild(buildProofCard(issue));
-      });
+      regularIssues.forEach(issue => { if (issue.screenshot) proofGrid.appendChild(buildProofCard(issue)); });
       visualProof.style.display = 'block';
     } else {
       proofGrid.innerHTML = '<div class="proof-empty">No UX/CTA/Copy/Trust proofs captured.</div>';
       visualProof.style.display = 'block';
     }
 
-    // ── Mobile issues (orange cards) ──
     if (mobileIssues.length > 0) {
-      mobileIssues.forEach(issue => {
-        if (!issue.screenshot) return;
-        mobileProofGrid.appendChild(buildProofCard(issue));
-      });
+      mobileIssues.forEach(issue => { if (issue.screenshot) mobileProofGrid.appendChild(buildProofCard(issue)); });
       mobileProof.style.display = 'block';
     }
-
-    console.log(`✅ Rendered ${regularIssues.length} issue cards + ${mobileIssues.length} mobile cards.`);
   }
 
   function buildProofCard(issue) {
@@ -545,28 +749,12 @@
     return card;
   }
 
-  function escapeHtml(str) {
-    return (str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-  }
-
   // ── Main click handler ────────────────────────────────────────
-  // ── Main click handler ────────────────────────────────────────
-analyzeBtn.addEventListener("click", async () => {
+  analyzeBtn.addEventListener("click", async () => {
+    let url = urlInput.value.trim();
+    if (!url) return alert("Please enter a URL!");
+    if (!url.startsWith("http://") && !url.startsWith("https://")) url = "https://" + url;
 
-  let url = urlInput.value.trim();
-
-  if (!url) {
-    return alert("Please enter a URL!");
-  }
-
-  // AUTO ADD HTTPS
-  if (!url.startsWith("http://") && !url.startsWith("https://")) {
-    url = "https://" + url;
-  }
-
-  console.log("Final URL:", url);
-
-    // Reset UI
     errorDiv.style.display       = "none";
     resultsWrapper.style.display = "none";
     visualProof.style.display    = "none";
@@ -580,7 +768,7 @@ analyzeBtn.addEventListener("click", async () => {
     analyzeBtn.textContent       = "Analyzing...";
 
     try {
-      const res = await fetch(`/analyze`, {
+      const res = await fetch(`${BASE_URL}/analyze`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ url })
@@ -596,35 +784,49 @@ analyzeBtn.addEventListener("click", async () => {
 
       const analysis = data.analysis;
 
-      // ── 1. Render visual proof cards (cropped issue screenshots) ──
+      // 1. Visual proof cards
       renderProofCards(data.issueScreenshots);
 
-      // ── 2. Score ──
+      // 2. Score
       document.getElementById("scoreNumber").textContent = parseScore(analysis);
       document.getElementById("scoreUrl").textContent    = url;
       document.getElementById("scoreReason").textContent = parseScoreReason(analysis);
       scoreCard.style.display = "block";
 
-      // ── 3. First Impression ──
+      // 3. First Impression
       const impression = extractSection(analysis, '🧠 First Impression Analysis');
       if (impression) {
         document.getElementById("impressionText").textContent = impression.replace(/\*\*/g, '');
         impressionCard.style.display = "block";
       }
 
-      // ── 4. All issue / fix lists ──
-      fillDetailedList("listUX",      parseDetailedList(extractSection(analysis, "❌ UX Issues")));
-      fillDetailedList("listFixUX",   parseDetailedList(extractSection(analysis, "✅ How To Fix — UX")));
-      fillDetailedList("listCopy",    parseDetailedList(extractSection(analysis, "✍️ Copywriting Problems")));
-      fillDetailedList("listCTA",     parseDetailedList(extractSection(analysis, "🔘 CTA Issues")));
-      fillDetailedList("listMobile",  parseDetailedList(extractSection(analysis, "📱 Mobile & Accessibility Issues")));
-      fillDetailedList("listTrust",   parseDetailedList(extractSection(analysis, "🔒 Trust & Credibility Issues")));
-      fillDetailedList("listFixCopy", parseDetailedList(extractSection(analysis, "✅ How To Fix — Copy")));
-      fillDetailedList("listFixCTA",  parseDetailedList(extractSection(analysis, "✅ How To Fix — CTAs")));
-      fillDetailedList("listTips",    parseDetailedList(extractSection(analysis, "📈 Conversion Optimization Tips")));
-      fillDetailedList("listWins",    parseDetailedList(extractSection(analysis, "💡 Quick Wins")));
+      // 4. Parse all sections
+      const uxIssues   = parseDetailedList(extractSection(analysis, "❌ UX Issues"));
+      const uxFixes    = parseDetailedList(extractSection(analysis, "✅ How To Fix — UX"));
 
-      // ── 5. Hero section ──
+      const copyIssues = parseDetailedList(extractSection(analysis, "✍️ Copywriting Problems"));
+      const copyFixes  = parseFixList(extractSection(analysis, "✅ How To Fix — Copy"));
+
+      const ctaIssues  = parseDetailedList(extractSection(analysis, "🔘 CTA Issues"));
+      const ctaFixes   = parseFixList(extractSection(analysis, "✅ How To Fix — CTAs"));
+
+      const mobIssues  = parseDetailedList(extractSection(analysis, "📱 Mobile & Accessibility Issues"));
+      const trustIssues= parseDetailedList(extractSection(analysis, "🔒 Trust & Credibility Issues"));
+      const tips       = parseDetailedList(extractSection(analysis, "📈 Conversion Optimization Tips"));
+      const wins       = parseDetailedList(extractSection(analysis, "💡 Quick Wins"));
+
+      // 5. Render dropdown cards
+      fillCombinedDropdowns("listUX",    uxIssues,   uxFixes);
+      fillCombinedDropdowns("listCopy",  copyIssues, copyFixes);
+      fillCombinedDropdowns("listCTA",   ctaIssues,  ctaFixes);
+      fillCombinedDropdowns("listTrust", trustIssues, []);
+      fillCombinedDropdowns("listMobile",mobIssues,  []);
+
+      // 6. Tips & Quick wins (simple dropdowns)
+      fillDetailedList("listTips", tips);
+      fillDetailedList("listWins", wins);
+
+      // 7. Hero
       const hero = parseHero(analysis);
       document.getElementById("heroHeadline").textContent = hero.headline || "Your improved headline";
       document.getElementById("heroSub").textContent      = hero.sub || "";
@@ -645,115 +847,31 @@ analyzeBtn.addEventListener("click", async () => {
     }
   });
 
-  urlInput.addEventListener("keypress", e => {
-    if (e.key === "Enter") analyzeBtn.click();
-  });
-  const imageModal = document.getElementById("imageModal");
-const modalCardContainer = document.getElementById("modalCardContainer");
-const closeModal = document.querySelector(".close-modal");
+  urlInput.addEventListener("keypress", e => { if (e.key === "Enter") analyzeBtn.click(); });
 
-// Open FULL CARD
-document.addEventListener("click", (e) => {
-  const card = e.target.closest(".proof-card");
+  // ── Image modal ───────────────────────────────────────────────
+  const imageModal       = document.getElementById("imageModal");
+  const modalCardContainer = document.getElementById("modalCardContainer");
+  const closeModal       = document.querySelector(".close-modal");
 
-  if (card) {
-    imageModal.style.display = "flex";
-
-    // clone full card
-    modalCardContainer.innerHTML = "";
-    const clonedCard = card.cloneNode(true);
-
-    clonedCard.style.width = "900px";
-    clonedCard.style.maxWidth = "95vw";
-    clonedCard.style.transform = "scale(1)";
-    clonedCard.style.cursor = "default";
-
-    // Bigger image
-    const img = clonedCard.querySelector("img");
-    if (img) {
-      img.style.maxHeight = "75vh";
-      img.style.objectFit = "contain";
+  document.addEventListener("click", (e) => {
+    const card = e.target.closest(".proof-card");
+    if (card) {
+      imageModal.style.display = "flex";
+      modalCardContainer.innerHTML = "";
+      const clonedCard = card.cloneNode(true);
+      clonedCard.style.width    = "900px";
+      clonedCard.style.maxWidth = "95vw";
+      clonedCard.style.cursor   = "default";
+      const img = clonedCard.querySelector("img");
+      if (img) { img.style.maxHeight = "75vh"; img.style.objectFit = "contain"; }
+      modalCardContainer.appendChild(clonedCard);
     }
+  });
 
-    modalCardContainer.appendChild(clonedCard);
-  }
-});
-
-// Close button
-closeModal.addEventListener("click", () => {
-  imageModal.style.display = "none";
-});
-
-// Close background
-imageModal.addEventListener("click", (e) => {
-  if (e.target === imageModal) {
-    imageModal.style.display = "none";
-  }
-});
-
-// ESC close
-document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape") {
-    imageModal.style.display = "none";
-  }
-});
-function fillCombinedList(containerId, issues, fixes) {
-
-  const container = document.getElementById(containerId);
-
-  if (!issues.length) {
-    container.innerHTML = `
-      <div class="issue-item">
-        <div class="issue-title">No issues found</div>
-      </div>
-    `;
-    return;
-  }
-
-  container.innerHTML = issues.map((issue, index) => {
-
-    const fix = fixes[index] || { title: '', detail: '' };
-
-    return `
-      <div class="issue-item">
-
-        <div class="issue-title">
-          ❌ ${issue.title}
-        </div>
-
-        ${issue.detail
-          ? `<div class="issue-detail">${issue.detail}</div>`
-          : ''}
-
-        <div style="
-          margin-top:12px;
-          padding:12px;
-          background:#132a1c;
-          border:1px solid #16a34a;
-          border-radius:10px;
-        ">
-
-          <div style="
-            color:#4ade80;
-            font-weight:bold;
-            margin-bottom:6px;
-          ">
-            ✅ Solution
-          </div>
-
-          <div style="color:#d1fae5; font-size:0.9rem; line-height:1.6;">
-            ${fix.title}
-            ${fix.detail ? `<br><br>${fix.detail}` : ''}
-          </div>
-
-        </div>
-
-      </div>
-    `;
-
-  }).join('');
-}
+  closeModal.addEventListener("click", () => { imageModal.style.display = "none"; });
+  imageModal.addEventListener("click", (e) => { if (e.target === imageModal) imageModal.style.display = "none"; });
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape") imageModal.style.display = "none"; });
 </script>
-
 </body>
 </html>
