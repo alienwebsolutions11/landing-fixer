@@ -7,7 +7,7 @@
     @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;700&family=Syne:wght@400;600;800&display=swap');
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Syne', Arial, sans-serif; background: #0a0a12; color: #e8e8f0; min-height: 100vh; padding: 40px 20px; }
+    body { font-family: 'arial', Arial, sans-serif; background: #0a0a12; color: #e8e8f0; min-height: 100vh; padding: 40px 20px; }
     .container { max-width: 980px; margin: 0 auto; }
 
     h1 {
@@ -19,9 +19,9 @@
     p.subtitle { text-align: center; color: #666; margin-bottom: 32px; font-size: 0.95rem; }
 
     .input-area { display: flex; gap: 10px; margin-bottom: 32px; }
-    input { flex: 1; padding: 14px 18px; border-radius: 12px; border: 2px solid #2d2d44; background: #13131f; color: #e8e8f0; font-size: 15px; font-family: 'IBM Plex Mono', monospace; outline: none; transition: border 0.2s; }
+    input { flex: 1; padding: 14px 18px; border-radius: 12px; border: 2px solid #2d2d44; background: #13131f; color: #e8e8f0; font-size: 15px; font-family: 'sans-serif', monospace; outline: none; transition: border 0.2s; }
     input:focus { border-color: #7c3aed; }
-    button#analyzeBtn { padding: 14px 28px; background: linear-gradient(135deg, #7c3aed, #4f46e5); color: white; border: none; border-radius: 12px; cursor: pointer; font-size: 15px; font-weight: 700; font-family: 'Syne', sans-serif; letter-spacing: 0.02em; transition: opacity 0.2s; }
+    button#analyzeBtn { padding: 14px 28px; background: linear-gradient(135deg, #7c3aed, #4f46e5); color: white; border: none; border-radius: 12px; cursor: pointer; font-size: 15px; font-weight: 700; font-family: 'sans-serif', sans-serif; letter-spacing: 0.02em; transition: opacity 0.2s; }
     button#analyzeBtn:hover:not(:disabled) { opacity: 0.88; }
     button#analyzeBtn:disabled { background: #2a2a3a; color: #555; cursor: not-allowed; }
 
@@ -37,7 +37,7 @@
     .score-card { background: linear-gradient(135deg, #141030, #0f0f1e); border: 1px solid #4f46e5; border-radius: 16px; padding: 28px; text-align: center; margin-bottom: 24px; display: none; }
     .score-number { font-size: 5rem; font-weight: 800; background: linear-gradient(135deg, #a78bfa, #60a5fa); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent; }
     .score-label { color: #666; font-size: 1rem; margin-top: 4px; }
-    .score-url { color: #60a5fa; font-size: 0.85rem; margin-top: 8px; word-break: break-all; font-family: 'IBM Plex Mono', monospace; }
+    .score-url { color: #60a5fa; font-size: 0.85rem; margin-top: 8px; word-break: break-all; font-family: 'sans-serif', monospace; }
     .score-reason { color: #999; font-size: 0.92rem; margin-top: 12px; line-height: 1.7; max-width: 600px; margin-left: auto; margin-right: auto; }
 
     /* First Impression */
@@ -82,7 +82,7 @@
       border-radius: 20px;
       white-space: nowrap;
       flex-shrink: 0;
-      font-family: 'IBM Plex Mono', monospace;
+      font-family: 'sans-serif', monospace;
       letter-spacing: 0.04em;
     }
 
@@ -149,7 +149,7 @@
       color: #4ade80;
       font-weight: 700;
       font-size: 0.7rem;
-      font-family: 'IBM Plex Mono', monospace;
+      font-family: 'sans-serif', monospace;
       width: 20px;
       height: 20px;
       border-radius: 50%;
@@ -174,7 +174,7 @@
     }
     @media(max-width: 500px) { .before-after { grid-template-columns: 1fr; } }
     .ba-box { border-radius: 8px; padding: 10px 12px; }
-    .ba-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 4px; font-family: 'IBM Plex Mono', monospace; }
+    .ba-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 4px; font-family: 'sans-serif', monospace; }
     .ba-box.before { background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.25); }
     .ba-box.before .ba-label { color: #f87171; }
     .ba-box.before .ba-text  { color: #fca5a5; font-size: 0.83rem; line-height: 1.5; }
@@ -182,59 +182,22 @@
     .ba-box.after  .ba-label { color: #4ade80; }
     .ba-box.after  .ba-text  { color: #c6f6d5; font-size: 0.83rem; line-height: 1.5; }
 
-    /* ── Resource chips (PageSpeed-style) ──────────────────── */
-    .resource-chips {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      margin-top: 12px;
-    }
-    .resource-chip {
-      display: flex;
+    /* Resource link */
+    .resource-link {
+      display: inline-flex;
       align-items: center;
-      gap: 8px;
+      gap: 5px;
+      margin-top: 12px;
+      font-size: 0.76rem;
+      color: #60a5fa;
       text-decoration: none;
-      border: 1px solid #2a2a3a;
-      border-radius: 8px;
-      padding: 7px 11px;
-      background: rgba(255,255,255,0.02);
-      transition: background 0.15s, border-color 0.15s;
+      font-family: 'sans-serif', monospace;
+      border: 1px solid rgba(96,165,250,0.25);
+      border-radius: 6px;
+      padding: 4px 10px;
+      transition: background 0.15s;
     }
-    .resource-chip:hover { background: rgba(255,255,255,0.05); }
-    .chip-tag {
-      font-size: 0.65rem;
-      font-weight: 700;
-      letter-spacing: 0.07em;
-      text-transform: uppercase;
-      padding: 2px 7px;
-      border-radius: 4px;
-      font-family: 'IBM Plex Mono', monospace;
-      flex-shrink: 0;
-    }
-    .chip-icon { font-size: 0.85rem; flex-shrink: 0; }
-    .chip-label {
-      font-size: 0.8rem;
-      color: #ccc;
-      flex: 1;
-      line-height: 1.3;
-    }
-    .chip-arrow {
-      font-size: 0.75rem;
-      color: #444;
-      flex-shrink: 0;
-      transition: color 0.15s;
-    }
-    .resource-chip:hover .chip-arrow { color: #888; }
-    .resource-chips-title {
-      font-size: 0.68rem;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: #444;
-      font-family: 'IBM Plex Mono', monospace;
-      margin-top: 14px;
-      margin-bottom: 4px;
-    }
+    .resource-link:hover { background: rgba(96,165,250,0.1); }
 
     /* Card colors */
     .card.red  { border-color: #7f1d1d; }
@@ -315,7 +278,7 @@
     .proof-card img { width: 100%; display: block; }
     .proof-card-body { padding: 10px 14px; }
     .proof-card-problem { font-size: 0.82rem; color: #bbb; line-height: 1.55; }
-    .proof-card-target { margin-top: 6px; font-size: 0.74rem; color: #555; font-style: italic; font-family: 'IBM Plex Mono', monospace; }
+    .proof-card-target { margin-top: 6px; font-size: 0.74rem; color: #555; font-style: italic; font-family: 'sans-serif', monospace; }
     .proof-empty { color: #444; font-size: 0.9rem; padding: 20px; text-align: center; border: 1px dashed #2a2a3a; border-radius: 10px; }
 
     .results-wrapper { display: none; }
@@ -335,7 +298,7 @@
       letter-spacing: 0.12em;
       text-transform: uppercase;
       color: #444;
-      font-family: 'IBM Plex Mono', monospace;
+      font-family: 'sans-serif', monospace;
       margin: 28px 0 14px;
       padding-bottom: 8px;
       border-bottom: 1px solid #1e1e2e;
@@ -469,274 +432,57 @@
 
   const BASE_URL = "";
 
-  // ── PageSpeed-style: precise multi-link resource database ─────
-  // Each rule = array of {icon, label, url, tag} links shown as chips
-  const RESOURCE_RULES = [
-
-    // ── CTA ──────────────────────────────────────────────────────
-    { keywords: ["no cta","missing cta","weak cta","call to action","call-to-action"],
-      links: [
-        { icon: "🔧", tag: "Fix",  label: "Add a CTA Button — Webflow University",      url: "https://university.webflow.com/lesson/button" },
-        { icon: "📐", tag: "Guide", label: "CTA Design Patterns — Nielsen Norman Group", url: "https://www.nngroup.com/articles/call-to-action-buttons/" },
-        { icon: "🧪", tag: "Test", label: "A/B Test Your CTA — Google Optimize",        url: "https://marketingplatform.google.com/about/optimize/" },
-      ]
-    },
-
-    // ── Social Proof / Testimonials ──────────────────────────────
-    { keywords: ["social proof","testimonial","review","no review","no testimonial","star rating"],
-      links: [
-        { icon: "🔧", tag: "Fix",  label: "Add Google Reviews Widget — Google Business", url: "https://business.google.com/reviews" },
-        { icon: "🔧", tag: "Fix",  label: "Embed Trustpilot Reviews",                    url: "https://support.trustpilot.com/hc/en-us/articles/360000065568" },
-        { icon: "📐", tag: "Guide", label: "Social Proof Strategy — CXL",                url: "https://cxl.com/blog/is-social-proof-really-that-important/" },
-        { icon: "🛠️", tag: "Tool", label: "Collect Reviews — Senja (free)",              url: "https://senja.io" },
-      ]
-    },
-
-    // ── Headline / Value Proposition ─────────────────────────────
-    { keywords: ["headline","vague headline","weak headline","value prop","value proposition","no clear benefit","generic headline"],
-      links: [
-        { icon: "🔧", tag: "Fix",  label: "Headline Analyzer — CoSchedule",             url: "https://coschedule.com/headline-analyzer" },
-        { icon: "📐", tag: "Guide", label: "Value Proposition Canvas — Strategyzer",    url: "https://www.strategyzer.com/canvas/value-proposition-canvas" },
-        { icon: "📐", tag: "Guide", label: "Writing Magnetic Headlines — Copyblogger",  url: "https://copyblogger.com/magnetic-headlines/" },
-        { icon: "🧪", tag: "Test", label: "Test Headlines — VWO",                       url: "https://vwo.com/testing/" },
-      ]
-    },
-
-    // ── Contact Info ─────────────────────────────────────────────
-    { keywords: ["contact","address","phone","email","no contact","missing contact"],
-      links: [
-        { icon: "🔧", tag: "Fix",  label: "Add Contact Page — HubSpot Free CMS",        url: "https://www.hubspot.com/products/cms" },
-        { icon: "📐", tag: "Guide", label: "Contact Page Best Practices — Baymard",     url: "https://baymard.com/blog/contact-us-page" },
-        { icon: "🛠️", tag: "Tool", label: "Add Live Chat — Tidio (free)",               url: "https://www.tidio.com" },
-      ]
-    },
-
-    // ── FAQ / Objection Handling ─────────────────────────────────
-    { keywords: ["faq","objection","no faq","question","missing faq"],
-      links: [
-        { icon: "🔧", tag: "Fix",  label: "Add FAQ Schema — Google Search Console",     url: "https://search.google.com/search-console" },
-        { icon: "📐", tag: "Guide", label: "FAQ Page Best Practices — HubSpot",         url: "https://blog.hubspot.com/service/faq-page" },
-        { icon: "🛠️", tag: "Tool", label: "FAQ Builder — Slite",                        url: "https://slite.com" },
-      ]
-    },
-
-    // ── Navigation ───────────────────────────────────────────────
-    { keywords: ["navigation","nav","menu","unclear nav","nav label"],
-      links: [
-        { icon: "🔧", tag: "Fix",  label: "Navigation UX Patterns — Nielsen Norman",   url: "https://www.nngroup.com/articles/navigation-ia-tests/" },
-        { icon: "🧪", tag: "Test", label: "Card Sorting (test nav labels) — Optimal Workshop", url: "https://www.optimalworkshop.com/optimalsort" },
-        { icon: "📐", tag: "Guide", label: "Top Nav Best Practices — UX Planet",        url: "https://uxplanet.org/best-practices-for-website-navigation-ebd2c2ad3ce6" },
-      ]
-    },
-
-    // ── Pricing ──────────────────────────────────────────────────
-    { keywords: ["pricing","price","no pricing","package","plan","missing price"],
-      links: [
-        { icon: "🔧", tag: "Fix",  label: "Build a Pricing Page — Webflow",             url: "https://webflow.com/templates/tag/pricing" },
-        { icon: "📐", tag: "Guide", label: "Pricing Page Design — CXL",                 url: "https://cxl.com/blog/pricing-page/" },
-        { icon: "🧪", tag: "Test", label: "Price A/B Testing — PricingIntelligently",   url: "https://www.priceintelligently.com" },
-      ]
-    },
-
-    // ── Urgency / Scarcity ───────────────────────────────────────
-    { keywords: ["urgency","scarcity","no urgency","deadline","limited","countdown"],
-      links: [
-        { icon: "🔧", tag: "Fix",  label: "Add Countdown Timer — Deadline Funnel",      url: "https://deadlinefunnel.com" },
-        { icon: "📐", tag: "Guide", label: "Urgency & Scarcity in CRO — CXL",           url: "https://cxl.com/blog/urgency/" },
-        { icon: "🛠️", tag: "Tool", label: "Scarcity Pop Widgets — Proof",               url: "https://useproof.com" },
-      ]
-    },
-
-    // ── Copy / Copywriting ───────────────────────────────────────
-    { keywords: ["copy","copywriting","vague copy","weak copy","passive voice","benefit","feature"],
-      links: [
-        { icon: "🔧", tag: "Fix",  label: "Rewrite with AI — Claude.ai",                url: "https://claude.ai" },
-        { icon: "🔧", tag: "Fix",  label: "Readability Checker — Hemingway App",        url: "https://hemingwayapp.com" },
-        { icon: "📐", tag: "Guide", label: "Copywriting Formulas — Copyhackers",        url: "https://copyhackers.com/2016/10/copywriting-formulas/" },
-        { icon: "📐", tag: "Guide", label: "Features vs Benefits — Nielsen Norman",     url: "https://www.nngroup.com/articles/use-cases-vs-user-stories/" },
-      ]
-    },
-
-    // ── CTA Wording / Button Copy ────────────────────────────────
-    { keywords: ["cta issue","button text","cta text","submit","click here","learn more","weak button"],
-      links: [
-        { icon: "🔧", tag: "Fix",  label: "CTA Copy Examples — Unbounce",               url: "https://unbounce.com/conversion-rate-optimization/call-to-action-examples/" },
-        { icon: "🧪", tag: "Test", label: "Button Copy A/B Test — VWO",                 url: "https://vwo.com/testing/" },
-        { icon: "📐", tag: "Guide", label: "Power Words for CTAs — OptinMonster",       url: "https://optinmonster.com/power-words/" },
-      ]
-    },
-
-    // ── Mobile / Responsive ──────────────────────────────────────
-    { keywords: ["mobile","responsive","small screen","viewport","mobile layout","tap target","touch"],
-      links: [
-        { icon: "🔧", tag: "Fix",  label: "Test Mobile Friendliness — Google",          url: "https://search.google.com/test/mobile-friendly" },
-        { icon: "🔧", tag: "Fix",  label: "Responsive CSS — MDN Web Docs",              url: "https://developer.mozilla.org/en-US/docs/Learn/CSS/CSS_layout/Responsive_Design" },
-        { icon: "🔧", tag: "Fix",  label: "PageSpeed Insights (mobile score)",          url: "https://pagespeed.web.dev/" },
-        { icon: "📐", tag: "Guide", label: "Mobile UX Checklist — web.dev",             url: "https://web.dev/mobile/" },
-      ]
-    },
-
-    // ── Touch Targets ────────────────────────────────────────────
-    { keywords: ["touch target","small button","tap area","button size","min 44px"],
-      links: [
-        { icon: "🔧", tag: "Fix",  label: "Touch Target Size — Material Design",        url: "https://m2.material.io/design/usability/accessibility.html#layout-and-typography" },
-        { icon: "📐", tag: "Guide", label: "WCAG 2.5.5 Target Size",                    url: "https://www.w3.org/WAI/WCAG21/Understanding/target-size.html" },
-      ]
-    },
-
-    // ── Accessibility ────────────────────────────────────────────
-    { keywords: ["accessibility","alt text","aria","screen reader","keyboard","contrast","wcag","a11y"],
-      links: [
-        { icon: "🔧", tag: "Fix",  label: "Run Accessibility Audit — Chrome DevTools",  url: "https://developer.chrome.com/docs/lighthouse/accessibility/" },
-        { icon: "🔧", tag: "Fix",  label: "Fix Alt Text — Accessibility Checker",       url: "https://www.accessibilitychecker.org" },
-        { icon: "📐", tag: "Guide", label: "WCAG 2.1 Quick Reference — W3C",            url: "https://www.w3.org/WAI/WCAG21/quickref/" },
-        { icon: "🛠️", tag: "Tool", label: "axe DevTools (free browser extension)",      url: "https://www.deque.com/axe/devtools/" },
-      ]
-    },
-
-    // ── Page Speed ───────────────────────────────────────────────
-    { keywords: ["slow","speed","load time","performance","page speed","lcp","cls","fid","ttfb"],
-      links: [
-        { icon: "🔧", tag: "Fix",  label: "PageSpeed Insights — Google",                url: "https://pagespeed.web.dev/" },
-        { icon: "🔧", tag: "Fix",  label: "Compress Images — Squoosh",                  url: "https://squoosh.app" },
-        { icon: "🔧", tag: "Fix",  label: "Minify JS/CSS — Terser Playground",          url: "https://try.terser.org" },
-        { icon: "📐", tag: "Guide", label: "Core Web Vitals — web.dev",                 url: "https://web.dev/vitals/" },
-      ]
-    },
-
-    // ── SSL / HTTPS ──────────────────────────────────────────────
-    { keywords: ["ssl","https","http","secure","certificate","not secure"],
-      links: [
-        { icon: "🔧", tag: "Fix",  label: "Free SSL — Let's Encrypt",                   url: "https://letsencrypt.org/getting-started/" },
-        { icon: "🔧", tag: "Fix",  label: "SSL Checker — SSL Labs",                     url: "https://www.ssllabs.com/ssltest/" },
-        { icon: "📐", tag: "Guide", label: "Why HTTPS Matters — Google",                url: "https://web.dev/why-https-matters/" },
-      ]
-    },
-
-    // ── Trust / Credibility ──────────────────────────────────────
-    { keywords: ["trust","credibility","no trust","trustworthy","brand","no badge","no seal"],
-      links: [
-        { icon: "🔧", tag: "Fix",  label: "Add Trust Badges — Trustpilot",              url: "https://business.trustpilot.com" },
-        { icon: "🔧", tag: "Fix",  label: "Add Money-Back Guarantee — Gumroad Tips",    url: "https://help.gumroad.com/article/64-why-customers-trust-gumroad" },
-        { icon: "📐", tag: "Guide", label: "Web Credibility Guidelines — Stanford",     url: "https://credibility.stanford.edu/guidelines/index.html" },
-        { icon: "📐", tag: "Guide", label: "Trust & Credibility — Nielsen Norman",      url: "https://www.nngroup.com/articles/trust-and-credibility-guidelines-for-web-design/" },
-      ]
-    },
-
-    // ── Privacy / Data ───────────────────────────────────────────
-    { keywords: ["privacy","gdpr","data","policy","terms"],
-      links: [
-        { icon: "🔧", tag: "Fix",  label: "Generate Privacy Policy — TermsFeed",        url: "https://www.termsfeed.com/privacy-policy-generator/" },
-        { icon: "📐", tag: "Guide", label: "GDPR Compliance Checklist — GDPR.eu",       url: "https://gdpr.eu/checklist/" },
-      ]
-    },
-
-    // ── Above The Fold ───────────────────────────────────────────
-    { keywords: ["above the fold","hero","fold","first screen","visible on load"],
-      links: [
-        { icon: "🔧", tag: "Fix",  label: "Optimize Hero Section — Unbounce Blog",      url: "https://unbounce.com/landing-pages/landing-page-hero-image/" },
-        { icon: "🧪", tag: "Test", label: "Heatmap What Users See — Hotjar",            url: "https://www.hotjar.com/heatmaps/" },
-        { icon: "📐", tag: "Guide", label: "Above-the-fold UX — Nielsen Norman",        url: "https://www.nngroup.com/articles/scrolling-and-attention/" },
-      ]
-    },
-
-    // ── Conversion / CRO ─────────────────────────────────────────
-    { keywords: ["conversion","cro","funnel","bounce","drop off","exit"],
-      links: [
-        { icon: "🔧", tag: "Fix",  label: "Analyse Funnel — Google Analytics 4",        url: "https://analytics.google.com" },
-        { icon: "🧪", tag: "Test", label: "Run Split Tests — Optimizely",               url: "https://www.optimizely.com" },
-        { icon: "📐", tag: "Guide", label: "CRO Beginner Guide — CXL",                  url: "https://cxl.com/blog/conversion-rate-optimization/" },
-        { icon: "🛠️", tag: "Tool", label: "Session Recordings — Hotjar",               url: "https://www.hotjar.com/session-recordings/" },
-      ]
-    },
-
-    // ── SEO ──────────────────────────────────────────────────────
-    { keywords: ["seo","meta","title tag","description","keyword","search engine"],
-      links: [
-        { icon: "🔧", tag: "Fix",  label: "Fix Meta Tags — Google Search Console",      url: "https://search.google.com/search-console" },
-        { icon: "🔧", tag: "Fix",  label: "SEO Audit — Ahrefs Free Webmaster Tools",    url: "https://ahrefs.com/webmaster-tools" },
-        { icon: "📐", tag: "Guide", label: "On-Page SEO — Moz Beginner's Guide",        url: "https://moz.com/learn/seo/on-page-factors" },
-      ]
-    },
-
-    // ── Forms ────────────────────────────────────────────────────
-    { keywords: ["form","sign up","signup","lead form","field","input","too many fields"],
-      links: [
-        { icon: "🔧", tag: "Fix",  label: "Build Forms — Typeform",                     url: "https://www.typeform.com" },
-        { icon: "🔧", tag: "Fix",  label: "Reduce Form Fields — HubSpot",               url: "https://www.hubspot.com/products/marketing/lead-capture" },
-        { icon: "📐", tag: "Guide", label: "Form UX Best Practices — Nielsen Norman",   url: "https://www.nngroup.com/articles/web-form-design/" },
-      ]
-    },
-
-    // ── Images / Visuals ────────────────────────────────────────
-    { keywords: ["image","photo","visual","no image","stock photo","generic image"],
-      links: [
-        { icon: "🔧", tag: "Fix",  label: "Free Stock Photos — Unsplash",               url: "https://unsplash.com" },
-        { icon: "🔧", tag: "Fix",  label: "Optimize Images — Squoosh",                  url: "https://squoosh.app" },
-        { icon: "📐", tag: "Guide", label: "Web Image Best Practices — web.dev",        url: "https://web.dev/fast/#optimize-your-images" },
-      ]
-    },
-
-  ];
-
-  // Tag colours
-  const TAG_COLORS = {
-    "Fix":   { bg: "rgba(74,222,128,0.12)",  color: "#4ade80",  border: "rgba(74,222,128,0.3)"  },
-    "Guide": { bg: "rgba(96,165,250,0.12)",  color: "#60a5fa",  border: "rgba(96,165,250,0.3)"  },
-    "Test":  { bg: "rgba(251,191,36,0.12)",  color: "#fbbf24",  border: "rgba(251,191,36,0.3)"  },
-    "Tool":  { bg: "rgba(167,139,250,0.12)", color: "#a78bfa",  border: "rgba(167,139,250,0.3)" },
+  // ── Resource links per issue type ──────────────────────────────
+  const RESOURCE_MAP = {
+    // UX
+    "No CTA":             { label: "CTA Best Practices — Nielsen Norman", url: "https://www.nngroup.com/articles/call-to-action-buttons/" },
+    "cta":                { label: "CTA Best Practices — Nielsen Norman", url: "https://www.nngroup.com/articles/call-to-action-buttons/" },
+    "Social Proof":       { label: "Using Social Proof — CXL Institute", url: "https://cxl.com/blog/is-social-proof-really-that-important/" },
+    "testimonial":        { label: "Using Social Proof — CXL Institute", url: "https://cxl.com/blog/is-social-proof-really-that-important/" },
+    "Headline":           { label: "Writing Better Headlines — Copyblogger", url: "https://copyblogger.com/magnetic-headlines/" },
+    "headline":           { label: "Writing Better Headlines — Copyblogger", url: "https://copyblogger.com/magnetic-headlines/" },
+    "contact":            { label: "Trust Signals Guide — Baymard", url: "https://baymard.com/blog/ecommerce-checkout-usability" },
+    "FAQ":                { label: "FAQ Page Best Practices — HubSpot", url: "https://blog.hubspot.com/service/faq-page" },
+    "navigation":         { label: "Navigation UX — Nielsen Norman", url: "https://www.nngroup.com/articles/navigation-ia-tests/" },
+    "Pricing":            { label: "Pricing Page Design — CXL", url: "https://cxl.com/blog/pricing-page/" },
+    "pricing":            { label: "Pricing Page Design — CXL", url: "https://cxl.com/blog/pricing-page/" },
+    "urgency":            { label: "Urgency & Scarcity — ConversionXL", url: "https://cxl.com/blog/urgency/" },
+    // Copy
+    "copy":               { label: "Copywriting Framework — Copyhackers", url: "https://copyhackers.com/2016/10/copywriting-formulas/" },
+    "Copy Problem":       { label: "Copywriting Framework — Copyhackers", url: "https://copyhackers.com/2016/10/copywriting-formulas/" },
+    "value proposition":  { label: "Value Proposition Guide — CXL", url: "https://cxl.com/blog/value-proposition-examples-how-to-create/" },
+    // CTA
+    "CTA Issue":          { label: "CTA Optimization — Unbounce", url: "https://unbounce.com/conversion-rate-optimization/call-to-action-examples/" },
+    "button":             { label: "CTA Optimization — Unbounce", url: "https://unbounce.com/conversion-rate-optimization/call-to-action-examples/" },
+    // Mobile
+    "Mobile":             { label: "Mobile UX Checklist — Google", url: "https://web.dev/mobile-ux/" },
+    "mobile":             { label: "Mobile UX Checklist — Google", url: "https://web.dev/mobile-ux/" },
+    "touch":              { label: "Touch Target Sizes — Material Design", url: "https://m2.material.io/design/usability/accessibility.html#layout-and-typography" },
+    "accessibility":      { label: "WCAG Quick Reference", url: "https://www.w3.org/WAI/WCAG21/quickref/" },
+    "a11y":               { label: "WCAG Quick Reference", url: "https://www.w3.org/WAI/WCAG21/quickref/" },
+    // Trust
+    "Trust":              { label: "Building Trust Online — Nielsen Norman", url: "https://www.nngroup.com/articles/trust-and-credibility-guidelines-for-web-design/" },
+    "trust":              { label: "Building Trust Online — Nielsen Norman", url: "https://www.nngroup.com/articles/trust-and-credibility-guidelines-for-web-design/" },
+    "credibility":        { label: "Web Credibility — Stanford", url: "https://credibility.stanford.edu/guidelines/index.html" },
+    "review":             { label: "Customer Review Strategy — BrightLocal", url: "https://www.brightlocal.com/research/local-consumer-review-survey/" },
+    "security":           { label: "Security Badges & Trust Seals — Baymard", url: "https://baymard.com/blog/site-seal-trust" },
+    "ssl":                { label: "HTTPS & Trust — Google", url: "https://web.dev/why-https-matters/" },
   };
 
-  function getResourceLinks(title, type) {
+  function getResourceLink(title, type) {
     const combined = (title + " " + type).toLowerCase();
-    // Collect all matching rule sets (can match multiple)
-    const matched = [];
-    for (const rule of RESOURCE_RULES) {
-      if (rule.keywords.some(k => combined.includes(k))) {
-        matched.push(...rule.links);
-        if (matched.length >= 4) break; // cap at 4 links
+    for (const [keyword, res] of Object.entries(RESOURCE_MAP)) {
+      if (combined.includes(keyword.toLowerCase())) {
+        return res;
       }
     }
-    if (matched.length) return matched.slice(0, 4);
-
-    // Fallback by category
-    if (type === "UX Issue")     return [
-      { icon: "📐", tag: "Guide", label: "UX Heuristics — Nielsen Norman",    url: "https://www.nngroup.com/articles/ten-usability-heuristics/" },
-      { icon: "🧪", tag: "Test",  label: "Usability Testing — Maze",          url: "https://maze.co" },
-    ];
-    if (type === "Copy Problem") return [
-      { icon: "🔧", tag: "Fix",  label: "Rewrite with AI — Claude.ai",         url: "https://claude.ai" },
-      { icon: "📐", tag: "Guide", label: "Copywriting Guide — Copyhackers",    url: "https://copyhackers.com/copywriting-techniques/" },
-    ];
-    if (type === "CTA Issue")    return [
-      { icon: "🔧", tag: "Fix",  label: "CTA Examples — Unbounce",             url: "https://unbounce.com/conversion-rate-optimization/call-to-action-examples/" },
-      { icon: "🧪", tag: "Test", label: "A/B Test CTAs — Google Optimize",     url: "https://marketingplatform.google.com/about/optimize/" },
-    ];
-    if (type === "Mobile Issue") return [
-      { icon: "🔧", tag: "Fix",  label: "Mobile Friendly Test — Google",       url: "https://search.google.com/test/mobile-friendly" },
-      { icon: "📐", tag: "Guide", label: "Mobile UX — web.dev",                url: "https://web.dev/mobile/" },
-    ];
-    if (type === "Trust Issue")  return [
-      { icon: "🔧", tag: "Fix",  label: "Add Trust Signals — Trustpilot",      url: "https://business.trustpilot.com" },
-      { icon: "📐", tag: "Guide", label: "Trust Guidelines — Nielsen Norman",  url: "https://www.nngroup.com/articles/trust-and-credibility-guidelines-for-web-design/" },
-    ];
-    return [
-      { icon: "📐", tag: "Guide", label: "CRO Guide — CXL",                    url: "https://cxl.com/blog/conversion-rate-optimization/" },
-    ];
-  }
-
-  function renderResourceLinks(title, type) {
-    const links = getResourceLinks(title, type);
-    return links.map(link => {
-      const tc = TAG_COLORS[link.tag] || TAG_COLORS["Guide"];
-      return `<a class="resource-chip" href="${link.url}" target="_blank" rel="noopener"
-        style="border-color:${tc.border};">
-        <span class="chip-tag" style="background:${tc.bg};color:${tc.color};">${link.tag}</span>
-        <span class="chip-icon">${link.icon}</span>
-        <span class="chip-label">${escapeHtml(link.label)}</span>
-        <span class="chip-arrow">↗</span>
-      </a>`;
-    }).join('');
+    // Fallback by type
+    if (type === "UX Issue")     return { label: "UX Best Practices — Nielsen Norman", url: "https://www.nngroup.com/articles/" };
+    if (type === "Copy Problem") return { label: "Copywriting Guide — Copyhackers", url: "https://copyhackers.com/copywriting-techniques/" };
+    if (type === "CTA Issue")    return { label: "CTA Guide — Unbounce", url: "https://unbounce.com/conversion-rate-optimization/call-to-action-examples/" };
+    if (type === "Mobile Issue") return { label: "Mobile UX — web.dev", url: "https://web.dev/mobile-ux/" };
+    if (type === "Trust Issue")  return { label: "Trust & Credibility — Nielsen Norman", url: "https://www.nngroup.com/articles/trust-and-credibility-guidelines-for-web-design/" };
+    return { label: "CRO Best Practices — CXL", url: "https://cxl.com/blog/conversion-rate-optimization/" };
   }
 
   // ── Split fix text into logical numbered steps ─────────────────
@@ -759,7 +505,8 @@
 
   // ── Build a single dropdown issue card ────────────────────────
   function buildIssueAccordion(issue, fix, index, cardClass) {
-    const steps = splitIntoSteps(fix ? fix.detail || fix.title || '' : '');
+    const resource = getResourceLink(issue.title || '', issue.type || '');
+    const steps    = splitIntoSteps(fix ? fix.detail || fix.title || '' : '');
 
     // Before / After block (for Copy & CTA)
     let beforeAfterHTML = '';
@@ -816,10 +563,9 @@
               <div class="solution-steps">
                 ${stepsHTML || `<div class="solution-step"><span class="step-num">1</span><span class="step-text">${escapeHtml((fix && (fix.title || fix.detail)) || '')}</span></div>`}
               </div>
-              <div class="resource-chips-title">🔗 Implement it here</div>
-              <div class="resource-chips">
-                ${renderResourceLinks(issue.title || '', issue.type || '')}
-              </div>
+              <a class="resource-link" href="${resource.url}" target="_blank" rel="noopener">
+                📖 ${escapeHtml(resource.label)} ↗
+              </a>
             </div>
           ` : ''}
         </div>
