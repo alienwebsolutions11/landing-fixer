@@ -415,27 +415,16 @@ ${pageData}
 - If social proof NOT detected → flag missing testimonials
 - Base Mobile and Trust sections primarily on the technical facts, not guesses
 
-ALLOWED UX issues — ONLY raise if genuinely detected from the real data:
-
-- Missing navigation
-- Broken navigation links
-- Empty navigation labels
-- Missing mobile menu
-- Missing CTA entirely
-- No social proof (ONLY if technical audit confirms)
-- Missing contact info (ONLY if technical audit confirms)
-- No FAQ section (ONLY if technical audit confirms)
-- Missing pricing information (ONLY if technical audit confirms)
+ALLOWED UX issues — only raise if genuinely ABSENT or BROKEN from the data:
+- Missing or weak CTA (only if no CTA exists at all)
+- No social proof (confirmed by technical data above)
+- Vague headline with ZERO benefit/outcome/audience
+- Missing contact info (confirmed by technical data)
+- No FAQ (confirmed by technical data)
+- Unclear navigation labels
+- No urgency/scarcity signals
+- Missing pricing (confirmed by technical data)
 - No clear next step for user
-
-DO NOT flag navigation issues when:
-- navigation contains 4 or more links
-- labels are readable English words
-- menu is visible in the header
-- there is a visible CTA button
-
-Examples of GOOD navigation:
-Home, About, Services, Gallery, Pricing, Contact, Book Now
 
 Write a full audit using this EXACT format:
 
