@@ -613,13 +613,7 @@ ISSUES_START
 ISSUES_END
 
 RULES — non-negotiable:
- 1. Generate ONLY REAL issues supported by actual page data or technical audit findings.
-
-If a section has no meaningful issues, write:
-"No major issues detected."
-
-Never invent issues to satisfy a quota.
-Quality over quantity.
+ 1. Required entries: 5 UX, 5 Copy, 3 CTA, 3 Mobile, 3 Trust, 3 SEO = 22 total
 2. targetText = word-for-word from the page. Only use H1, H2, H3, nav links, button labels, paragraph fragments, or page title.
 3. NEVER use cookie, consent, GDPR, or popup text anywhere
 4. NEVER repeat the same targetText across entries
