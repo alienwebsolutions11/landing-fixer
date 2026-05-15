@@ -1086,7 +1086,8 @@
   }
 
   function escapeHtml(str) {
-    return (str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    return (String(str === null || str === undefined ? '' : str))
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
 
   // ── Visual Proof Cards ────────────────────────────────────────
@@ -1197,13 +1198,14 @@
     html += '</div>';
 
     // Failed audits
-    if (data.failedAudits && data.failedAudits.length) {
+    if (data.failedAudits && Array.isArray(data.failedAudits) && data.failedAudits.length) {
       data.failedAudits.forEach(a => {
-        const color = faDotColor(a.score);
+        const color = faDotColor(a.score || 0);
+        const display = a.displayValue ? String(a.displayValue) : (String(a.score || 0) + '/100');
         html += `<div class="failed-audit-row">
           <div class="fa-score-dot" style="background:${color}"></div>
           <div class="fa-title">${escapeHtml(a.title)}</div>
-          <div class="fa-value">${escapeHtml(a.displayValue || a.score + '/100')}</div>
+          <div class="fa-value">${escapeHtml(display)}</div>
         </div>`;
       });
     }
@@ -1272,9 +1274,11 @@
     if (!issues.length) {
       el.innerHTML = '<div class="card-empty">✅ No major SEO issues detected.</div>';
     } else {
-      el.innerHTML = issues.map(i =>
-        `<div class="seo-issue-row"><span class="seo-issue-icon">${i.icon}</span><span class="seo-issue-text">${escapeHtml(i.text)}</span></div>`
-      ).join('');
+      el.innerHTML = issues.map(i => {
+        // i.text is a plain string (no HTML), safe to escapeHtml
+        const safeText = String(i.text || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+        return `<div class="seo-issue-row"><span class="seo-issue-icon">${i.icon}</span><span class="seo-issue-text">${safeText}</span></div>`;
+      }).join('');
     }
     document.getElementById('seoIssuesCard').style.display = 'block';
   }
@@ -1282,12 +1286,14 @@
   function renderBrokenLinks(tech) {
     if (!tech || !tech.brokenLinks || tech.brokenLinks.length === 0) return;
     const el = document.getElementById('brokenLinksList');
-    el.innerHTML = tech.brokenLinks.map(l =>
-      `<div class="broken-link-row">
-        <span class="broken-link-status">${l.status || 'ERR'}</span>
-        <span class="broken-link-url">${escapeHtml(l.url || l)}</span>
-      </div>`
-    ).join('');
+    el.innerHTML = tech.brokenLinks.map(l => {
+      const status = (typeof l === 'object' ? l.status : null) || 'ERR';
+      const url    = (typeof l === 'object' ? l.url : l) || '';
+      return `<div class="broken-link-row">
+        <span class="broken-link-status">${escapeHtml(status)}</span>
+        <span class="broken-link-url">${escapeHtml(url)}</span>
+      </div>`;
+    }).join('');
     document.getElementById('brokenLinksCard').style.display = 'block';
   }
 
