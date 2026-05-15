@@ -670,7 +670,7 @@ Never generate navigation issues unless navigation is actually broken or missing
         { role: "user", content: prompt },
       ],
       max_tokens: 7000,
-      temperature: 0.15,  // low but not deterministic — responds to actual page changes
+      temperature: 0.3,  // low but not deterministic — responds to actual page changes
     });
 
     const raw = resp.choices[0].message.content;
@@ -743,47 +743,23 @@ issues = issues
   })
 
   // Remove fake navigation issues if nav is already good
- .filter(i => {
-  const txt = (
-    (i.problem || "") +
-    " " +
-    (i.title || "")
-  ).toLowerCase();
-// Remove generic consultant-style fake issues
-if (
-  txt.includes("could be improved") ||
-  txt.includes("may confuse") ||
-  txt.includes("might confuse") ||
-  txt.includes("not prominent enough") ||
-  txt.includes("could benefit from")
-) {
-  console.log("🚫 Removed vague issue:", i.title);
-  return false;
-}
-  const navCount = c.navLinks?.length || 0;
+  .filter(i => {
+    const txt = (i.problem || "").toLowerCase();
 
-  const hasGoodNavigation =
-    navCount >= 4 &&
-    c.buttons?.length >= 1;
+    if (
+      i.type === "UX Issue" &&
+      txt.includes("navigation")
+    ) {
+      const navCount = c.navLinks?.length || 0;
 
-  // HARD BLOCK fake navigation issues
-  if (
-    hasGoodNavigation &&
-    (
-      txt.includes("navigation") ||
-      txt.includes("menu") ||
-      txt.includes("nav") ||
-      txt.includes("header links") ||
-      txt.includes("unclear labels") ||
-      txt.includes("accessible links")
-    )
-  ) {
-    console.log("🚫 Removed fake nav issue:", i.title);
-    return false;
-  }
+      if (navCount >= 4) {
+        return false;
+      }
+    }
 
-  return true;
-})
+    return true;
+  })
+
   .map(i => ({
     type:       (i.type       || "UX Issue").trim(),
     title:      (i.title      || i.problem  || "").trim().slice(0, 80),
@@ -802,7 +778,7 @@ if (
     seen.add(i.targetText);
     return true;
   })
-  .slice(0, 15);
+  .slice(0, 20);
 
     console.log(`🎯 Final issues (${issues.length}):`, issues.map(i => `"${i.targetText}"`));
     return { report, issues };
