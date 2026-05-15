@@ -743,23 +743,47 @@ issues = issues
   })
 
   // Remove fake navigation issues if nav is already good
-  .filter(i => {
-    const txt = (i.problem || "").toLowerCase();
+ .filter(i => {
+  const txt = (
+    (i.problem || "") +
+    " " +
+    (i.title || "")
+  ).toLowerCase();
+// Remove generic consultant-style fake issues
+if (
+  txt.includes("could be improved") ||
+  txt.includes("may confuse") ||
+  txt.includes("might confuse") ||
+  txt.includes("not prominent enough") ||
+  txt.includes("could benefit from")
+) {
+  console.log("🚫 Removed vague issue:", i.title);
+  return false;
+}
+  const navCount = c.navLinks?.length || 0;
 
-    if (
-      i.type === "UX Issue" &&
-      txt.includes("navigation")
-    ) {
-      const navCount = c.navLinks?.length || 0;
+  const hasGoodNavigation =
+    navCount >= 4 &&
+    c.buttons?.length >= 1;
 
-      if (navCount >= 4) {
-        return false;
-      }
-    }
+  // HARD BLOCK fake navigation issues
+  if (
+    hasGoodNavigation &&
+    (
+      txt.includes("navigation") ||
+      txt.includes("menu") ||
+      txt.includes("nav") ||
+      txt.includes("header links") ||
+      txt.includes("unclear labels") ||
+      txt.includes("accessible links")
+    )
+  ) {
+    console.log("🚫 Removed fake nav issue:", i.title);
+    return false;
+  }
 
-    return true;
-  })
-
+  return true;
+})
   .map(i => ({
     type:       (i.type       || "UX Issue").trim(),
     title:      (i.title      || i.problem  || "").trim().slice(0, 80),
@@ -778,7 +802,7 @@ issues = issues
     seen.add(i.targetText);
     return true;
   })
-  .slice(0, 20);
+  .slice(0, 15);
 
     console.log(`🎯 Final issues (${issues.length}):`, issues.map(i => `"${i.targetText}"`));
     return { report, issues };
