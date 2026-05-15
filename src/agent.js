@@ -368,7 +368,7 @@ TECHNICAL AUDIT (measured from real HTML — treat these as facts, not opinions)
 - Contact info (phone/email) detected: ${tech.hasPhoneOrEmail ? "✓ Yes" : "❌ No"}
 - FAQ section detected: ${tech.hasFAQ ? "✓ Yes" : "❌ No"}
 - Privacy policy / Terms detected: ${tech.hasPrivacyPolicy ? "✓ Yes" : "❌ No"}
-
+- Internal links: ${tech.internalLinks || 0} | External links: ${tech.externalLinks || 0}
 ${(tech.duplicateText || []).length > 0 ? "- Duplicate text blocks (repeated 3+ times): " + tech.duplicateText.join(" | ") : ""}
 `.trim();
 
@@ -655,18 +655,8 @@ NEVER flag a headline as vague if it contains a specific benefit, outcome, numbe
 NEVER invent statistics, percentages, or client counts in suggested copy. Use [PLACEHOLDER] for any number you don't know.
 Use the TECHNICAL AUDIT data as ground truth — if it says broken links found, cite the actual paths. If it says 5 images missing alt text, say exactly 5.
 Every issue must cite specific real evidence from the page data or technical measurements.
-If something is genuinely good, say so. Do not invent criticism to fill a quota.
-Navigation should be considered GOOD if:
-- it contains 4 or more readable menu items
-- links are visible in the header
-- labels are understandable
-- there is a visible CTA button
-
-Never generate navigation issues unless navigation is actually broken or missing.`,
-
-
+If something is genuinely good, say so. Do not invent criticism to fill a quota.`,
         },
-        
         { role: "user", content: prompt },
       ],
       max_tokens: 7000,
@@ -716,69 +706,25 @@ Never generate navigation issues unless navigation is actually broken or missing
 
     // Sanitize — strip cookie text, ensure fields, deduplicate targetText
     const seen = new Set();
-const bannedProblems = [
-  "may not",
-  "might not",
-  "could be better",
-  "not prominent enough",
-  "not clearly labeled",
-  "potentially confusing",
-  "possibly unclear",
-  "may be inaccessible",
-  "might confuse visitors"
-];
-
-issues = issues
-  .filter(i =>
-    i?.targetText &&
-    !isCookieText(i.targetText) &&
-    !isCookieText(i.problem)
-  )
-
-  // Remove hallucinated vague issues
-  .filter(i => {
-    const txt = (i.problem || "").toLowerCase();
-
-    return !bannedProblems.some(b => txt.includes(b));
-  })
-
-  // Remove fake navigation issues if nav is already good
-  .filter(i => {
-    const txt = (i.problem || "").toLowerCase();
-
-    if (
-      i.type === "UX Issue" &&
-      txt.includes("navigation")
-    ) {
-      const navCount = c.navLinks?.length || 0;
-
-      if (navCount >= 4) {
-        return false;
-      }
-    }
-
-    return true;
-  })
-
-  .map(i => ({
-    type:       (i.type       || "UX Issue").trim(),
-    title:      (i.title      || i.problem  || "").trim().slice(0, 80),
-    problem:    (i.problem    || "").trim(),
-    targetText: (i.targetText || "").trim().slice(0, 120),
-    fix:        (i.fix        || "").trim(),
-    steps:      Array.isArray(i.steps)
-      ? i.steps.filter(s => s && s.trim())
-      : [],
-    context:    (i.context    || "").trim(),
-    before:     (i.before     || "").trim(),
-    after:      (i.after      || "").trim(),
-  }))
-  .filter(i => {
-    if (seen.has(i.targetText)) return false;
-    seen.add(i.targetText);
-    return true;
-  })
-  .slice(0, 20);
+    issues = issues
+      .filter(i => i?.targetText && !isCookieText(i.targetText) && !isCookieText(i.problem))
+      .map(i => ({
+        type:       (i.type       || "UX Issue").trim(),
+        title:      (i.title      || i.problem  || "").trim().slice(0, 80),
+        problem:    (i.problem    || "").trim(),
+        targetText: (i.targetText || "").trim().slice(0, 120),
+        fix:        (i.fix        || "").trim(),
+        steps:      Array.isArray(i.steps) ? i.steps.filter(s => s && s.trim()) : [],
+        context:    (i.context    || "").trim(),
+        before:     (i.before     || "").trim(),
+        after:      (i.after      || "").trim(),
+      }))
+      .filter(i => {
+        if (seen.has(i.targetText)) return false;
+        seen.add(i.targetText);
+        return true;
+      })
+      .slice(0, 20);
 
     console.log(`🎯 Final issues (${issues.length}):`, issues.map(i => `"${i.targetText}"`));
     return { report, issues };
