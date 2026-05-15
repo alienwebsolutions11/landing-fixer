@@ -328,6 +328,185 @@
     @keyframes zoomIn { from { transform: scale(0.85); opacity: 0; } to { transform: scale(1); opacity: 1; } }
     #modalCardContainer .proof-card { animation: zoomIn 0.22s ease; }
 
+    /* ── NEW CARDS: Technical Audit, PageSpeed, SEO, Broken Links ──── */
+
+    /* PageSpeed score gauges */
+    .psi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    @media(max-width: 600px) { .psi-grid { grid-template-columns: repeat(2,1fr); } }
+
+    .psi-gauge {
+      background: rgba(0,0,0,0.25);
+      border-radius: 10px;
+      padding: 14px 10px;
+      text-align: center;
+    }
+    .psi-gauge-score {
+      font-size: 1.7rem;
+      font-weight: 800;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .psi-gauge-label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      opacity: 0.6;
+    }
+    .psi-score-good    { color: #4ade80; }
+    .psi-score-average { color: #facc15; }
+    .psi-score-poor    { color: #f87171; }
+
+    /* Core Web Vitals row */
+    .cwv-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .cwv-chip {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid #2a2a3a;
+      border-radius: 8px;
+      padding: 7px 12px;
+      font-size: 0.78rem;
+    }
+    .cwv-chip-label { color: #555; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.06em; display: block; margin-bottom: 2px; }
+    .cwv-chip-value { color: #e8e8f0; font-weight: 700; font-family: 'sans-serif', monospace; }
+
+    /* Strategy tab switcher */
+    .psi-tabs { display: flex; gap: 6px; margin-bottom: 14px; }
+    .psi-tab {
+      padding: 5px 14px;
+      border-radius: 20px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      border: 1px solid #2a2a3a;
+      background: transparent;
+      color: #555;
+      transition: all 0.15s;
+    }
+    .psi-tab.active { background: rgba(96,165,250,0.15); border-color: #2563eb; color: #60a5fa; }
+
+    /* Failed audit rows */
+    .failed-audit-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 12px;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.025);
+      margin-bottom: 6px;
+      font-size: 0.83rem;
+    }
+    .failed-audit-row:last-child { margin-bottom: 0; }
+    .fa-score-dot {
+      width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+    }
+    .fa-title { color: #ccc; flex: 1; }
+    .fa-value { color: #555; font-size: 0.74rem; font-family: 'sans-serif', monospace; white-space: nowrap; }
+
+    /* Technical audit stat chips */
+    .tech-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .tech-stat {
+      background: rgba(0,0,0,0.25);
+      border-radius: 10px;
+      padding: 12px 14px;
+      border: 1px solid #1e1e2e;
+    }
+    .tech-stat-value {
+      font-size: 1.4rem;
+      font-weight: 800;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .tech-stat-label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #555;
+    }
+    .tech-stat.ok    .tech-stat-value { color: #4ade80; }
+    .tech-stat.warn  .tech-stat-value { color: #facc15; }
+    .tech-stat.bad   .tech-stat-value { color: #f87171; }
+    .tech-stat.info  .tech-stat-value { color: #60a5fa; }
+
+    /* Broken links list */
+    .broken-link-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 9px 12px;
+      border-radius: 8px;
+      background: rgba(239,68,68,0.05);
+      border: 1px solid rgba(239,68,68,0.15);
+      margin-bottom: 6px;
+      font-size: 0.82rem;
+    }
+    .broken-link-row:last-child { margin-bottom: 0; }
+    .broken-link-status {
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 20px;
+      background: rgba(239,68,68,0.18);
+      color: #f87171;
+      white-space: nowrap;
+      flex-shrink: 0;
+      font-family: 'sans-serif', monospace;
+    }
+    .broken-link-url {
+      color: #888;
+      word-break: break-all;
+      flex: 1;
+      font-family: 'sans-serif', monospace;
+    }
+
+    /* SEO issues list */
+    .seo-issue-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 9px 12px;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.025);
+      margin-bottom: 6px;
+      font-size: 0.83rem;
+    }
+    .seo-issue-row:last-child { margin-bottom: 0; }
+    .seo-issue-icon { flex-shrink: 0; font-size: 0.95rem; }
+    .seo-issue-text { color: #ccc; flex: 1; line-height: 1.5; }
+
+    /* Empty state */
+    .card-empty {
+      color: #444;
+      font-size: 0.85rem;
+      padding: 16px;
+      text-align: center;
+      border: 1px dashed #1e1e2e;
+      border-radius: 8px;
+    }
+
+    /* Card color: teal (for technical) */
+    .card.teal { border-color: #134e4a; }
+    .card.teal .card-title { color: #2dd4bf; }
+
+    /* Card color: green (for SEO) */
+    .card.green { border-color: #14532d; }
+    .card.green .card-title { color: #4ade80; }
+
     /* Section divider */
     .section-title {
       font-size: 0.72rem;
@@ -433,8 +612,45 @@
         <ul class="wins-list" id="listWins"></ul>
       </div>
 
-    </div>
-  </div>
+    </div><!-- /cards-grid -->
+
+    <div class="section-title">Technical & Performance Data</div>
+
+    <div class="cards-grid">
+
+      <!-- PageSpeed Scores -->
+      <div class="card blue full-width" id="pageSpeedCard" style="display:none">
+        <div class="card-title">⚡ PageSpeed Insights</div>
+        <div class="psi-tabs">
+          <button class="psi-tab active" onclick="switchPsiTab('mobile', this)">📱 Mobile</button>
+          <button class="psi-tab" onclick="switchPsiTab('desktop', this)">🖥️ Desktop</button>
+        </div>
+        <div id="psiMobile"></div>
+        <div id="psiDesktop" style="display:none"></div>
+      </div>
+
+      <!-- Technical Audit -->
+      <div class="card teal" id="techAuditCard" style="display:none">
+        <div class="card-title">🔧 Technical Audit</div>
+        <div class="tech-stats" id="techStats"></div>
+        <div id="techDetails"></div>
+      </div>
+
+      <!-- SEO Issues -->
+      <div class="card green" id="seoIssuesCard" style="display:none">
+        <div class="card-title">🔍 SEO Issues</div>
+        <div id="seoIssuesList"></div>
+      </div>
+
+      <!-- Broken Links — full width if there are any -->
+      <div class="card red full-width" id="brokenLinksCard" style="display:none">
+        <div class="card-title">🔗 Broken Links</div>
+        <div id="brokenLinksList"></div>
+      </div>
+
+    </div><!-- /cards-grid technical -->
+
+  </div><!-- /results-wrapper -->
 
   <!-- Visual Proof -->
   <div id="visualProof">
@@ -938,6 +1154,143 @@
     return card;
   }
 
+  // ── PageSpeed / Technical / SEO / Broken Links renderers ─────────────────
+
+  function psiScoreClass(n) {
+    if (n >= 90) return 'psi-score-good';
+    if (n >= 50) return 'psi-score-average';
+    return 'psi-score-poor';
+  }
+  function faDotColor(score) {
+    if (score >= 90) return '#4ade80';
+    if (score >= 50) return '#facc15';
+    return '#f87171';
+  }
+
+  function buildPsiPanel(data) {
+    if (!data) return '<div class="card-empty">No data available.</div>';
+    const gauges = [
+      { label: 'Performance',   val: data.performance },
+      { label: 'Accessibility', val: data.accessibility },
+      { label: 'Best Practices',val: data.bestPractices },
+      { label: 'SEO',           val: data.seo },
+    ];
+    let html = '<div class="psi-grid">';
+    gauges.forEach(g => {
+      const cls = psiScoreClass(g.val);
+      html += `<div class="psi-gauge"><div class="psi-gauge-score ${cls}">${g.val}</div><div class="psi-gauge-label">${g.label}</div></div>`;
+    });
+    html += '</div>';
+
+    // Core Web Vitals
+    html += '<div class="cwv-row">';
+    const vitals = [
+      { label: 'LCP',  val: data.lcp },
+      { label: 'TBT',  val: data.fid },
+      { label: 'CLS',  val: data.cls },
+      { label: 'FCP',  val: data.fcp },
+      { label: 'TTFB', val: data.ttfb },
+    ];
+    vitals.forEach(v => {
+      html += `<div class="cwv-chip"><span class="cwv-chip-label">${v.label}</span><span class="cwv-chip-value">${escapeHtml(v.val || 'N/A')}</span></div>`;
+    });
+    html += '</div>';
+
+    // Failed audits
+    if (data.failedAudits && data.failedAudits.length) {
+      data.failedAudits.forEach(a => {
+        const color = faDotColor(a.score);
+        html += `<div class="failed-audit-row">
+          <div class="fa-score-dot" style="background:${color}"></div>
+          <div class="fa-title">${escapeHtml(a.title)}</div>
+          <div class="fa-value">${escapeHtml(a.displayValue || a.score + '/100')}</div>
+        </div>`;
+      });
+    }
+    return html;
+  }
+
+  function switchPsiTab(strategy, btn) {
+    document.querySelectorAll('.psi-tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('psiMobile').style.display  = strategy === 'mobile'  ? 'block' : 'none';
+    document.getElementById('psiDesktop').style.display = strategy === 'desktop' ? 'block' : 'none';
+  }
+
+  function renderPageSpeed(pageSpeed) {
+    if (!pageSpeed || (!pageSpeed.mobile && !pageSpeed.desktop)) return;
+    document.getElementById('psiMobile').innerHTML  = buildPsiPanel(pageSpeed.mobile);
+    document.getElementById('psiDesktop').innerHTML = buildPsiPanel(pageSpeed.desktop);
+    document.getElementById('pageSpeedCard').style.display = 'block';
+  }
+
+  function renderTechnicalAudit(tech) {
+    if (!tech) return;
+    const statsEl   = document.getElementById('techStats');
+    const detailsEl = document.getElementById('techDetails');
+
+    const stats = [
+      { label: 'H1 Tags',        val: tech.h1Count,          ok: tech.h1Count === 1, warn: tech.h1Count > 1 },
+      { label: 'Missing Alt',    val: tech.missingAltImages,  ok: tech.missingAltImages === 0, warn: tech.missingAltImages > 0 },
+      { label: 'Small Touches',  val: tech.smallTouchTargets, ok: tech.smallTouchTargets === 0, warn: tech.smallTouchTargets > 0 },
+      { label: 'Meta Desc',      val: tech.hasMetaDescription ? '✓' : '✗', ok: tech.hasMetaDescription, warn: !tech.hasMetaDescription },
+      { label: 'Viewport Meta',  val: tech.hasViewportMeta    ? '✓' : '✗', ok: tech.hasViewportMeta,    warn: !tech.hasViewportMeta },
+      { label: 'Schema.org',     val: tech.hasSchemaOrg       ? '✓' : '✗', ok: tech.hasSchemaOrg,       warn: false },
+      { label: 'Open Graph',     val: tech.hasOpenGraph       ? '✓' : '✗', ok: tech.hasOpenGraph,       warn: false },
+      { label: 'Broken Links',   val: (tech.brokenLinks || []).length, ok: (tech.brokenLinks||[]).length === 0, warn: (tech.brokenLinks||[]).length > 0 },
+    ];
+
+    statsEl.innerHTML = stats.map(s => {
+      const cls = s.ok ? 'ok' : (s.warn ? (s.val > 0 || s.val === '✗' ? 'bad' : 'warn') : 'info');
+      return `<div class="tech-stat ${cls}"><div class="tech-stat-value">${s.val ?? '—'}</div><div class="tech-stat-label">${s.label}</div></div>`;
+    }).join('');
+
+    // Extra details: canonical, lang, etc.
+    let details = '';
+    if (tech.canonicalUrl) details += `<div class="seo-issue-row"><span class="seo-issue-icon">🔗</span><span class="seo-issue-text">Canonical: <code style="color:#60a5fa;font-size:0.78rem">${escapeHtml(tech.canonicalUrl)}</code></span></div>`;
+    if (tech.lang)         details += `<div class="seo-issue-row"><span class="seo-issue-icon">🌐</span><span class="seo-issue-text">Lang attribute: <strong>${escapeHtml(tech.lang)}</strong></span></div>`;
+    detailsEl.innerHTML = details;
+
+    document.getElementById('techAuditCard').style.display = 'block';
+  }
+
+  function renderSeoIssues(tech) {
+    if (!tech) return;
+    const issues = [];
+
+    if (!tech.hasMetaDescription)         issues.push({ icon: '⚠️', text: 'Missing meta description — add one under 160 chars to improve click-through from search results.' });
+    if (!tech.hasViewportMeta)             issues.push({ icon: '🚫', text: 'Missing viewport meta tag — critical for mobile rendering.' });
+    if (!tech.hasOpenGraph)                issues.push({ icon: '📭', text: 'No Open Graph tags — social shares will look unstyled on Facebook/LinkedIn/Twitter.' });
+    if (!tech.hasSchemaOrg)                issues.push({ icon: '📋', text: 'No Schema.org structured data — add JSON-LD to improve rich snippets in Google.' });
+    if (tech.h1Count === 0)                issues.push({ icon: '🚫', text: 'No H1 tag found — every page needs exactly one H1 for SEO.' });
+    if (tech.h1Count > 1)                  issues.push({ icon: '⚠️', text: `${tech.h1Count} H1 tags found — use only one H1 per page; demote others to H2/H3.` });
+    if (tech.missingAltImages > 0)         issues.push({ icon: '🖼️', text: `${tech.missingAltImages} image(s) missing alt text — required for accessibility and image SEO.` });
+    if (!tech.canonicalUrl)                issues.push({ icon: '🔁', text: 'No canonical URL tag — add one to prevent duplicate content penalties.' });
+    if (!tech.lang)                        issues.push({ icon: '🌐', text: 'Missing lang attribute on <html> — add lang="en" (or correct locale) for accessibility.' });
+
+    const el = document.getElementById('seoIssuesList');
+    if (!issues.length) {
+      el.innerHTML = '<div class="card-empty">✅ No major SEO issues detected.</div>';
+    } else {
+      el.innerHTML = issues.map(i =>
+        `<div class="seo-issue-row"><span class="seo-issue-icon">${i.icon}</span><span class="seo-issue-text">${escapeHtml(i.text)}</span></div>`
+      ).join('');
+    }
+    document.getElementById('seoIssuesCard').style.display = 'block';
+  }
+
+  function renderBrokenLinks(tech) {
+    if (!tech || !tech.brokenLinks || tech.brokenLinks.length === 0) return;
+    const el = document.getElementById('brokenLinksList');
+    el.innerHTML = tech.brokenLinks.map(l =>
+      `<div class="broken-link-row">
+        <span class="broken-link-status">${l.status || 'ERR'}</span>
+        <span class="broken-link-url">${escapeHtml(l.url || l)}</span>
+      </div>`
+    ).join('');
+    document.getElementById('brokenLinksCard').style.display = 'block';
+  }
+
   // ── Main click handler ────────────────────────────────────────
   analyzeBtn.addEventListener("click", async () => {
     let url = urlInput.value.trim();
@@ -952,6 +1305,11 @@
     impressionCard.style.display = "none";
     proofGrid.innerHTML          = "";
     mobileProofGrid.innerHTML    = "";
+    // Reset new cards
+    document.getElementById('pageSpeedCard').style.display  = 'none';
+    document.getElementById('techAuditCard').style.display  = 'none';
+    document.getElementById('seoIssuesCard').style.display  = 'none';
+    document.getElementById('brokenLinksCard').style.display = 'none';
     loading.style.display        = "block";
     analyzeBtn.disabled          = true;
     analyzeBtn.textContent       = "Analyzing...";
@@ -1021,6 +1379,12 @@
       document.getElementById("heroSub").textContent      = hero.sub || "";
       document.getElementById("heroCTA").textContent      = hero.cta || "Get Started";
       document.getElementById("heroTrust").textContent    = hero.trust || "";
+
+      // 8. Technical / PageSpeed / SEO / Broken Links
+      renderPageSpeed(data.pageSpeed);
+      renderTechnicalAudit(data.technicalData);
+      renderSeoIssues(data.technicalData);
+      renderBrokenLinks(data.technicalData);
 
       resultsWrapper.style.display = "block";
       window.scrollTo({ top: 0, behavior: 'smooth' });
