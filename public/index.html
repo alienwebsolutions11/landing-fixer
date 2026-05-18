@@ -826,12 +826,108 @@
         { label: "WebP & Image Optimization", url: "https://web.dev/fast/#optimize-your-images", tag: "Google", icon: "⚡" },
       ]
     },
-    // ── Page Speed / Performance ──
-    { keywords: ["speed","performance","load","slow","fast","lcp","cls","fid"],
+    // ── SEO — Title Tag ──
+    { keywords: ["title tag","title length","title too long","title too short","missing title","page title"],
       links: [
-        { label: "Core Web Vitals Explained", url: "https://web.dev/learn-core-web-vitals/", tag: "Google", icon: "⚡" },
-        { label: "PageSpeed Insights Tool", url: "https://pagespeed.web.dev/", tag: "Free Tool", icon: "🔧" },
-        { label: "Web Performance Checklist", url: "https://www.smashingmagazine.com/2021/01/front-end-performance-2021-free-pdf-checklist/", tag: "Smashing", icon: "📋" },
+        { label: "Google: Title Link Guidelines", url: "https://developers.google.com/search/docs/appearance/title-link", tag: "Google Docs", icon: "🔍" },
+        { label: "How to Write Title Tags", url: "https://moz.com/learn/seo/title-tag", tag: "Moz", icon: "📖" },
+        { label: "Title Tag Best Practices", url: "https://ahrefs.com/blog/title-tag/", tag: "Ahrefs", icon: "🔗" },
+      ]
+    },
+    // ── SEO — Meta Description ──
+    { keywords: ["meta description","snippet","meta tag","description missing","description too long","description too short"],
+      links: [
+        { label: "Google: Snippet / Meta Description", url: "https://developers.google.com/search/docs/appearance/snippet", tag: "Google Docs", icon: "🔍" },
+        { label: "Meta Description Best Practices", url: "https://moz.com/learn/seo/meta-description", tag: "Moz", icon: "📖" },
+        { label: "Writing Meta Descriptions That Click", url: "https://ahrefs.com/blog/meta-description/", tag: "Ahrefs", icon: "🔗" },
+      ]
+    },
+    // ── SEO — H1 / Heading Structure ──
+    { keywords: ["h1","heading","multiple h1","no h1","heading structure","h1 count","h2","heading hierarchy"],
+      links: [
+        { label: "Google: Good Titles & Snippets", url: "https://developers.google.com/search/docs/appearance/good-titles-snippets", tag: "Google Docs", icon: "🔍" },
+        { label: "H1 Tag SEO Best Practices", url: "https://ahrefs.com/blog/h1-tag/", tag: "Ahrefs", icon: "📖" },
+        { label: "Heading Structure for SEO & UX", url: "https://moz.com/learn/seo/on-page-factors", tag: "Moz", icon: "🔗" },
+      ]
+    },
+    // ── SEO — Canonical Tag ──
+    { keywords: ["canonical","duplicate content","canonical url","canonical missing"],
+      links: [
+        { label: "Google: Canonicalization Guide", url: "https://developers.google.com/search/docs/crawling-indexing/canonicalization", tag: "Google Docs", icon: "🔍" },
+        { label: "Canonical Tag Best Practices", url: "https://moz.com/learn/seo/canonicalization", tag: "Moz", icon: "📖" },
+        { label: "How to Implement Canonical Tags", url: "https://ahrefs.com/blog/canonical-tags/", tag: "Ahrefs", icon: "🔗" },
+      ]
+    },
+    // ── SEO — Schema / Structured Data ──
+    { keywords: ["schema","structured data","rich result","json-ld","schema.org","rich snippet"],
+      links: [
+        { label: "Google: Structured Data Intro", url: "https://developers.google.com/search/docs/appearance/structured-data/intro-structured-data", tag: "Google Docs", icon: "🔍" },
+        { label: "Schema.org Full Reference", url: "https://schema.org/", tag: "Schema.org", icon: "📖" },
+        { label: "Rich Results Test Tool", url: "https://search.google.com/test/rich-results", tag: "Free Tool", icon: "🔧" },
+        { label: "Local Business Schema", url: "https://developers.google.com/search/docs/appearance/structured-data/local-business", tag: "Google Docs", icon: "🔍" },
+      ]
+    },
+    // ── SEO — OG / Open Graph ──
+    { keywords: ["og tag","open graph","social sharing","og:title","og:image","og:description","facebook share","twitter card"],
+      links: [
+        { label: "The Open Graph Protocol", url: "https://ogp.me/", tag: "OGP Docs", icon: "📖" },
+        { label: "Open Graph Meta Tags Guide", url: "https://ahrefs.com/blog/open-graph-meta-tags/", tag: "Ahrefs", icon: "🔗" },
+        { label: "Twitter Card Documentation", url: "https://developer.twitter.com/en/docs/twitter-for-websites/cards/overview/abouts-cards", tag: "Twitter Docs", icon: "🐦" },
+      ]
+    },
+    // ── SEO — Broken Links ──
+    { keywords: ["broken link","dead link","404","broken internal","link error"],
+      links: [
+        { label: "Google Search Console", url: "https://search.google.com/search-console/about", tag: "Free Tool", icon: "🔧" },
+        { label: "Fix Broken Links Guide", url: "https://ahrefs.com/blog/broken-links/", tag: "Ahrefs", icon: "📖" },
+        { label: "Screaming Frog SEO Spider", url: "https://www.screamingfrog.co.uk/seo-spider/", tag: "Free Tool", icon: "🕷️" },
+      ]
+    },
+    // ── Core Web Vitals / LCP / CLS / FID ──
+    { keywords: ["lcp","cls","fid","inp","core web vitals","largest contentful","cumulative layout","first input"],
+      links: [
+        { label: "Core Web Vitals — web.dev", url: "https://web.dev/vitals/", tag: "Google", icon: "⚡" },
+        { label: "Optimize LCP", url: "https://web.dev/lcp/", tag: "Google", icon: "🔗" },
+        { label: "Optimize CLS", url: "https://web.dev/cls/", tag: "Google", icon: "🔗" },
+        { label: "PageSpeed Insights", url: "https://pagespeed.web.dev/", tag: "Free Tool", icon: "🔧" },
+      ]
+    },
+    // ── Accessibility — Alt Text ──
+    { keywords: ["alt text","missing alt","image alt","alt attribute","images missing alt"],
+      links: [
+        { label: "W3C Alt Text Decision Tree", url: "https://www.w3.org/WAI/tutorials/images/decision-tree/", tag: "W3C", icon: "♿" },
+        { label: "Alt Text Best Practices", url: "https://www.nngroup.com/articles/alt-text-usability/", tag: "NNGroup", icon: "📖" },
+        { label: "Google Image SEO: Alt Text", url: "https://developers.google.com/search/docs/appearance/google-images", tag: "Google Docs", icon: "🔍" },
+      ]
+    },
+    // ── Accessibility — Viewport / Mobile ──
+    { keywords: ["viewport","viewport meta","viewport missing","mobile viewport"],
+      links: [
+        { label: "Add Viewport Meta Tag — web.dev", url: "https://web.dev/viewport/", tag: "Google", icon: "📱" },
+        { label: "Responsive Web Design Basics", url: "https://web.dev/responsive-web-design-basics/", tag: "Google", icon: "🔗" },
+      ]
+    },
+    // ── Accessibility — Touch Targets ──
+    { keywords: ["touch target","tap target","small touch","small button","44px","touch size"],
+      links: [
+        { label: "Accessible Tap Targets — web.dev", url: "https://web.dev/accessible-tap-targets/", tag: "Google", icon: "👆" },
+        { label: "Material Design Touch Targets", url: "https://m2.material.io/design/usability/accessibility.html#layout-and-typography", tag: "Material", icon: "📖" },
+        { label: "WCAG 2.5.5 Target Size", url: "https://www.w3.org/WAI/WCAG21/Understanding/target-size.html", tag: "W3C WCAG", icon: "♿" },
+      ]
+    },
+    // ── HTTPS / SSL ──
+    { keywords: ["https","http","ssl","tls","insecure","not secure","no https","certificate"],
+      links: [
+        { label: "Why HTTPS Matters — web.dev", url: "https://web.dev/why-https-matters/", tag: "Google", icon: "🔒" },
+        { label: "Google: HTTPS as Ranking Signal", url: "https://developers.google.com/search/blog/2014/08/https-as-ranking-signal", tag: "Google Blog", icon: "🔍" },
+        { label: "Free SSL with Let's Encrypt", url: "https://letsencrypt.org/", tag: "Free Tool", icon: "🔧" },
+      ]
+    },
+    // ── Lazy Loading ──
+    { keywords: ["lazy load","lazy loading","no lazy","images lazy","deferred loading"],
+      links: [
+        { label: "Lazy Loading Images — web.dev", url: "https://web.dev/lazy-loading-images/", tag: "Google", icon: "⚡" },
+        { label: "Browser-Level Lazy Loading", url: "https://web.dev/browser-level-image-lazy-loading/", tag: "Google", icon: "🔗" },
       ]
     },
     // ── SEO ──
@@ -915,7 +1011,12 @@
 
   // ── Build a single dropdown issue card ────────────────────────
   function buildIssueAccordion(issue, fix, index, cardClass) {
-    const resources = getResourceLinks(issue.title || '', issue.type || '');
+    // If AI supplied a learnMoreUrl, pin it as the first resource and deduplicate rest
+    let resources = getResourceLinks(issue.title || '', issue.type || '');
+    if (issue.learnMoreUrl && issue.learnMoreUrl.startsWith('http')) {
+      const pinned = { label: '📌 Official Fix Guide', url: issue.learnMoreUrl, tag: 'Recommended', icon: '🔗' };
+      resources = [pinned, ...resources.filter(r => r.url !== issue.learnMoreUrl)].slice(0, 4);
+    }
 
     // Prefer rich steps[] array from the JSON issue object
     // Fall back to splitIntoSteps on the old fix string
