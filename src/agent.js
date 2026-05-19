@@ -956,65 +956,12 @@ import Groq from "groq-sdk";
 import dotenv from "dotenv";
 dotenv.config();
 
+const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
-const GROQ_KEYS = [
-  process.env.GROQ_API_KEY_1,
-  process.env.GROQ_API_KEY_2,
-  process.env.GROQ_API_KEY_3,
-  process.env.GROQ_API_KEY_4,
-  // ← add more lines here if you get more keys
-  process.env.GROQ_API_KEY,   // legacy single-key fallback
-].filter(Boolean);            // remove undefined / empty entries
-
-if (!GROQ_KEYS.length) {
-  throw new Error("❌ No Groq API keys found. Set GROQ_API_KEY_1 (and optionally _2, _3…) in your .env file.");
-}
-
-console.log(`🔑 Groq key pool: ${GROQ_KEYS.length} key(s) loaded`);
-
-// ── Rate-limit aware Groq caller ──────────────────────────────────────────────
-// Tries each key in order. On 429 (rate limit), logs and tries the next key.
-// Throws only when ALL keys are exhausted.
-async function groqChatWithFallback(params) {
-  let lastError = null;
-
-  for (let i = 0; i < GROQ_KEYS.length; i++) {
-    const key = GROQ_KEYS[i];
-    const groq = new Groq({ apiKey: key });
-
-    try {
-      console.log(`🔑 Groq attempt ${i + 1}/${GROQ_KEYS.length} (key ending …${key.slice(-6)})`);
-      const resp = await groq.chat.completions.create(params);
-      console.log(`✅ Groq key ${i + 1} succeeded`);
-      return resp;
-    } catch (err) {
-      const is429 = err?.status === 429 || err?.message?.includes("429") || err?.message?.includes("rate_limit_exceeded");
-
-      if (is429) {
-        console.warn(`⚠️  Key ${i + 1} hit rate limit (429). ${i + 1 < GROQ_KEYS.length ? "Trying next key…" : "No more keys available."}`);
-        lastError = err;
-        continue; // try next key
-      }
-
-      // Non-429 error (auth failure, network, etc.) — throw immediately
-      throw err;
-    }
-  }
-
-  // All keys exhausted
-  throw new Error(
-    `❌ All ${GROQ_KEYS.length} Groq API key(s) hit their rate limit. ` +
-    `Add more keys to your .env (GROQ_API_KEY_2, GROQ_API_KEY_3, …) or wait for the limit to reset. ` +
-    `Last error: ${lastError?.message}`
-  );
-}
-
-// ── Cookie filter ─────────────────────────────────────────────────────────────
 const COOKIE_RE = /cookie|consent|gdpr|privacy policy|accept all|reject all|necessary cookies|functional cookies|no cookies/i;
 const isCookieText = (t) => COOKIE_RE.test(t || "");
 const cleanArr = (arr) => (arr || []).filter((t) => !isCookieText(t));
 
-// ── Main export ───────────────────────────────────────────────────────────────
 export async function analyzePage(scrapedContent) {
   try {
     const lim = (arr, n) => (Array.isArray(arr) ? arr.slice(0, n) : []);
@@ -1277,8 +1224,7 @@ RULES — non-negotiable:
 9. SEO Issues must cite real findings from the TECHNICAL AUDIT section above
 `;
 
-    // ── Call Groq with automatic key rotation on 429 ──────────────────────────
-    const resp = await groqChatWithFallback({
+    const resp = await groq.chat.completions.create({
       model: "llama-3.1-8b-instant",
       messages: [
         {
@@ -1296,7 +1242,7 @@ If something is genuinely good, say so. Do not invent criticism to fill a quota.
         { role: "user", content: prompt },
       ],
       max_tokens: 4500,
-      temperature: 0.3,
+      temperature: 0.3,  // low but not deterministic — responds to actual page changes
     });
 
     const raw = resp.choices[0].message.content;
