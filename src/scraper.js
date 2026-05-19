@@ -1004,7 +1004,7 @@
 // }
 
 import puppeteer from "puppeteer";
- import chromium from "@sparticuz/chromium";
+import chromium from "chromium-core";
 
 // ─── colour per issue type ────────────────────────────────────────────────
 const TYPE_STYLE = {
