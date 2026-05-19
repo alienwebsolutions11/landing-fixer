@@ -1003,8 +1003,8 @@
 //   );
 // }
 
-import puppeteer from "puppeteer-core";
-import chromium from "@sparticuz/chromium";
+import puppeteer from "puppeteer";
+// import chromium from "@sparticuz/chromium";
 
 // ─── colour per issue type ────────────────────────────────────────────────
 const TYPE_STYLE = {
@@ -1025,7 +1025,7 @@ const isCookieText = (t) => COOKIE_RE.test(t || "");
 export async function scrapePage(url, issues = []) {
   const browser = await puppeteer.launch({
     args: [
-      ...chromium.args,
+      // ...chromium.args,
       "--disable-dev-shm-usage",
       "--disable-gpu",
       "--disable-setuid-sandbox",
@@ -1033,7 +1033,7 @@ export async function scrapePage(url, issues = []) {
       "--single-process",
       "--no-zygote",
     ],
-    executablePath: await chromium.executablePath(),
+    // executablePath: await chromium.executablePath(),
     headless: true,
     timeout: 0,
   });
@@ -1244,7 +1244,7 @@ const cls = String(
     // 🔴  HIGHLIGHT + SCREENSHOT MODE  (only on second call, with issues)
     // ─────────────────────────────────────────────────────────────────────
     const issueScreenshots = [];
-
+globalThis.__USED_BOXES__ = [];
     if (issues && issues.length > 0) {
       console.log(`🎯 Processing ${issues.length} issues...`);
 
@@ -1464,7 +1464,9 @@ async function findAllBoxes(page, issues) {
     const SELS = "h1,h2,h3,h4,h5,h6,p,a,button,li,span,label,div";
     const elements = await page.$$(SELS);
 
-    let best = null, bestScore = 0;
+let best = null,
+    bestScore = 0,
+    usedBoxes = globalThis.__USED_BOXES__ || [];
 
     for (const el of elements) {
       const data = await page.evaluate(el => {
@@ -1502,11 +1504,28 @@ async function findAllBoxes(page, issues) {
         if (matched / targetWords.length >= 0.7) score = 0.55;
       }
 
-      if (score > bestScore) { bestScore = score; best = data.box; }
+      // if (score > bestScore) { bestScore = score; best = data.box; }
+      if (score > bestScore) {
+
+  // prevent reusing same area
+  const alreadyUsed = usedBoxes.some(b =>
+    Math.abs(b.x - data.box.x) < 80 &&
+    Math.abs(b.y - data.box.y) < 80
+  );
+
+  if (!alreadyUsed) {
+    bestScore = score;
+    best = data.box;
+  }
+}
     }
 
     // Only accept confident matches
     results.push(bestScore >= 0.6 ? best : null);
+    if (bestScore >= 0.6 && best) {
+  usedBoxes.push(best);
+  globalThis.__USED_BOXES__ = usedBoxes;
+}
     console.log(`  🔎 "${targetText.slice(0,35)}" → score:${bestScore.toFixed(2)} ${bestScore>=0.6?"✅":"❌"}`);
   }
 
