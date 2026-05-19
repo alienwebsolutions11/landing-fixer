@@ -1214,7 +1214,7 @@ ISSUES_END
 
 RULES — non-negotiable:
 1. Required entries: 5 UX, 5 Copy, 3 CTA, 3 Mobile, 3 Trust, 3 SEO = 22 total
-2. targetText = word-for-word from the page. Only use H1, H2, H3, nav links, button labels, paragraph fragments, or page title.
+"2. targetText MUST be a verbatim quote copied from the actual page content (H1, H2, H3, button text, nav label, or a real paragraph fragment). NEVER use generic labels like 'Paragraphs', 'Body copy', 'Hero section', 'Navigation', or any structural/descriptive word — only real visible text from the page data above."
 3. NEVER use cookie, consent, GDPR, or popup text anywhere
 4. NEVER repeat the same targetText across entries
 5. before/after required for Copy Problem and CTA Issue

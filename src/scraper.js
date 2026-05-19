@@ -1004,7 +1004,7 @@
 // }
 
 import puppeteer from "puppeteer";
-// import chromium from "@sparticuz/chromium";
+ import chromium from "@sparticuz/chromium";
 
 // ─── colour per issue type ────────────────────────────────────────────────
 const TYPE_STYLE = {
@@ -1025,7 +1025,7 @@ const isCookieText = (t) => COOKIE_RE.test(t || "");
 export async function scrapePage(url, issues = []) {
   const browser = await puppeteer.launch({
     args: [
-      // ...chromium.args,
+       ...chromium.args,
       "--disable-dev-shm-usage",
       "--disable-gpu",
       "--disable-setuid-sandbox",
@@ -1033,7 +1033,7 @@ export async function scrapePage(url, issues = []) {
       "--single-process",
       "--no-zygote",
     ],
-    // executablePath: await chromium.executablePath(),
+    executablePath: await chromium.executablePath(),
     headless: true,
     timeout: 0,
   });
