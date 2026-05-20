@@ -956,7 +956,32 @@ import Groq from "groq-sdk";
 import dotenv from "dotenv";
 dotenv.config();
 
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+// const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+//replacement 
+const API_KEYS = [
+  process.env.GROQ_API_KEY,
+  process.env.GROQ_API_KEY_2,
+  process.env.GROQ_API_KEY_3,
+  process.env.GROQ_API_KEY_4,
+
+].filter(Boolean);
+
+if (API_KEYS.length === 0) throw new Error("No GROQ_API_KEY found in environment");
+console.log(`🔑 Groq key pool: ${API_KEYS.length} key(s) loaded`);
+
+let currentKeyIndex = 0;
+function getGroqClient() {
+  return new Groq({ apiKey: API_KEYS[currentKeyIndex] });
+}
+function rotateKey(exhaustedIndex) {
+  if (API_KEYS.length === 1) return false;
+  const next = (exhaustedIndex + 1) % API_KEYS.length;
+  if (next === exhaustedIndex) return false;
+  console.log(`🔄 Key #${exhaustedIndex + 1} rate-limited → switching to key #${next + 1}`);
+  currentKeyIndex = next;
+  return true;
+}
+
 
 const COOKIE_RE = /cookie|consent|gdpr|privacy policy|accept all|reject all|necessary cookies|functional cookies|no cookies/i;
 const isCookieText = (t) => COOKIE_RE.test(t || "");
@@ -1224,27 +1249,50 @@ RULES — non-negotiable:
 9. SEO Issues must cite real findings from the TECHNICAL AUDIT section above
 `;
 
-    const resp = await groq.chat.completions.create({
-      model: "llama-3.3-70b-versatile",
-      messages: [
-        {
-          role: "system",
-          content: `You are a world-class landing page, UX, and SEO expert giving a premium paid audit.
-Analyse ONLY the actual page data and technical measurements provided. You cannot see the rendered page visually.
-NEVER mention cookies, consent banners, GDPR overlays, or popups.
-NEVER raise issues about: white space, spacing, visual hierarchy, color contrast, font size, layout density.
-NEVER flag a headline as vague if it contains a specific benefit, outcome, number, or named audience.
-NEVER invent statistics, percentages, or client counts in suggested copy. Use [PLACEHOLDER] for any number you don't know.
-Use the TECHNICAL AUDIT data as ground truth — if it says broken links found, cite the actual paths. If it says 5 images missing alt text, say exactly 5.
-Every issue must cite specific real evidence from the page data or technical measurements.
-If something is genuinely good, say so. Do not invent criticism to fill a quota.`,
-        },
-        { role: "user", content: prompt },
-      ],
-      max_tokens: 4500,
-      temperature: 0.3,  // low but not deterministic — responds to actual page changes
-    });
+//     const resp = await groq.chat.completions.create({
+//       model: "llama-3.3-70b-versatile",
+//       messages: [
+//         {
+//           role: "system",
+//           content: `You are a world-class landing page, UX, and SEO expert giving a premium paid audit.
+// Analyse ONLY the actual page data and technical measurements provided. You cannot see the rendered page visually.
+// NEVER mention cookies, consent banners, GDPR overlays, or popups.
+// NEVER raise issues about: white space, spacing, visual hierarchy, color contrast, font size, layout density.
+// NEVER flag a headline as vague if it contains a specific benefit, outcome, number, or named audience.
+// NEVER invent statistics, percentages, or client counts in suggested copy. Use [PLACEHOLDER] for any number you don't know.
+// Use the TECHNICAL AUDIT data as ground truth — if it says broken links found, cite the actual paths. If it says 5 images missing alt text, say exactly 5.
+// Every issue must cite specific real evidence from the page data or technical measurements.
+// If something is genuinely good, say so. Do not invent criticism to fill a quota.`,
+//         },
+//         { role: "user", content: prompt },
+//       ],
+//       max_tokens: 4500,
+//       temperature: 0.3,  // low but not deterministic — responds to actual page changes
+//     });
+// REPLACE: const resp = await groq.chat.completions.create({...})
+// WITH:
 
+let resp;
+let attempts = 0;
+while (attempts < API_KEYS.length * 2) {
+  const keyIndexAtStart = currentKeyIndex;
+  try {
+    resp = await getGroqClient().chat.completions.create({
+      // ...same options as before...
+    });
+    break; // success
+  } catch (err) {
+    attempts++;
+    const is429 = err?.status === 429 || err?.message?.includes("rate_limit_exceeded");
+    if (is429) {
+      const rotated = rotateKey(keyIndexAtStart);
+      if (!rotated) throw new Error("All Groq API keys are rate-limited. Add more keys or upgrade.");
+      await new Promise(r => setTimeout(r, 1000));
+      continue;
+    }
+    throw err; // non-429 errors — don't retry
+  }
+}
     const raw = resp.choices[0].message.content;
     console.log("📝 AI response:", raw.length, "chars");
 
