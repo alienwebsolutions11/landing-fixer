@@ -963,7 +963,7 @@ const API_KEYS = [
   process.env.GROQ_API_KEY_2,
   process.env.GROQ_API_KEY_3,
   process.env.GROQ_API_KEY_4,
-
+  
 ].filter(Boolean);
 
 if (API_KEYS.length === 0) throw new Error("No GROQ_API_KEY found in environment");
@@ -981,7 +981,6 @@ function rotateKey(exhaustedIndex) {
   currentKeyIndex = next;
   return true;
 }
-
 
 const COOKIE_RE = /cookie|consent|gdpr|privacy policy|accept all|reject all|necessary cookies|functional cookies|no cookies/i;
 const isCookieText = (t) => COOKIE_RE.test(t || "");
