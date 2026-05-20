@@ -1277,7 +1277,24 @@ while (attempts < API_KEYS.length * 2) {
   const keyIndexAtStart = currentKeyIndex;
   try {
     resp = await getGroqClient().chat.completions.create({
-      // ...same options as before...
+       model: "llama-3.3-70b-versatile",
+       messages: [
+        {
+          role: "system",
+          content: `You are a world-class landing page, UX, and SEO expert giving a premium paid audit.
+Analyse ONLY the actual page data and technical measurements provided. You cannot see the rendered page visually.
+NEVER mention cookies, consent banners, GDPR overlays, or popups.
+NEVER raise issues about: white space, spacing, visual hierarchy, color contrast, font size, layout density.
+NEVER flag a headline as vague if it contains a specific benefit, outcome, number, or named audience.
+NEVER invent statistics, percentages, or client counts in suggested copy. Use [PLACEHOLDER] for any number you don't know.
+Use the TECHNICAL AUDIT data as ground truth — if it says broken links found, cite the actual paths. If it says 5 images missing alt text, say exactly 5.
+Every issue must cite specific real evidence from the page data or technical measurements.
+If something is genuinely good, say so. Do not invent criticism to fill a quota.`,
+        },
+        { role: "user", content: prompt },
+      ],
+      max_tokens: 4500,
+      temperature: 0.3,
     });
     break; // success
   } catch (err) {
